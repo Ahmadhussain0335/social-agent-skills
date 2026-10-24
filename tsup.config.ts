@@ -18,6 +18,8 @@ const skillScripts = {
   'skills/facebook-post/scripts/publish': 'src/scripts/meta/facebook.ts',
   'skills/instagram-post/scripts/publish': 'src/scripts/meta/instagram.ts',
   'skills/threads-post/scripts/publish': 'src/scripts/meta/threads.ts',
+  'skills/content-repurpose/scripts/repurpose': 'src/scripts/cross/repurpose.ts',
+  'skills/content-calendar/scripts/calendar': 'src/scripts/cross/calendar.ts',
 };
 
 export default defineConfig([
