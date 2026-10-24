@@ -7,7 +7,9 @@ load skills automatically, use them manually:
    content, and follow it.
 2. For YouTube work, read `skills/youtube-pipeline/SKILL.md` and follow its steps. For a
    Facebook, Instagram or Threads post read that platform's `*-post` skill and `meta-auth`;
-   for WhatsApp read the `whatsapp-*` skills. When a step names another skill, read that
+   for WhatsApp read the `whatsapp-*` skills; for other platforms read `<platform>-post`
+   (Reddit: `reddit-draft`); for several platforms at once read `content-repurpose`,
+   `content-calendar`, `social-analytics` or `social-inbox`. When a step names another skill, read that
    skill's `SKILL.md`.
 3. Run scripts with Node.js 22.12 or newer from the skill's directory, for example
    `node skills/youtube-upload/scripts/upload.mjs --help`. Every script supports `--help`.

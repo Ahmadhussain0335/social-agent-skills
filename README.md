@@ -6,12 +6,14 @@ Claude Code, OpenAI Codex, Gemini CLI, GitHub Copilot, Cursor and other compatib
 
 Included:
 
-- **YouTube:** research, script, visuals, assembly with FFmpeg, metadata, and upload
-  through the official YouTube Data API v3.
-- **Facebook Pages, Instagram, Threads:** single posts through the official Graph and
-  Threads APIs, with one shared Meta sign-in.
-- **WhatsApp Business Platform (Cloud API):** templates, opt-in broadcasts with cost
-  estimates, and a business-scoped support bot.
+- **YouTube:** research, script, visuals, assembly with FFmpeg, metadata, upload.
+- **Meta:** Facebook Pages, Instagram (Business/Creator), Threads, with one shared sign-in.
+- **WhatsApp Business Platform:** templates, opt-in broadcasts with cost estimates,
+  business-scoped support bot.
+- **X, LinkedIn (personal profile), Pinterest, TikTok (drafts), Telegram, Discord,
+  Bluesky, Mastodon, Google Business Profile, Reddit (draft only).**
+- **Cross-platform:** repurpose one source for many platforms, a content calendar,
+  one analytics report, and one inbox for comments with approved replies.
 
 ## Principles
 
@@ -91,6 +93,20 @@ installed skill versions.
 | `whatsapp-templates` | Drafts templates and submits them for Meta review |
 | `whatsapp-broadcast` | Sends an approved template to opted-in contacts, with a cost estimate |
 | `whatsapp-support-bot` | Answers FAQs and order status from an approved knowledge base |
+| `x-post` | Post, media or poll on X; shows the pay-per-use cost before approval |
+| `linkedin-post` | Text, link, image or video on your personal LinkedIn profile |
+| `pinterest-post` | Image, carousel or video Pin on a chosen board |
+| `tiktok-post` | Sends a video to your TikTok inbox as a draft (default) or posts privately |
+| `telegram-post` | Message, photo, video or album to a channel your bot administers |
+| `discord-post` | Message with attachments through a channel webhook; never pings by default |
+| `bluesky-post` | Post with images or a link card, using an app password |
+| `mastodon-post` | Post, media or poll on your instance; scheduling supported |
+| `google-business-post` | Update, event or offer on your Business Profile; review replies via the inbox |
+| `reddit-draft` | Drafts a rule-following post and a prefilled reddit.com link; never posts |
+| `content-repurpose` | One source into separate drafts per platform |
+| `content-calendar` | Publishes approved posts across platforms when they are due |
+| `social-analytics` | One report of each platform's own metrics |
+| `social-inbox` | Collects comments and reviews, sends only approved replies |
 
 Ask your agent something like "make a YouTube video about BLE pairing for beginners" and
 it will follow `youtube-pipeline`.
@@ -168,6 +184,28 @@ Official Cloud API only; no whatsapp-web.js, Baileys or personal-account automat
   approved knowledge base and hands everything else to a person.
 - From 2026-10-01, service replies are charged after 1,000 free per month per number.
 
+## What each platform allows (checked 2026-10-24)
+
+These limits come from each platform's official docs and shape what the skills do:
+
+| Platform | Limit you should know |
+| - | - |
+| X | No free tier: about $0.015 per post, $0.20 with a link. Replies only when summoned; quotes are Enterprise-only. |
+| LinkedIn | Your own app can post to your personal profile only. Company pages need the Community Management API (registered organisation, vetting). No refresh tokens: sign in every 60 days. |
+| TikTok | Your own app cannot pass TikTok's audit, so direct posts stay private. Default is draft: the video goes to your TikTok inbox. |
+| Pinterest | Trial apps create Pins visible only to you until Standard access (demo video). |
+| Reddit | API access needs Reddit's approval and targets moderation, so `reddit-draft` never posts. |
+| Google Business Profile | Your Cloud project must be approved for the APIs first (profile verified 60+ days, website). |
+| Bluesky | App passwords are allowed for command-line tools; alt text required on images. |
+| Telegram, Discord, Mastodon | Straightforward: bot token, channel webhook, instance access token. |
+
+Setup guides for every platform are in [docs/platforms/](docs/platforms/).
+
+The OAuth redirect page for platforms that require HTTPS is a static page with no
+scripts: https://ahmadhussain.dev/social-skills-oauth/ (source:
+github.com/Ahmadhussain0335/social-skills-oauth). You can host your own copy and point
+the `*_REDIRECT_URI` variables at it.
+
 ## FFmpeg
 
 `youtube-assemble` looks for FFmpeg in this order:
@@ -204,14 +242,10 @@ Skill scripts are written in TypeScript under `src/scripts/` and bundled into
 `skills/*/scripts/*.mjs`. The bundles are committed so installing from GitHub works
 without a build; CI fails if they are out of date.
 
-## Roadmap
+## Out of scope
 
-- Phase 3: LinkedIn, X, TikTok, Pinterest
-- Phase 4: Telegram, Discord, Reddit (draft-only), Bluesky, Mastodon, Google Business Profile
-- Phase 5: cross-platform repurposing, content calendar, analytics, inbox
-
-Out of scope: Snapchat organic posting, and any automation of personal WhatsApp,
-personal Facebook profiles or Instagram DMs through unofficial methods.
+Snapchat organic posting (no practical public API), and any automation of personal
+WhatsApp, personal Facebook profiles or Instagram DMs through unofficial methods.
 
 ## Licence
 
