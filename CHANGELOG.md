@@ -2,7 +2,7 @@
 
 ## 0.1.0 (2026-10-24)
 
-First release.
+First release, published to npm as `social-agent-skills` (commands `social-agent-skills` and `social-skills`).
 
 ### Installer CLI
 

@@ -64,7 +64,7 @@ npx skills add Ahmadhussain0335/social-agent-skills
 From npm, with this package's installer:
 
 ```sh
-npx @ahmadhussain0335/social-skills install
+npx social-agent-skills install
 ```
 
 The installer detects installed agents, asks which to target, and copies the skills into
@@ -237,7 +237,7 @@ the `*_REDIRECT_URI` variables at it.
 `youtube-assemble` looks for FFmpeg in this order:
 
 1. `FFMPEG_PATH`
-2. the `ffmpeg-static` binary from a global install (`npm install -g @ahmadhussain0335/social-skills`)
+2. the `ffmpeg-static` binary from a global install (`npm install -g social-agent-skills`)
 3. `ffmpeg` on `PATH`
 
 `ffmpeg-static` downloads its binary at install time and is GPL-3.0-or-later licensed;

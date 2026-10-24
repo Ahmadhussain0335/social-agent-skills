@@ -47,7 +47,7 @@ export function testContext(overrides: Partial<CliContext> = {}): TestContext {
     out: (line) => stdout.push(line),
     err: (line) => stderr.push(line),
     skillsRoot: join(import.meta.dirname, '..', 'skills'),
-    packageName: '@ahmadhussain0335/social-skills',
+    packageName: 'social-agent-skills',
     version: '0.1.0',
     stdout,
     stderr,

@@ -2,7 +2,7 @@
 name: youtube-assemble
 description: Renders a YouTube video from shot-list.json - images and clips scaled to the target resolution, voiceover, optional background music and subtitles - into an H.264/AAC MP4 using FFmpeg. Use when the user wants to assemble, render, stitch or export the final video file for a YouTube project.
 license: MIT
-compatibility: Requires Node.js 22.12+ and FFmpeg (FFMPEG_PATH, the ffmpeg-static binary from a global install of @ahmadhussain0335/social-skills, or ffmpeg on PATH).
+compatibility: Requires Node.js 22.12+ and FFmpeg (FFMPEG_PATH, the ffmpeg-static binary from a global install of social-agent-skills, or ffmpeg on PATH).
 metadata:
   author: Ahmad Hussain
   platform: youtube

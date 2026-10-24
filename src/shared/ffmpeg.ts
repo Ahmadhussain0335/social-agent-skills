@@ -44,7 +44,7 @@ function ffmpegStaticPath(): string | undefined {
   const bases = [import.meta.url];
   const globalRoot = npmGlobalRoot();
   if (globalRoot) {
-    bases.push(join(globalRoot, '@ahmadhussain0335', 'social-skills', 'package.json'));
+    bases.push(join(globalRoot, 'social-agent-skills', 'package.json'));
     bases.push(join(globalRoot, 'package.json'));
   }
   for (const base of bases) {
@@ -72,4 +72,4 @@ function npmGlobalRoot(): string | undefined {
 }
 
 export const FFMPEG_MISSING_HINT =
-  'Install FFmpeg, set FFMPEG_PATH to an ffmpeg binary, or run "npm install -g @ahmadhussain0335/social-skills" to get the bundled ffmpeg-static binary. If ffmpeg-static is already installed, its download may be incomplete: delete its ffmpeg file and run "npm rebuild ffmpeg-static".';
+  'Install FFmpeg, set FFMPEG_PATH to an ffmpeg binary, or run "npm install -g social-agent-skills" to get the bundled ffmpeg-static binary. If ffmpeg-static is already installed, its download may be incomplete: delete its ffmpeg file and run "npm rebuild ffmpeg-static".';
