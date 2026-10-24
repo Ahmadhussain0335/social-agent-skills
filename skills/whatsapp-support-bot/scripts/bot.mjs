@@ -190,6 +190,8 @@ var GRAPH_FACEBOOK = "https://graph.facebook.com";
 
 // src/platforms/meta/graph.ts
 import { createHmac } from "crypto";
+import { openAsBlob } from "fs";
+import { basename } from "path";
 
 // src/shared/http.ts
 var DEFAULT_RETRY_ON = [429, 500, 502, 503, 504];
@@ -254,6 +256,23 @@ var GraphClient = class {
   delete(path, params = {}) {
     return this.request("DELETE", path, params);
   }
+  /** multipart/form-data upload of one local file (Facebook Page photos and videos). */
+  async postFile(path, params, file) {
+    const form = new FormData();
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== void 0) form.set(key, String(value));
+    }
+    form.set("access_token", this.opts.accessToken);
+    if (this.opts.appSecret) form.set("appsecret_proof", appSecretProof(this.opts.accessToken, this.opts.appSecret));
+    const blob = await openAsBlob(file.path, { type: file.contentType });
+    form.set(file.field, blob, basename(file.path));
+    const response = await fetchWithRetry(
+      this.url(path),
+      { method: "POST", body: form },
+      { retryOn: [429], ...this.opts.retry }
+    );
+    return this.parse(response);
+  }
   url(path) {
     const clean = path.startsWith("/") ? path.slice(1) : path;
     return `${this.opts.baseUrl}/${this.opts.version}/${clean}`;
@@ -276,6 +295,9 @@ var GraphClient = class {
     }
     const retryOn = method === "GET" ? void 0 : [429];
     const response = await fetchWithRetry(url, init, { retryOn, ...this.opts.retry });
+    return this.parse(response);
+  }
+  async parse(response) {
     this.lastUsage = parseUsage(response.headers);
     const text = await response.text();
     let json;
