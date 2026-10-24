@@ -81,7 +81,7 @@ runScript(
 
     const result = await uploadApproved({
       dir,
-      api: authorisedClient(),
+      getApi: () => authorisedClient(),
       allowReupload: Boolean(flags['allow-reupload']),
       onProgress: (sent, total) => process.stderr.write(`\ruploading ${Math.floor((sent / total) * 100)}%`),
     });

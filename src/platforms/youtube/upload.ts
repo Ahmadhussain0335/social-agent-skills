@@ -22,7 +22,8 @@ export interface UploadResult {
 
 export interface UploadOptions {
   dir: string;
-  api: Pick<youtube_v3.Youtube, 'videos' | 'thumbnails'>;
+  /** Called only after approval and inputs are verified, so credentials are not touched before that. */
+  getApi: () => Pick<youtube_v3.Youtube, 'videos' | 'thumbnails'>;
   env?: NodeJS.ProcessEnv;
   allowReupload?: boolean;
   onProgress?: (sentBytes: number, totalBytes: number) => void;
@@ -30,7 +31,7 @@ export interface UploadOptions {
 
 /** Uploads only what the user approved at the "upload" checkpoint, byte for byte. */
 export async function uploadApproved(opts: UploadOptions): Promise<UploadResult> {
-  const { dir, api } = opts;
+  const { dir } = opts;
   const env = opts.env ?? process.env;
   const state = loadState(dir);
 
@@ -62,6 +63,7 @@ export async function uploadApproved(opts: UploadOptions): Promise<UploadResult>
     );
   }
 
+  const api = opts.getApi();
   spendQuota('videos.insert', env);
   const totalBytes = statSync(videoPath).size;
   let response: youtube_v3.Schema$Video;

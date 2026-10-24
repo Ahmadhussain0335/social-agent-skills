@@ -124,13 +124,13 @@ function fakeApi(status: Record<string, unknown> = { privacyStatus: 'private' })
 describe('uploadApproved', () => {
   const env = () => ({ SOCIAL_SKILLS_CONFIG_DIR: tmp() });
 
-  it('refuses without the upload approval', async () => {
+  it('refuses without the upload approval and never loads credentials', async () => {
     const dir = approvedProject();
-    const api = fakeApi();
-    await expect(uploadApproved({ dir, api: api as never, env: env() })).rejects.toMatchObject({
+    const getApi = vi.fn(() => fakeApi() as never);
+    await expect(uploadApproved({ dir, getApi, env: env() })).rejects.toMatchObject({
       code: 'APPROVAL_REQUIRED',
     });
-    expect(api.videos.insert).not.toHaveBeenCalled();
+    expect(getApi).not.toHaveBeenCalled();
   });
 
   it('refuses when a file changed after approval', async () => {
@@ -138,7 +138,9 @@ describe('uploadApproved', () => {
     await approveAll(dir);
     write(join(dir, 'output/video.mp4'), 'different cut');
     const api = fakeApi();
-    await expect(uploadApproved({ dir, api: api as never, env: env() })).rejects.toThrow(/output\/video.mp4 changed/);
+    await expect(uploadApproved({ dir, getApi: () => api as never, env: env() })).rejects.toThrow(
+      /output\/video.mp4 changed/,
+    );
     expect(api.videos.insert).not.toHaveBeenCalled();
   });
 
@@ -146,7 +148,7 @@ describe('uploadApproved', () => {
     const dir = approvedProject();
     await approveAll(dir);
     const api = fakeApi();
-    const result = await uploadApproved({ dir, api: api as never, env: env() });
+    const result = await uploadApproved({ dir, getApi: () => api as never, env: env() });
 
     const request = api.videos.insert.mock.calls[0]?.[0];
     expect(request.part).toEqual(['snippet', 'status']);
@@ -163,7 +165,7 @@ describe('uploadApproved', () => {
 
     const state = JSON.parse(readFileSync(join(dir, 'state.json'), 'utf8'));
     expect(state.history.at(-1).event).toBe('uploaded');
-    await expect(uploadApproved({ dir, api: api as never, env: env() })).rejects.toMatchObject({
+    await expect(uploadApproved({ dir, getApi: () => api as never, env: env() })).rejects.toMatchObject({
       code: 'YT_ALREADY_UPLOADED',
     });
   });
@@ -174,7 +176,7 @@ describe('uploadApproved', () => {
     await approveAll(dir);
     const api = fakeApi({ privacyStatus: 'private' });
     api.thumbnails.set.mockRejectedValue({ errors: [{ reason: 'forbidden' }], message: 'forbidden' });
-    const result = await uploadApproved({ dir, api: api as never, env: env() });
+    const result = await uploadApproved({ dir, getApi: () => api as never, env: env() });
     expect(result.actualPrivacy).toBe('private');
     expect(result.thumbnail).toBe('failed');
     expect(result.warnings).toHaveLength(2);
@@ -187,7 +189,7 @@ describe('uploadApproved', () => {
     api.videos.insert.mockRejectedValue({
       response: { status: 403, data: { error: { errors: [{ reason: 'quotaExceeded' }] } } },
     });
-    await expect(uploadApproved({ dir, api: api as never, env: env() })).rejects.toMatchObject({
+    await expect(uploadApproved({ dir, getApi: () => api as never, env: env() })).rejects.toMatchObject({
       code: 'YT_QUOTA_EXCEEDED',
       hint: expect.stringMatching(/midnight Pacific Time/),
     });

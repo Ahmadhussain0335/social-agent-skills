@@ -26083,7 +26083,7 @@ function readImageInfo(path) {
 
 // src/platforms/youtube/upload.ts
 async function uploadApproved(opts) {
-  const { dir, api } = opts;
+  const { dir } = opts;
   const env = opts.env ?? process.env;
   const state = loadState(dir);
   const files = checkpointFiles(dir, "upload");
@@ -26111,6 +26111,7 @@ async function uploadApproved(opts) {
       "Pass --allow-reupload only if the user explicitly wants a second copy on the channel."
     );
   }
+  const api = opts.getApi();
   spendQuota("videos.insert", env);
   const totalBytes = statSync4(videoPath).size;
   let response;
@@ -26296,7 +26297,7 @@ runScript(
     }
     const result = await uploadApproved({
       dir,
-      api: authorisedClient(),
+      getApi: () => authorisedClient(),
       allowReupload: Boolean(flags["allow-reupload"]),
       onProgress: (sent, total) => process.stderr.write(`\ruploading ${Math.floor(sent / total * 100)}%`)
     });
