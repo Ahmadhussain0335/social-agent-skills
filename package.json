@@ -1,0 +1,64 @@
+{
+  "name": "@ahmadhussain/social-skills",
+  "version": "0.1.0",
+  "description": "Agent Skills for social media automation with human approval checkpoints. Works with Claude Code, Codex, Gemini CLI, GitHub Copilot, Cursor and other Agent Skills compatible agents.",
+  "keywords": [
+    "agent-skills",
+    "skills",
+    "claude-code",
+    "codex",
+    "gemini-cli",
+    "copilot",
+    "cursor",
+    "youtube",
+    "social-media"
+  ],
+  "license": "MIT",
+  "author": "Ahmad Hussain",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ahmadhussain0335/social-agent-skills.git"
+  },
+  "homepage": "https://github.com/Ahmadhussain0335/social-agent-skills#readme",
+  "bugs": "https://github.com/Ahmadhussain0335/social-agent-skills/issues",
+  "type": "module",
+  "bin": {
+    "social-skills": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "skills",
+    "AGENTS.md"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "node tools/sync-refs.mjs && tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "test": "vitest run",
+    "validate:skills": "vitest run test/skills.test.ts",
+    "check": "npm run lint && npm run typecheck && npm run test"
+  },
+  "dependencies": {
+    "commander": "15.0.0",
+    "diff": "9.0.0",
+    "ffmpeg-static": "5.3.0",
+    "yaml": "2.9.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.2",
+    "@googleapis/youtube": "40.0.2",
+    "@types/node": "22.20.5",
+    "google-auth-library": "11.3.1",
+    "tsup": "9.0.0",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  }
+}

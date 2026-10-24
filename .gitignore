@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+*.tgz
+.DS_Store
+
+# Secrets: never commit credentials or tokens
+.env
+.env.*
+!.env.example
+client_secret*.json
+*token*.json
+!src/**/*token*.ts
+!test/**/*token*.ts
+
+# Pipeline working folders created by the youtube skills
+yt-*/
