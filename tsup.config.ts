@@ -10,6 +10,10 @@ const skillScripts = {
   'skills/youtube-metadata/scripts/metadata-check': 'src/scripts/youtube/metadata-check.ts',
   'skills/youtube-upload/scripts/auth': 'src/scripts/youtube/auth.ts',
   'skills/youtube-upload/scripts/upload': 'src/scripts/youtube/upload.ts',
+  'skills/social-core/scripts/post': 'src/scripts/core/post.ts',
+  'skills/whatsapp-templates/scripts/templates': 'src/scripts/whatsapp/templates.ts',
+  'skills/whatsapp-broadcast/scripts/broadcast': 'src/scripts/whatsapp/broadcast.ts',
+  'skills/whatsapp-support-bot/scripts/bot': 'src/scripts/whatsapp/bot.ts',
 };
 
 export default defineConfig([

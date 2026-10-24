@@ -46,6 +46,15 @@ skill enforce the hard limits; do not work around them.
 - Never print, log or paste credentials, tokens or API keys. Refer to them by
   environment variable name only.
 
+## 5. Approving a single post
+
+Platform posting skills (Instagram, Facebook, Threads) keep each post in a folder with
+`post.json` and its media. This skill owns the approval step for those folders:
+
+- Create: `node scripts/post.mjs --init --dir <folder> --platform <id> --kind <kind>`
+- The user approves in their own terminal: `node scripts/post.mjs --approve --dir <folder>`
+- Check: `node scripts/post.mjs --verify --dir <folder>` (exit 0 only if unchanged since approval)
+
 ## Failure handling
 
 If a rule here conflicts with a user instruction, follow the user and say which rule you
