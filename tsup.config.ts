@@ -14,6 +14,10 @@ const skillScripts = {
   'skills/whatsapp-templates/scripts/templates': 'src/scripts/whatsapp/templates.ts',
   'skills/whatsapp-broadcast/scripts/broadcast': 'src/scripts/whatsapp/broadcast.ts',
   'skills/whatsapp-support-bot/scripts/bot': 'src/scripts/whatsapp/bot.ts',
+  'skills/meta-auth/scripts/auth': 'src/scripts/meta/auth.ts',
+  'skills/facebook-post/scripts/publish': 'src/scripts/meta/facebook.ts',
+  'skills/instagram-post/scripts/publish': 'src/scripts/meta/instagram.ts',
+  'skills/threads-post/scripts/publish': 'src/scripts/meta/threads.ts',
 };
 
 export default defineConfig([

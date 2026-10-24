@@ -9,6 +9,10 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const SHARED_REFS = [
   { source: 'docs/platforms/youtube-setup.md', prefix: 'youtube-', target: 'references/setup.md' },
   { source: 'docs/platforms/whatsapp-setup.md', prefix: 'whatsapp-', target: 'references/setup.md' },
+  { source: 'docs/platforms/meta-setup.md', prefix: 'meta-', target: 'references/setup.md' },
+  { source: 'docs/platforms/meta-setup.md', prefix: 'facebook-', target: 'references/setup.md' },
+  { source: 'docs/platforms/meta-setup.md', prefix: 'instagram-', target: 'references/setup.md' },
+  { source: 'docs/platforms/meta-setup.md', prefix: 'threads-', target: 'references/setup.md' },
 ];
 
 export function syncTargets() {
