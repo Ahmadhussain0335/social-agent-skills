@@ -1,4 +1,6 @@
 import { createHmac } from 'node:crypto';
+import { openAsBlob } from 'node:fs';
+import { basename } from 'node:path';
 import { PlatformError } from '../../shared/errors';
 import { fetchWithRetry, type RetryOptions } from '../../shared/http';
 
@@ -67,6 +69,29 @@ export class GraphClient {
     return this.request('DELETE', path, params);
   }
 
+  /** multipart/form-data upload of one local file (Facebook Page photos and videos). */
+  async postFile(
+    path: string,
+    params: Params,
+    file: { field: string; path: string; contentType: string },
+  ): Promise<unknown> {
+    const form = new FormData();
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined) form.set(key, String(value));
+    }
+    form.set('access_token', this.opts.accessToken);
+    if (this.opts.appSecret) form.set('appsecret_proof', appSecretProof(this.opts.accessToken, this.opts.appSecret));
+    const blob = await openAsBlob(file.path, { type: file.contentType });
+    form.set(file.field, blob, basename(file.path));
+    // Uploads are not idempotent: no retry except on explicit rate limiting.
+    const response = await fetchWithRetry(
+      this.url(path),
+      { method: 'POST', body: form },
+      { retryOn: [429], ...this.opts.retry },
+    );
+    return this.parse(response);
+  }
+
   url(path: string): string {
     const clean = path.startsWith('/') ? path.slice(1) : path;
     return `${this.opts.baseUrl}/${this.opts.version}/${clean}`;
@@ -94,6 +119,10 @@ export class GraphClient {
     // Publishing calls are not idempotent, so only retry them on rate limits, never on 5xx.
     const retryOn = method === 'GET' ? undefined : [429];
     const response = await fetchWithRetry(url, init, { retryOn, ...this.opts.retry });
+    return this.parse(response);
+  }
+
+  private async parse(response: Response): Promise<unknown> {
     this.lastUsage = parseUsage(response.headers);
 
     const text = await response.text();
