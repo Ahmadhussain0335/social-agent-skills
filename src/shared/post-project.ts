@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { isAbsolute, join, normalize } from 'node:path';
+import { join, posix, win32 } from 'node:path';
 import { type CheckpointDef, loadState, verifyCheckpoint } from './approval';
 import { PlatformError } from './errors';
 
@@ -40,8 +40,9 @@ export function localMediaPaths(draft: PostDraft): string[] {
   const paths: string[] = [];
   for (const media of draft.media ?? []) {
     if (isRemote(media.source)) continue;
-    const clean = normalize(media.source);
-    if (isAbsolute(clean) || clean.startsWith('..')) {
+    // Stored in POSIX form so an approval made on one OS verifies on another.
+    const clean = posix.normalize(media.source.replace(/\\/g, '/'));
+    if (posix.isAbsolute(clean) || win32.isAbsolute(media.source) || clean === '..' || clean.startsWith('../')) {
       throw new PlatformError('POST_MEDIA_OUTSIDE', `Media path must be inside the post folder: ${media.source}`);
     }
     paths.push(clean);

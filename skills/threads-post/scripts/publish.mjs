@@ -332,7 +332,7 @@ async function json(response) {
 
 // src/shared/post-project.ts
 import { existsSync as existsSync3 } from "fs";
-import { isAbsolute, join as join6, normalize } from "path";
+import { join as join6, posix, win32 } from "path";
 
 // src/shared/approval.ts
 import { createHash } from "crypto";
@@ -392,8 +392,8 @@ function localMediaPaths(draft) {
   const paths = [];
   for (const media of draft.media ?? []) {
     if (isRemote(media.source)) continue;
-    const clean = normalize(media.source);
-    if (isAbsolute(clean) || clean.startsWith("..")) {
+    const clean = posix.normalize(media.source.replace(/\\/g, "/"));
+    if (posix.isAbsolute(clean) || win32.isAbsolute(media.source) || clean === ".." || clean.startsWith("../")) {
       throw new PlatformError("POST_MEDIA_OUTSIDE", `Media path must be inside the post folder: ${media.source}`);
     }
     paths.push(clean);

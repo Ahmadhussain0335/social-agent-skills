@@ -39,6 +39,13 @@ describe('post project', () => {
       /inside the post folder/,
     );
     expect(() => localMediaPaths({ ...draft, media: [{ source: '/etc/passwd', type: 'image' }] })).toThrow();
+    expect(() => localMediaPaths({ ...draft, media: [{ source: 'C:\\Windows\\x.jpg', type: 'image' }] })).toThrow();
+    expect(() => localMediaPaths({ ...draft, media: [{ source: 'img\\..\\..\\x.jpg', type: 'image' }] })).toThrow();
+  });
+
+  it('stores media paths in the same form on every OS', () => {
+    expect(localMediaPaths({ ...draft, media: [{ source: 'img\\a.jpg', type: 'image' }] })).toEqual(['img/a.jpg']);
+    expect(localMediaPaths({ ...draft, media: [{ source: './img//a.jpg', type: 'image' }] })).toEqual(['img/a.jpg']);
   });
 
   it('requires approval and detects media swapped after approval', async () => {

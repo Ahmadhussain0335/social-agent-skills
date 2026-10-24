@@ -164,7 +164,7 @@ function printJson(value) {
 
 // src/shared/post-project.ts
 import { existsSync as existsSync2 } from "fs";
-import { isAbsolute, join as join2, normalize } from "path";
+import { join as join2, posix, win32 } from "path";
 var POST_FILE = "post.json";
 var PUBLISH_CHECKPOINT = { id: "publish", title: "Publish this exact post", requires: [] };
 function isRemote(source) {
@@ -174,8 +174,8 @@ function localMediaPaths(draft) {
   const paths = [];
   for (const media of draft.media ?? []) {
     if (isRemote(media.source)) continue;
-    const clean = normalize(media.source);
-    if (isAbsolute(clean) || clean.startsWith("..")) {
+    const clean = posix.normalize(media.source.replace(/\\/g, "/"));
+    if (posix.isAbsolute(clean) || win32.isAbsolute(media.source) || clean === ".." || clean.startsWith("../")) {
       throw new PlatformError("POST_MEDIA_OUTSIDE", `Media path must be inside the post folder: ${media.source}`);
     }
     paths.push(clean);
