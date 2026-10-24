@@ -1,8 +1,3 @@
-import { loadFacebookTokens, META_ENV, selectInstagram } from '../../platforms/meta/accounts';
-import { GRAPH_FACEBOOK, graphVersion } from '../../platforms/meta/config';
-import { GraphClient, type GraphErrorBody } from '../../platforms/meta/graph';
-import { checkInstagramPost, instagramHint, publishInstagram, publishingLimit } from '../../platforms/meta/instagram';
-import { PlatformError } from '../../shared/errors';
 import { runPublishScript } from './publish-runner';
 
 const HELP = `
@@ -22,33 +17,4 @@ Caption: 2,200 characters, 30 hashtags, 20 @mentions. No scheduling via the API.
 options.instagramAccountId: required when several Instagram accounts are linked.
 `;
 
-runPublishScript({
-  help: HELP,
-  check: (draft) => checkInstagramPost(draft),
-  publish: async (dir, draft) => {
-    const { page, igUserId } = selectInstagram(
-      loadFacebookTokens(),
-      draft.options?.instagramAccountId as string | undefined,
-    );
-    const version = graphVersion();
-    const client = new GraphClient({
-      baseUrl: GRAPH_FACEBOOK,
-      version,
-      accessToken: page.accessToken,
-      appSecret: process.env[META_ENV.appSecret],
-      hintFor: (error: GraphErrorBody) => instagramHint(error.error_subcode),
-    });
-    const limit = await publishingLimit(client, igUserId);
-    if (limit.total !== undefined && limit.used >= limit.total) {
-      throw new PlatformError(
-        'IG_DAILY_LIMIT',
-        `Instagram publishing limit reached (${limit.used}/${limit.total} in 24 hours).`,
-      );
-    }
-    const result = await publishInstagram(
-      { client, igUserId, accessToken: page.accessToken, graphVersion: version, dir },
-      draft,
-    );
-    return { ...result, instagramAccount: page.instagram?.username ?? igUserId, quota: limit };
-  },
-});
+runPublishScript({ help: HELP, platform: 'instagram' });

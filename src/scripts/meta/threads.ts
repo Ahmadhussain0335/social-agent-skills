@@ -1,14 +1,3 @@
-import { GraphClient } from '../../platforms/meta/graph';
-import {
-  loadThreadsTokens,
-  needsRefresh,
-  refreshThreadsToken,
-  THREADS_ENV,
-  THREADS_GRAPH,
-  THREADS_VERSION,
-} from '../../platforms/threads/auth';
-import { checkThreadsPost, publishThreads, threadsQuota } from '../../platforms/threads/publish';
-import { PlatformError } from '../../shared/errors';
 import { runPublishScript } from './publish-runner';
 
 const HELP = `
@@ -27,25 +16,4 @@ At most 5 links per post. options.topicTag: one tag, 1-50 characters, no "." or 
 No scheduling via the API. The token is refreshed automatically when close to expiry.
 `;
 
-runPublishScript({
-  help: HELP,
-  check: (draft) => checkThreadsPost(draft),
-  publish: async (_dir, draft) => {
-    let tokens = loadThreadsTokens();
-    if (needsRefresh(tokens)) tokens = await refreshThreadsToken();
-    const client = new GraphClient({
-      baseUrl: THREADS_GRAPH,
-      version: THREADS_VERSION,
-      accessToken: tokens.accessToken,
-      appSecret: process.env[THREADS_ENV.appSecret],
-    });
-    const quota = await threadsQuota(client, tokens.userId);
-    if (quota.total !== undefined && quota.used >= quota.total) {
-      throw new PlatformError(
-        'THREADS_DAILY_LIMIT',
-        `Threads publishing limit reached (${quota.used}/${quota.total} in 24 hours).`,
-      );
-    }
-    return { ...(await publishThreads(client, tokens.userId, draft)), quota };
-  },
-});
+runPublishScript({ help: HELP, platform: 'threads' });

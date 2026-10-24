@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import type { CheckResult } from '../../platforms/meta/facebook';
+import { postPlatform } from '../../platforms/all-posting';
 import { loadState, saveState } from '../../shared/approval';
 import { PlatformError } from '../../shared/errors';
 import { log, printJson } from '../../shared/log';
@@ -9,8 +9,7 @@ import { requireFlag, runScript } from '../run';
 
 export interface PublishSpec {
   help: string;
-  check: (draft: PostDraft) => CheckResult;
-  publish: (dir: string, draft: PostDraft) => Promise<Record<string, unknown>>;
+  platform: string;
 }
 
 /** Shared flow for single-post platforms: --check validates; --publish requires approval and posts once. */
@@ -26,7 +25,11 @@ export function runPublishScript(spec: PublishSpec): void {
     async (flags) => {
       const dir = resolve(requireFlag(flags, 'dir'));
       const draft = JSON.parse(readFileSync(join(dir, POST_FILE), 'utf8')) as PostDraft;
-      const report = spec.check(draft);
+      const platform = postPlatform(spec.platform);
+      if (draft.platform !== platform.id) {
+        throw new PlatformError('POST_PLATFORM', `post.json is for "${draft.platform}", not ${platform.id}.`);
+      }
+      const report = platform.check(draft);
 
       if (flags.check || !flags.publish) {
         printJson(report);
@@ -46,7 +49,7 @@ export function runPublishScript(spec: PublishSpec): void {
         );
       }
 
-      const result = await spec.publish(dir, draft);
+      const result = await platform.publish(dir, draft, process.env);
       const state = loadState(dir);
       state.history.push({ at: new Date().toISOString(), event: 'published', detail: String(result.id ?? '') });
       saveState(dir, state);

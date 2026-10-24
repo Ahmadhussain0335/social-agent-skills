@@ -2,22 +2,9 @@
 import { createRequire as __createRequire } from 'node:module';
 const require = __createRequire(import.meta.url);
 
-// src/platforms/meta/accounts.ts
-import { join as join4 } from "path";
-
-// src/shared/config-paths.ts
-import { homedir } from "os";
-import { join } from "path";
-var APP = "social-skills";
-function configDir(env = process.env) {
-  if (env.SOCIAL_SKILLS_CONFIG_DIR) return env.SOCIAL_SKILLS_CONFIG_DIR;
-  if (process.platform === "win32" && env.APPDATA) return join(env.APPDATA, APP);
-  const xdg = env.XDG_CONFIG_HOME;
-  return join(xdg && xdg.length > 0 ? xdg : join(homedir(), ".config"), APP);
-}
-function platformDir(platform, env = process.env) {
-  return join(configDir(env), platform);
-}
+// src/scripts/meta/publish-runner.ts
+import { readFileSync as readFileSync3 } from "fs";
+import { join as join10, resolve as resolve2 } from "path";
 
 // src/shared/errors.ts
 var PlatformError = class extends Error {
@@ -42,13 +29,356 @@ function formatError(error) {
   return `Error: ${error instanceof Error ? error.message : String(error)}`;
 }
 
+// src/platforms/posting.ts
+var registry = /* @__PURE__ */ new Map();
+function registerPostPlatform(platform) {
+  registry.set(platform.id, platform);
+}
+function postPlatform(id) {
+  const platform = registry.get(id);
+  if (!platform) {
+    throw new Error(`Unknown posting platform "${id}". Available: ${[...registry.keys()].join(", ")}`);
+  }
+  return platform;
+}
+
+// src/platforms/threads/auth.ts
+import { join as join4 } from "path";
+
+// src/shared/config-paths.ts
+import { homedir } from "os";
+import { join } from "path";
+var APP = "social-skills";
+function configDir(env = process.env) {
+  if (env.SOCIAL_SKILLS_CONFIG_DIR) return env.SOCIAL_SKILLS_CONFIG_DIR;
+  if (process.platform === "win32" && env.APPDATA) return join(env.APPDATA, APP);
+  const xdg = env.XDG_CONFIG_HOME;
+  return join(xdg && xdg.length > 0 ? xdg : join(homedir(), ".config"), APP);
+}
+function platformDir(platform, env = process.env) {
+  return join(configDir(env), platform);
+}
+
 // src/shared/token-store.ts
 import { chmodSync, existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from "fs";
 import { dirname, join as join2, resolve } from "path";
+function findGitRoot(path) {
+  let dir = resolve(path);
+  for (; ; ) {
+    if (existsSync(join2(dir, ".git"))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) return void 0;
+    dir = parent;
+  }
+}
+function writeSecretJson(path, value) {
+  const target = resolve(path);
+  const repo = findGitRoot(dirname(target));
+  if (repo) {
+    throw new PlatformError(
+      "TOKEN_PATH_IN_REPO",
+      `Refusing to store credentials inside the git repository at ${repo}.`,
+      "Point the token path at your user config directory (the default) instead of a project folder."
+    );
+  }
+  mkdirSync(dirname(target), { recursive: true, mode: 448 });
+  const tmp = `${target}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify(value, null, 2)}
+`, { mode: 384 });
+  renameSync(tmp, target);
+  if (process.platform !== "win32") chmodSync(target, 384);
+}
 function readSecretJson(path) {
   if (!existsSync(path)) return void 0;
   return JSON.parse(readFileSync(path, "utf8"));
 }
+
+// src/platforms/meta/pasteback.ts
+import { randomBytes } from "crypto";
+import { join as join3 } from "path";
+var MAX_AGE_MS = 60 * 60 * 1e3;
+
+// src/platforms/threads/auth.ts
+var THREADS_ENV = {
+  appId: "THREADS_APP_ID",
+  appSecret: "THREADS_APP_SECRET",
+  redirectUri: "THREADS_REDIRECT_URI"
+};
+var THREADS_GRAPH = "https://graph.threads.net";
+var THREADS_VERSION = "v1.0";
+var DAY_MS = 24 * 60 * 60 * 1e3;
+function threadsTokenPath(env = process.env) {
+  return join4(platformDir("meta", env), "threads.json");
+}
+async function refreshThreadsToken(env = process.env, fetchImpl = fetch, now = Date.now()) {
+  const current = loadThreadsTokens(env, now);
+  if (now - Date.parse(current.obtainedAt) < DAY_MS) return current;
+  const res = await json(
+    fetchImpl(
+      `${THREADS_GRAPH}/refresh_access_token?${new URLSearchParams({ grant_type: "th_refresh_token", access_token: current.accessToken })}`
+    )
+  );
+  const tokens = toTokens(String(res.access_token), current.userId, Number(res.expires_in), now);
+  writeSecretJson(threadsTokenPath(env), tokens);
+  return tokens;
+}
+function loadThreadsTokens(env = process.env, now = Date.now()) {
+  const tokens = readSecretJson(threadsTokenPath(env));
+  if (!tokens?.accessToken) {
+    throw new PlatformError(
+      "THREADS_NOT_AUTHORISED",
+      "No Threads sign-in found.",
+      "Run the meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish."
+    );
+  }
+  if (Date.parse(tokens.expiresAt) <= now) {
+    throw new PlatformError(
+      "THREADS_TOKEN_EXPIRED",
+      "The Threads token has expired and cannot be refreshed.",
+      "Sign in again with the meta-auth skill (--platform threads --start)."
+    );
+  }
+  return tokens;
+}
+function needsRefresh(tokens, now = Date.now()) {
+  return Date.parse(tokens.expiresAt) - now < 7 * DAY_MS && now - Date.parse(tokens.obtainedAt) >= DAY_MS;
+}
+function toTokens(accessToken, userId, expiresIn, now = Date.now()) {
+  const seconds = Number.isFinite(expiresIn) && expiresIn > 0 ? expiresIn : 60 * 24 * 60 * 60;
+  return {
+    accessToken,
+    userId,
+    obtainedAt: new Date(now).toISOString(),
+    expiresAt: new Date(now + seconds * 1e3).toISOString()
+  };
+}
+async function json(response) {
+  const res = await response;
+  const body = await res.json();
+  if (!res.ok || body.error || body.error_message) {
+    throw new PlatformError(
+      "THREADS_AUTH_EXCHANGE",
+      body.error?.message ?? body.error_message ?? `HTTP ${res.status}`,
+      "Check THREADS_APP_ID and THREADS_APP_SECRET (the Threads pair, not the Facebook app pair) and that THREADS_REDIRECT_URI exactly matches the registered redirect URI."
+    );
+  }
+  return body;
+}
+
+// src/shared/post-project.ts
+import { existsSync as existsSync3 } from "fs";
+import { join as join6, posix, win32 } from "path";
+
+// src/shared/approval.ts
+import { createHash } from "crypto";
+import { createReadStream, existsSync as existsSync2, mkdirSync as mkdirSync2, readFileSync as readFileSync2, writeFileSync as writeFileSync2 } from "fs";
+import { userInfo } from "os";
+import { join as join5 } from "path";
+var STATE_FILE = "state.json";
+function hashFile(path) {
+  return new Promise((resolve3, reject) => {
+    const hash = createHash("sha256");
+    createReadStream(path).on("data", (chunk) => hash.update(chunk)).on("error", reject).on("end", () => resolve3(hash.digest("hex")));
+  });
+}
+function loadState(dir) {
+  const path = join5(dir, STATE_FILE);
+  if (!existsSync2(path)) {
+    throw new PlatformError(
+      "NO_PIPELINE_STATE",
+      `No ${STATE_FILE} in ${dir}.`,
+      "Initialise the project folder with the pipeline state script first."
+    );
+  }
+  return JSON.parse(readFileSync2(path, "utf8"));
+}
+function saveState(dir, state) {
+  mkdirSync2(dir, { recursive: true });
+  writeFileSync2(join5(dir, STATE_FILE), `${JSON.stringify(state, null, 2)}
+`);
+}
+async function verifyCheckpoint(dir, state, checkpoint, files) {
+  const record = state.checkpoints[checkpoint];
+  if (!record) return { ok: false, problems: [`checkpoint "${checkpoint}" has not been approved`] };
+  const problems = [];
+  for (const file of files) {
+    const approved = record.files[file];
+    if (!approved) {
+      problems.push(`${file} was not part of the "${checkpoint}" approval`);
+      continue;
+    }
+    const path = join5(dir, file);
+    if (!existsSync2(path)) {
+      problems.push(`${file} is missing`);
+    } else if (await hashFile(path) !== approved) {
+      problems.push(`${file} changed after the "${checkpoint}" approval`);
+    }
+  }
+  return { ok: problems.length === 0, problems };
+}
+
+// src/shared/post-project.ts
+var POST_FILE = "post.json";
+var PUBLISH_CHECKPOINT = { id: "publish", title: "Publish this exact post", requires: [] };
+function isRemote(source) {
+  return /^https:\/\//i.test(source);
+}
+function localMediaPaths(draft) {
+  const paths = [];
+  for (const media of draft.media ?? []) {
+    if (isRemote(media.source)) continue;
+    const clean = posix.normalize(media.source.replace(/\\/g, "/"));
+    if (posix.isAbsolute(clean) || win32.isAbsolute(media.source) || clean === ".." || clean.startsWith("../")) {
+      throw new PlatformError("POST_MEDIA_OUTSIDE", `Media path must be inside the post folder: ${media.source}`);
+    }
+    paths.push(clean);
+  }
+  return paths;
+}
+function publishFiles(dir, draft) {
+  const files = [POST_FILE, ...localMediaPaths(draft)];
+  for (const file of files) {
+    if (!existsSync3(join6(dir, file))) throw new PlatformError("FILE_MISSING", `${file} not found in ${dir}`);
+  }
+  return files;
+}
+async function requirePublishApproval(dir, draft) {
+  const result = await verifyCheckpoint(dir, loadState(dir), PUBLISH_CHECKPOINT.id, publishFiles(dir, draft));
+  if (!result.ok) {
+    throw new PlatformError(
+      "APPROVAL_REQUIRED",
+      `Publishing is not approved: ${result.problems.join("; ")}`,
+      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+    );
+  }
+}
+function alreadyPublished(dir) {
+  const event = loadState(dir).history.find((h) => h.event === "published");
+  return event?.detail;
+}
+
+// src/platforms/meta/containers.ts
+async function waitForContainer(client, containerId, opts) {
+  const sleep = opts.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms)));
+  const attempts = opts.attempts ?? 6;
+  await sleep(opts.firstDelayMs ?? 5e3);
+  for (let i = 0; i < attempts; i++) {
+    const res = await client.get(containerId, { fields: `${opts.field},error_message` });
+    const status = res[opts.field];
+    if (status === "FINISHED" || status === "PUBLISHED") return;
+    if (status === "ERROR" || status === "EXPIRED") {
+      throw new PlatformError(
+        "META_MEDIA_FAILED",
+        `Media processing ${status === "EXPIRED" ? "expired" : "failed"}${res.error_message ? `: ${res.error_message}` : ""}.`,
+        "Check the media format, size and that its URL is publicly reachable, then create a new post."
+      );
+    }
+    if (i < attempts - 1) await sleep(opts.intervalMs ?? 6e4);
+  }
+  throw new PlatformError(
+    "META_MEDIA_TIMEOUT",
+    "Media is still processing after several minutes.",
+    "Large videos can take longer. Nothing was published; run the publish step again later."
+  );
+}
+
+// src/platforms/threads/publish.ts
+var THREADS_KINDS = ["text", "image", "video", "carousel"];
+var THREADS_LIMITS = {
+  textChars: 500,
+  links: 5,
+  carouselMin: 2,
+  carouselMax: 20,
+  altText: 1e3,
+  topicTag: 50
+};
+function threadsLength(text) {
+  let n = 0;
+  for (const ch of text) n += new RegExp("\\p{Extended_Pictographic}", "u").test(ch) ? Buffer.byteLength(ch) : 1;
+  return n;
+}
+function uniqueLinks(text, attachment) {
+  const links = new Set((text.match(/https?:\/\/[^\s]+/g) ?? []).map((l) => l.replace(/[.,)]+$/, "")));
+  if (attachment) links.add(attachment);
+  return links.size;
+}
+function checkThreadsPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  const text = draft.text ?? "";
+  const kind = draft.kind;
+  const topic = draft.options?.topicTag;
+  if (draft.platform !== "threads") errors.push('platform must be "threads"');
+  if (!THREADS_KINDS.includes(kind)) errors.push(`kind must be one of ${THREADS_KINDS.join(", ")}`);
+  if (draft.scheduledAt) errors.push("the Threads API has no scheduling; remove scheduledAt");
+  if (threadsLength(text) > THREADS_LIMITS.textChars)
+    errors.push(`text exceeds ${THREADS_LIMITS.textChars} characters`);
+  if (kind === "text" && !text.trim()) errors.push("text posts need text");
+  if (uniqueLinks(text, draft.link) > THREADS_LIMITS.links) errors.push(`more than ${THREADS_LIMITS.links} links`);
+  if (draft.link && kind !== "text") errors.push("a link attachment is only allowed on text posts");
+  if (kind === "text" && media.length > 0) errors.push("text posts cannot have media");
+  if ((kind === "image" || kind === "video") && (media.length !== 1 || media[0]?.type !== kind)) {
+    errors.push(`${kind} posts need exactly one ${kind}`);
+  }
+  if (kind === "carousel" && (media.length < THREADS_LIMITS.carouselMin || media.length > THREADS_LIMITS.carouselMax)) {
+    errors.push(`carousels need ${THREADS_LIMITS.carouselMin} to ${THREADS_LIMITS.carouselMax} items`);
+  }
+  for (const [i, m] of media.entries()) {
+    if (!isRemote(m.source))
+      errors.push(`media[${i}]: Threads fetches media from a public https URL; local files are not supported`);
+    if (m.altText && m.altText.length > THREADS_LIMITS.altText)
+      errors.push(`media[${i}]: altText exceeds 1000 characters`);
+  }
+  if (topic !== void 0 && (topic.length < 1 || topic.length > THREADS_LIMITS.topicTag || /[.&]/.test(topic))) {
+    errors.push('options.topicTag must be 1-50 characters without "." or "&"');
+  }
+  return { ok: errors.length === 0, errors, warnings };
+}
+async function threadsQuota(client, userId) {
+  const res = await client.get(`${userId}/threads_publishing_limit`, { fields: "quota_usage,config" });
+  return { used: res.data?.[0]?.quota_usage ?? 0, total: res.data?.[0]?.config?.quota_total };
+}
+async function publishThreads(client, userId, draft, sleep) {
+  const media = draft.media ?? [];
+  const topic = draft.options?.topicTag;
+  const create = async (params) => (await client.post(`${userId}/threads`, params)).id;
+  const mediaParams = (m) => m.type === "image" ? { media_type: "IMAGE", image_url: m.source, alt_text: m.altText } : { media_type: "VIDEO", video_url: m.source, alt_text: m.altText };
+  let containerId;
+  if (draft.kind === "carousel") {
+    const children = [];
+    for (const m of media) children.push(await create({ ...mediaParams(m), is_carousel_item: true }));
+    containerId = await create({
+      media_type: "CAROUSEL",
+      children: children.join(","),
+      text: draft.text,
+      topic_tag: topic
+    });
+  } else if (draft.kind === "text") {
+    containerId = await create({ media_type: "TEXT", text: draft.text, link_attachment: draft.link, topic_tag: topic });
+  } else {
+    containerId = await create({
+      ...mediaParams(media[0]),
+      text: draft.text,
+      topic_tag: topic
+    });
+  }
+  await waitForContainer(client, containerId, {
+    field: "status",
+    sleep,
+    firstDelayMs: draft.kind === "text" ? 1e3 : 3e4
+  });
+  const { id } = await client.post(`${userId}/threads_publish`, { creation_id: containerId });
+  let permalink;
+  try {
+    permalink = (await client.get(id, { fields: "permalink" })).permalink;
+  } catch {
+  }
+  return { id, permalink };
+}
+
+// src/platforms/meta/accounts.ts
+import { join as join7 } from "path";
 
 // src/platforms/meta/config.ts
 var DEFAULT_GRAPH_VERSION = "v26.0";
@@ -170,18 +500,18 @@ var GraphClient = class {
   async parse(response) {
     this.lastUsage = parseUsage(response.headers);
     const text = await response.text();
-    let json;
+    let json2;
     try {
-      json = text ? JSON.parse(text) : {};
+      json2 = text ? JSON.parse(text) : {};
     } catch {
       throw new PlatformError("META_BAD_RESPONSE", `Graph API returned non-JSON (HTTP ${response.status}).`);
     }
-    const error = json.error;
+    const error = json2.error;
     if (!response.ok || error) {
       const graph = error ?? { message: `HTTP ${response.status}` };
       throw new GraphError(response.status, graph, this.opts.hintFor?.(graph, response.status) ?? defaultHint(graph));
     }
-    return json;
+    return json2;
   }
 };
 function appSecretProof(accessToken, appSecret) {
@@ -240,11 +570,6 @@ function defaultHint(error) {
   }
 }
 
-// src/platforms/meta/pasteback.ts
-import { randomBytes } from "crypto";
-import { join as join3 } from "path";
-var MAX_AGE_MS = 60 * 60 * 1e3;
-
 // src/platforms/meta/accounts.ts
 var META_ENV = {
   appId: "META_APP_ID",
@@ -253,7 +578,7 @@ var META_ENV = {
   configId: "META_LOGIN_CONFIG_ID"
 };
 function facebookTokenPath(env = process.env) {
-  return join4(platformDir("meta", env), "facebook.json");
+  return join7(platformDir("meta", env), "facebook.json");
 }
 function loadFacebookTokens(env = process.env) {
   const tokens = readSecretJson(facebookTokenPath(env));
@@ -279,103 +604,21 @@ function selectPage(tokens, pageId) {
     `Authorised Pages: ${tokens.pages.map((p) => `${p.name} (${p.id})`).join(", ") || "none"}`
   );
 }
-
-// src/platforms/meta/facebook.ts
-import { extname, join as join7 } from "path";
-
-// src/shared/post-project.ts
-import { existsSync as existsSync3 } from "fs";
-import { join as join6, posix, win32 } from "path";
-
-// src/shared/approval.ts
-import { createHash } from "crypto";
-import { createReadStream, existsSync as existsSync2, mkdirSync as mkdirSync2, readFileSync as readFileSync2, writeFileSync as writeFileSync2 } from "fs";
-import { userInfo } from "os";
-import { join as join5 } from "path";
-var STATE_FILE = "state.json";
-function hashFile(path) {
-  return new Promise((resolve3, reject) => {
-    const hash = createHash("sha256");
-    createReadStream(path).on("data", (chunk) => hash.update(chunk)).on("error", reject).on("end", () => resolve3(hash.digest("hex")));
-  });
-}
-function loadState(dir) {
-  const path = join5(dir, STATE_FILE);
-  if (!existsSync2(path)) {
+function selectInstagram(tokens, igUserId) {
+  const linked = tokens.pages.filter((p) => p.instagram?.id);
+  const match = igUserId ? linked.find((p) => p.instagram?.id === igUserId) : linked.length === 1 ? linked[0] : void 0;
+  if (!match?.instagram) {
     throw new PlatformError(
-      "NO_PIPELINE_STATE",
-      `No ${STATE_FILE} in ${dir}.`,
-      "Initialise the project folder with the pipeline state script first."
+      "IG_ACCOUNT_UNKNOWN",
+      linked.length === 0 ? "No Instagram professional account is linked to the authorised Pages." : "Several Instagram accounts are linked; set options.instagramAccountId in post.json.",
+      "Instagram publishing needs a Business or Creator account linked to a Facebook Page. Personal accounts are not supported by the API."
     );
   }
-  return JSON.parse(readFileSync2(path, "utf8"));
-}
-function saveState(dir, state) {
-  mkdirSync2(dir, { recursive: true });
-  writeFileSync2(join5(dir, STATE_FILE), `${JSON.stringify(state, null, 2)}
-`);
-}
-async function verifyCheckpoint(dir, state, checkpoint, files) {
-  const record = state.checkpoints[checkpoint];
-  if (!record) return { ok: false, problems: [`checkpoint "${checkpoint}" has not been approved`] };
-  const problems = [];
-  for (const file of files) {
-    const approved = record.files[file];
-    if (!approved) {
-      problems.push(`${file} was not part of the "${checkpoint}" approval`);
-      continue;
-    }
-    const path = join5(dir, file);
-    if (!existsSync2(path)) {
-      problems.push(`${file} is missing`);
-    } else if (await hashFile(path) !== approved) {
-      problems.push(`${file} changed after the "${checkpoint}" approval`);
-    }
-  }
-  return { ok: problems.length === 0, problems };
-}
-
-// src/shared/post-project.ts
-var POST_FILE = "post.json";
-var PUBLISH_CHECKPOINT = { id: "publish", title: "Publish this exact post", requires: [] };
-function isRemote(source) {
-  return /^https:\/\//i.test(source);
-}
-function localMediaPaths(draft) {
-  const paths = [];
-  for (const media of draft.media ?? []) {
-    if (isRemote(media.source)) continue;
-    const clean = posix.normalize(media.source.replace(/\\/g, "/"));
-    if (posix.isAbsolute(clean) || win32.isAbsolute(media.source) || clean === ".." || clean.startsWith("../")) {
-      throw new PlatformError("POST_MEDIA_OUTSIDE", `Media path must be inside the post folder: ${media.source}`);
-    }
-    paths.push(clean);
-  }
-  return paths;
-}
-function publishFiles(dir, draft) {
-  const files = [POST_FILE, ...localMediaPaths(draft)];
-  for (const file of files) {
-    if (!existsSync3(join6(dir, file))) throw new PlatformError("FILE_MISSING", `${file} not found in ${dir}`);
-  }
-  return files;
-}
-async function requirePublishApproval(dir, draft) {
-  const result = await verifyCheckpoint(dir, loadState(dir), PUBLISH_CHECKPOINT.id, publishFiles(dir, draft));
-  if (!result.ok) {
-    throw new PlatformError(
-      "APPROVAL_REQUIRED",
-      `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
-    );
-  }
-}
-function alreadyPublished(dir) {
-  const event = loadState(dir).history.find((h) => h.event === "published");
-  return event?.detail;
+  return { page: match, igUserId: match.instagram.id };
 }
 
 // src/platforms/meta/facebook.ts
+import { extname, join as join8 } from "path";
 var FB_KINDS = ["text", "link", "photo", "photos", "video"];
 var MIN_SCHEDULE_MS = 10 * 60 * 1e3;
 var MAX_FEED_SCHEDULE_MS = 30 * 24 * 60 * 60 * 1e3;
@@ -428,7 +671,7 @@ async function uploadPhoto(client, pageId, dir, media, params) {
   const fields = { ...params, alt_text_custom: media.altText };
   const res = isRemote(media.source) ? await client.post(`${pageId}/photos`, { ...fields, url: media.source }) : await client.postFile(`${pageId}/photos`, fields, {
     field: "source",
-    path: join7(dir, media.source),
+    path: join8(dir, media.source),
     contentType: contentType(media.source)
   });
   const id = res.post_id ?? res.id;
@@ -473,7 +716,7 @@ async function publishFacebook(client, pageId, dir, draft) {
       const params = { description: draft.text, title: draft.options?.title, ...schedule };
       const res = isRemote(video.source) ? await client.post(`${pageId}/videos`, { ...params, file_url: video.source }) : await client.postFile(`${pageId}/videos`, params, {
         field: "source",
-        path: join7(dir, video.source),
+        path: join8(dir, video.source),
         contentType: contentType(video.source)
       });
       id = res.id;
@@ -487,9 +730,259 @@ async function publishFacebook(client, pageId, dir, draft) {
   return { id, url: `https://www.facebook.com/${id}`, scheduledAt: draft.scheduledAt };
 }
 
-// src/scripts/meta/publish-runner.ts
-import { readFileSync as readFileSync3 } from "fs";
-import { join as join8, resolve as resolve2 } from "path";
+// src/platforms/meta/instagram.ts
+import { openAsBlob as openAsBlob2, statSync as statSync2 } from "fs";
+import { extname as extname2, join as join9 } from "path";
+var IG_KINDS = ["image", "carousel", "reel", "story"];
+var IG_LIMITS = {
+  captionChars: 2200,
+  hashtags: 30,
+  mentions: 20,
+  altText: 1e3,
+  carouselMin: 2,
+  carouselMax: 10
+};
+function checkInstagramPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  const text = draft.text ?? "";
+  const kind = draft.kind;
+  if (draft.platform !== "instagram") errors.push('platform must be "instagram"');
+  if (!IG_KINDS.includes(kind)) errors.push(`kind must be one of ${IG_KINDS.join(", ")}`);
+  if (draft.scheduledAt)
+    errors.push("Instagram API publishing has no scheduling; remove scheduledAt and publish at the chosen time");
+  if (draft.link) warnings.push('links in Instagram captions are not clickable; "link" is ignored');
+  if ([...text].length > IG_LIMITS.captionChars) errors.push(`caption exceeds ${IG_LIMITS.captionChars} characters`);
+  if ((text.match(/#[\p{L}\p{N}_]+/gu) ?? []).length > IG_LIMITS.hashtags)
+    errors.push(`more than ${IG_LIMITS.hashtags} hashtags`);
+  if ((text.match(/@[\w.]+/g) ?? []).length > IG_LIMITS.mentions)
+    errors.push(`more than ${IG_LIMITS.mentions} @mentions`);
+  if (kind === "image" && media.length !== 1) errors.push("image posts need exactly one image");
+  if (kind === "reel" && (media.length !== 1 || media[0]?.type !== "video"))
+    errors.push("reels need exactly one video");
+  if (kind === "story" && media.length !== 1) errors.push("stories need exactly one image or video");
+  if (kind === "carousel" && (media.length < IG_LIMITS.carouselMin || media.length > IG_LIMITS.carouselMax)) {
+    errors.push(`carousels need ${IG_LIMITS.carouselMin} to ${IG_LIMITS.carouselMax} items`);
+  }
+  for (const [i, m] of media.entries()) {
+    const label = `media[${i}] (${m.source})`;
+    if (m.type === "image") {
+      if (!isRemote(m.source)) {
+        errors.push(`${label}: Instagram fetches images from a public https URL; host the JPEG and use its URL`);
+      } else if (!/\.jpe?g(\?|$)/i.test(m.source)) {
+        warnings.push(`${label}: Instagram accepts JPEG images only; make sure the URL serves a JPEG`);
+      }
+      if (m.altText && m.altText.length > IG_LIMITS.altText)
+        errors.push(`${label}: altText exceeds ${IG_LIMITS.altText} characters`);
+    } else if (m.type === "video") {
+      if (kind === "carousel" && !isRemote(m.source))
+        errors.push(`${label}: carousel videos must be public https URLs`);
+      if (!isRemote(m.source) && ![".mp4", ".mov"].includes(extname2(m.source).toLowerCase())) {
+        errors.push(`${label}: videos must be MP4 or MOV`);
+      }
+      if (m.altText) warnings.push(`${label}: altText applies to images only`);
+    }
+  }
+  return { ok: errors.length === 0, errors, warnings };
+}
+async function publishingLimit(client, igUserId) {
+  const res = await client.get(`${igUserId}/content_publishing_limit`, { fields: "config,quota_usage" });
+  const entry = res.data?.[0];
+  return { used: entry?.quota_usage ?? 0, total: entry?.config?.quota_total };
+}
+async function createContainer(deps, media, params, mediaType) {
+  const local = !isRemote(media.source);
+  const fields = { ...params, media_type: mediaType };
+  if (media.type === "image") {
+    fields.image_url = media.source;
+    fields.alt_text = media.altText;
+  } else if (local) {
+    fields.upload_type = "resumable";
+  } else {
+    fields.video_url = media.source;
+  }
+  const { id } = await deps.client.post(`${deps.igUserId}/media`, fields);
+  if (media.type === "video" && local) await resumableUpload(deps, id, join9(deps.dir, media.source));
+  return id;
+}
+async function resumableUpload(deps, containerId, path) {
+  const size = statSync2(path).size;
+  const res = await fetchWithRetry(
+    `https://rupload.facebook.com/ig-api-upload/${deps.graphVersion}/${containerId}`,
+    {
+      method: "POST",
+      headers: { Authorization: `OAuth ${deps.accessToken}`, offset: "0", file_size: String(size) },
+      body: await openAsBlob2(path)
+    },
+    { retryOn: [429], fetchImpl: deps.fetchImpl }
+  );
+  if (!res.ok) {
+    throw new PlatformError(
+      "IG_UPLOAD_FAILED",
+      `Video upload failed (HTTP ${res.status}): ${(await res.text()).slice(0, 300)}`
+    );
+  }
+}
+async function publishInstagram(deps, draft) {
+  const media = draft.media ?? [];
+  const caption = draft.text;
+  const wait = (id2) => waitForContainer(deps.client, id2, { field: "status_code", sleep: deps.sleep });
+  let containerId;
+  switch (draft.kind) {
+    case "carousel": {
+      const children = [];
+      for (const m of media) {
+        children.push(
+          await createContainer(deps, m, { is_carousel_item: true }, m.type === "video" ? "VIDEO" : void 0)
+        );
+      }
+      for (const child of children) await wait(child);
+      containerId = (await deps.client.post(`${deps.igUserId}/media`, {
+        media_type: "CAROUSEL",
+        children: children.join(","),
+        caption
+      })).id;
+      break;
+    }
+    case "reel":
+      containerId = await createContainer(
+        deps,
+        media[0],
+        { caption, share_to_feed: true },
+        "REELS"
+      );
+      break;
+    case "story":
+      containerId = await createContainer(deps, media[0], {}, "STORIES");
+      break;
+    default:
+      containerId = await createContainer(deps, media[0], { caption });
+  }
+  await wait(containerId);
+  const { id } = await deps.client.post(`${deps.igUserId}/media_publish`, { creation_id: containerId });
+  let permalink;
+  try {
+    permalink = (await deps.client.get(id, { fields: "permalink" })).permalink;
+  } catch {
+  }
+  return { id, permalink };
+}
+function instagramHint(subcode) {
+  switch (subcode) {
+    case 2207052:
+      return "Instagram could not fetch the media URL. It must be publicly reachable over https without login.";
+    case 2207042:
+      return "Daily Instagram publishing limit reached for this account. Try again after 24 hours.";
+    case 2207004:
+      return "Image is larger than 8 MB.";
+    case 2207005:
+      return "Image format not supported; Instagram accepts JPEG only.";
+    case 2207009:
+      return "Aspect ratio out of range: images must be between 4:5 and 1.91:1.";
+    case 2207010:
+      return "Caption exceeds limits (2,200 characters, 30 hashtags, 20 mentions).";
+    case 2207026:
+      return "Video format not supported: use MP4 or MOV with H.264 or HEVC.";
+    case 2207050:
+      return "The Instagram account is restricted. Check it in the Instagram app.";
+    case 2207051:
+      return "Instagram flagged this action as spam. Do not retry automatically.";
+    default:
+      return void 0;
+  }
+}
+
+// src/platforms/meta/post-platforms.ts
+registerPostPlatform({
+  id: "facebook",
+  label: "Facebook Page",
+  kinds: FB_KINDS,
+  textLimit: 63206,
+  scheduling: true,
+  notes: [
+    "Pages only, never personal profiles.",
+    "Local photos and videos upload directly.",
+    "Schedule 10 minutes to 30 days ahead."
+  ],
+  check: (draft, now) => checkFacebookPost(draft, now),
+  async publish(dir, draft, env) {
+    const page = selectPage(loadFacebookTokens(env), draft.options?.pageId);
+    const client = new GraphClient({
+      baseUrl: GRAPH_FACEBOOK,
+      version: graphVersion(env),
+      accessToken: page.accessToken,
+      appSecret: env[META_ENV.appSecret]
+    });
+    return { ...await publishFacebook(client, page.id, dir, draft), page: page.name };
+  }
+});
+registerPostPlatform({
+  id: "instagram",
+  label: "Instagram",
+  kinds: IG_KINDS,
+  textLimit: IG_LIMITS.captionChars,
+  scheduling: false,
+  notes: [
+    "Business or Creator account linked to a Facebook Page.",
+    "Images: JPEG at a public https URL. Reels can be local MP4/MOV.",
+    `Up to ${IG_LIMITS.hashtags} hashtags and ${IG_LIMITS.mentions} mentions; links in captions are not clickable.`
+  ],
+  check: (draft) => checkInstagramPost(draft),
+  async publish(dir, draft, env) {
+    const { page, igUserId } = selectInstagram(
+      loadFacebookTokens(env),
+      draft.options?.instagramAccountId
+    );
+    const version = graphVersion(env);
+    const client = new GraphClient({
+      baseUrl: GRAPH_FACEBOOK,
+      version,
+      accessToken: page.accessToken,
+      appSecret: env[META_ENV.appSecret],
+      hintFor: (error) => instagramHint(error.error_subcode)
+    });
+    const quota = await publishingLimit(client, igUserId);
+    if (quota.total !== void 0 && quota.used >= quota.total) {
+      throw new PlatformError(
+        "IG_DAILY_LIMIT",
+        `Instagram publishing limit reached (${quota.used}/${quota.total} in 24 hours).`
+      );
+    }
+    const result = await publishInstagram(
+      { client, igUserId, accessToken: page.accessToken, graphVersion: version, dir },
+      draft
+    );
+    return { ...result, instagramAccount: page.instagram?.username ?? igUserId, quota };
+  }
+});
+registerPostPlatform({
+  id: "threads",
+  label: "Threads",
+  kinds: THREADS_KINDS,
+  textLimit: THREADS_LIMITS.textChars,
+  scheduling: false,
+  notes: ["Emoji count as several characters.", "At most 5 links.", "Media must be at public https URLs."],
+  check: (draft) => checkThreadsPost(draft),
+  async publish(_dir, draft, env) {
+    let tokens = loadThreadsTokens(env);
+    if (needsRefresh(tokens)) tokens = await refreshThreadsToken(env);
+    const client = new GraphClient({
+      baseUrl: THREADS_GRAPH,
+      version: THREADS_VERSION,
+      accessToken: tokens.accessToken,
+      appSecret: env[THREADS_ENV.appSecret]
+    });
+    const quota = await threadsQuota(client, tokens.userId);
+    if (quota.total !== void 0 && quota.used >= quota.total) {
+      throw new PlatformError(
+        "THREADS_DAILY_LIMIT",
+        `Threads publishing limit reached (${quota.used}/${quota.total} in 24 hours).`
+      );
+    }
+    return { ...await publishThreads(client, tokens.userId, draft), quota };
+  }
+});
 
 // src/shared/log.ts
 var SECRET_ENV_NAMES = /(TOKEN|SECRET|KEY|PASSWORD|CREDENTIAL)/i;
@@ -585,8 +1078,12 @@ function runPublishScript(spec) {
     },
     async (flags) => {
       const dir = resolve2(requireFlag(flags, "dir"));
-      const draft = JSON.parse(readFileSync3(join8(dir, POST_FILE), "utf8"));
-      const report = spec.check(draft);
+      const draft = JSON.parse(readFileSync3(join10(dir, POST_FILE), "utf8"));
+      const platform = postPlatform(spec.platform);
+      if (draft.platform !== platform.id) {
+        throw new PlatformError("POST_PLATFORM", `post.json is for "${draft.platform}", not ${platform.id}.`);
+      }
+      const report = platform.check(draft);
       if (flags.check || !flags.publish) {
         printJson(report);
         if (!report.ok) process.exitCode = 1;
@@ -603,7 +1100,7 @@ function runPublishScript(spec) {
           "Pass --allow-repost only if the user explicitly wants to post it again."
         );
       }
-      const result = await spec.publish(dir, draft);
+      const result = await platform.publish(dir, draft, process.env);
       const state = loadState(dir);
       state.history.push({ at: (/* @__PURE__ */ new Date()).toISOString(), event: "published", detail: String(result.id ?? "") });
       saveState(dir, state);
@@ -630,18 +1127,4 @@ options.pageId: required when the sign-in covers several Pages.
 
 Environment: META_APP_SECRET (adds appsecret_proof). Sign in with the meta-auth skill first.
 `;
-runPublishScript({
-  help: HELP,
-  check: (draft) => checkFacebookPost(draft),
-  publish: async (dir, draft) => {
-    const page = selectPage(loadFacebookTokens(), draft.options?.pageId);
-    const client = new GraphClient({
-      baseUrl: GRAPH_FACEBOOK,
-      version: graphVersion(),
-      accessToken: page.accessToken,
-      appSecret: process.env[META_ENV.appSecret]
-    });
-    const result = await publishFacebook(client, page.id, dir, draft);
-    return { ...result, page: page.name };
-  }
-});
+runPublishScript({ help: HELP, platform: "facebook" });

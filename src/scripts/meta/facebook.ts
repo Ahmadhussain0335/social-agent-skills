@@ -1,7 +1,3 @@
-import { loadFacebookTokens, META_ENV, selectPage } from '../../platforms/meta/accounts';
-import { GRAPH_FACEBOOK, graphVersion } from '../../platforms/meta/config';
-import { checkFacebookPost, publishFacebook } from '../../platforms/meta/facebook';
-import { GraphClient } from '../../platforms/meta/graph';
 import { runPublishScript } from './publish-runner';
 
 const HELP = `
@@ -22,18 +18,4 @@ options.pageId: required when the sign-in covers several Pages.
 Environment: META_APP_SECRET (adds appsecret_proof). Sign in with the meta-auth skill first.
 `;
 
-runPublishScript({
-  help: HELP,
-  check: (draft) => checkFacebookPost(draft),
-  publish: async (dir, draft) => {
-    const page = selectPage(loadFacebookTokens(), draft.options?.pageId as string | undefined);
-    const client = new GraphClient({
-      baseUrl: GRAPH_FACEBOOK,
-      version: graphVersion(),
-      accessToken: page.accessToken,
-      appSecret: process.env[META_ENV.appSecret],
-    });
-    const result = await publishFacebook(client, page.id, dir, draft);
-    return { ...result, page: page.name };
-  },
-});
+runPublishScript({ help: HELP, platform: 'facebook' });
