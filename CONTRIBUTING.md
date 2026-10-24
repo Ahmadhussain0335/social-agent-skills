@@ -11,16 +11,24 @@
 
 ## Adding a platform
 
-1. Implement `Platform` (`src/shared/platform.ts`) under `src/platforms/<id>/` and add it
-   to `src/platforms/index.ts` so `doctor` checks it.
-2. Put API logic in `src/platforms/<id>/` and script entry points in
-   `src/scripts/<id>/`; add them to `tsup.config.ts`.
-3. Add skills under `skills/<id>-<name>/` with `metadata.platform` and
-   `metadata.requires: social-core`.
-4. Write the setup guide once in `docs/platforms/<id>-setup.md` and register it in
-   `tools/sync-refs.mjs`.
-5. Add limits to `skills/social-core/references/platform-limits.md`.
-6. `npm run build && npm run check`, and commit the generated scripts.
+Single-post platforms implement one contract, `PostPlatform` in
+`src/platforms/posting.ts`, which gives them content-calendar, repurpose, analytics and
+inbox support for free.
+
+1. Create `src/platforms/<id>/index.ts`: a `check()` that enforces the documented limits
+   (cite the doc URL in a comment), a `publish()`, and optional `metrics()`, `comments()`,
+   `reply()` and `approvalNotes()`. Call `registerPostPlatform()`.
+2. Import it in `src/platforms/all-posting.ts`.
+3. Credentials: environment variables only. Use `src/shared/oauth.ts` for OAuth
+   (paste-back for HTTPS-only redirects, loopback with PKCE where 127.0.0.1 is allowed)
+   and `src/shared/api.ts` for REST calls. Non-GET requests must not retry except on 429.
+4. Add a doctor entry in `src/platforms/env-platforms.ts`.
+5. Add `src/scripts/platforms/<id>-publish.ts` (and an auth script if needed) and list
+   them in `tsup.config.ts`.
+6. Add `skills/<id>-post/SKILL.md` with `metadata.platform` and `metadata.requires: social-core`.
+7. Write `docs/platforms/<id>-setup.md` once and register it in `tools/sync-refs.mjs`.
+8. Add tests in `test/` for the limits and the request shape, then
+   `npm run build && npm run check`, and commit the generated scripts.
 
 ## Skill authoring
 

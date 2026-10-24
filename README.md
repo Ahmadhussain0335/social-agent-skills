@@ -15,6 +15,18 @@ Included:
 - **Cross-platform:** repurpose one source for many platforms, a content calendar,
   one analytics report, and one inbox for comments with approved replies.
 
+## Status
+
+Version 0.1.0. All 29 skills are built and covered by automated tests (180 tests on
+Linux, macOS and Windows).
+
+| Tested against real accounts | Tested against simulated APIs only |
+| - | - |
+| YouTube (research, render, metadata, approval checkpoints, private upload) | Facebook, Instagram, Threads, WhatsApp, X, LinkedIn, Pinterest, TikTok, Telegram, Discord, Bluesky, Mastodon, Google Business Profile, Reddit drafts |
+
+If a platform rejects a request on first real use, please open an issue with the error
+code and hint the script printed (never include tokens).
+
 ## Principles
 
 - **Official APIs only.** No browser automation, scraping or unofficial clients for
@@ -24,6 +36,20 @@ Included:
 - **Bring your own credentials.** Every user creates their own developer app. This
   package never ships shared keys.
 - **Node only.** Every script runs with Node.js 22.12 or newer. No Python.
+
+## How it works
+
+1. An agent loads a skill (for example `instagram-post`) and follows its steps.
+2. The skill's script validates the post against the platform's documented limits.
+3. **You approve** the exact post in your own terminal. The approval stores a SHA-256 of
+   every file, and agents cannot approve without an interactive terminal.
+4. The publish script verifies that nothing changed since approval, calls the
+   platform's official API with your own credentials, and records the result so the same
+   post is never published twice.
+
+Credentials come only from environment variables (keep them in
+`~/.config/social-skills/env.sh`, mode 600). Tokens are stored under
+`~/.config/social-skills/` with mode 600.
 
 ## Install
 

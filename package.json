@@ -10,8 +10,20 @@
     "gemini-cli",
     "copilot",
     "cursor",
+    "social-media",
     "youtube",
-    "social-media"
+    "instagram",
+    "facebook",
+    "threads",
+    "whatsapp",
+    "x",
+    "linkedin",
+    "tiktok",
+    "pinterest",
+    "bluesky",
+    "mastodon",
+    "telegram",
+    "discord"
   ],
   "license": "MIT",
   "author": "Ahmad Hussain",
@@ -28,7 +40,8 @@
   "files": [
     "dist",
     "skills",
-    "AGENTS.md"
+    "AGENTS.md",
+    "CHANGELOG.md"
   ],
   "engines": {
     "node": ">=22.12.0"

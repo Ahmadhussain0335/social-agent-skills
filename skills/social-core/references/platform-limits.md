@@ -1,31 +1,22 @@
 # Platform limits
 
-Hard limits are enforced by each platform skill's validation script. This table is the
-quick reference. Later releases add rows per platform.
+Hard limits are enforced by each platform skill's check script; this is the quick
+reference for drafting. Checked 2026-10-24.
 
-## YouTube
-
-| Field | Limit | Source |
-| - | - | - |
-| Title | 100 characters, no `<` or `>` | YouTube Data API video resource, snippet.title |
-| Description | 5000 bytes, no `<` or `>` | snippet.description |
-| Tags | 500 characters total; tags with spaces count their quotes; commas count | snippet.tags |
-| Thumbnail | JPEG or PNG, up to 2 MB, 1280x720 recommended, at least 640 px wide | thumbnails.set |
-| Made for kids | must be declared on every upload | status.selfDeclaredMadeForKids |
-| Scheduled publish | video must be private until publishAt | status.publishAt |
-| Uploads via API | 100 videos.insert calls per day per project (default) | quota cost table |
-| Custom thumbnails | channel must be verified | YouTube Help |
-
-Quota resets at midnight Pacific Time.
-
-## Account requirements and API access (reference for later phases)
-
-| Platform | Constraint |
-| - | - |
-| X | Write access requires a paid API tier |
-| Instagram | Business or Creator account linked to a Facebook Page |
-| Facebook | Pages only; no posting to personal profiles |
-| LinkedIn | Company page posting needs additional API product approval |
-| TikTok | Content posting API uploads are private until the app passes audit |
-| Reddit | Strict API terms and per-subreddit rules; draft-only by default |
-| WhatsApp | Business Platform Cloud API only; opt-in and 24-hour window rules |
+| Platform | Text | Media | Scheduling via API | Account notes |
+| - | - | - | - | - |
+| YouTube | title 100, description 5000 bytes, tags 500 | thumbnail JPEG/PNG up to 2 MB | yes (private until publish time) | 100 uploads/day per project by default |
+| Facebook Page | long text | local photos/videos | yes, 10 minutes to 30 days | Pages only |
+| Instagram | caption 2,200, 30 hashtags, 20 mentions | images JPEG by public URL; Reels local | no | Business/Creator linked to a Page |
+| Threads | 500 (emoji count more), 5 links | public URLs only | no | |
+| X | 280 weighted (URLs 23) | 4 images or 1 video | no | paid per post; $0.20 with a link |
+| LinkedIn | about 3,000 | one image or video | no | personal profile only by default |
+| Pinterest | title 100, description 800 | image, 2-5 carousel, video | no | needs a board |
+| TikTok | title 2,200 | one video | no | drafts by default; direct posts private |
+| Telegram | 4,096; captions 1,024 | photo 10 MB, files 50 MB, albums 2-10 | no | bot must be channel admin |
+| Discord | 2,000 | 10 files, 20 MiB each | no | webhook per channel |
+| Bluesky | 300 graphemes | 4 images, 2 MB, alt text required | no | app password |
+| Mastodon | instance limit (500 default) | instance limit (4 default) | yes, 5+ minutes ahead | |
+| Google Business | summary up to 1,500 | photos by public URL | no | API access must be approved |
+| Reddit | title 300 | n/a | n/a | draft only; the user posts |
+| WhatsApp | template body | n/a | n/a | opt-in and 24-hour window rules |
