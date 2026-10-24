@@ -1,7 +1,8 @@
 import type { Platform } from '../shared/platform';
+import { ENV_PLATFORMS } from './env-platforms';
 import { metaPlatform } from './meta';
 import { whatsappPlatform } from './whatsapp';
 import { youtubePlatform } from './youtube';
 
 /** Add each new platform here; doctor and docs read from this list. */
-export const PLATFORMS: readonly Platform[] = [youtubePlatform, metaPlatform, whatsappPlatform];
+export const PLATFORMS: readonly Platform[] = [youtubePlatform, metaPlatform, whatsappPlatform, ...ENV_PLATFORMS];

@@ -1,4 +1,5 @@
-import { runPublishScript } from './publish-runner';
+import '../../platforms/meta/post-platforms';
+import { runPublishScript } from '../publish-runner';
 
 const HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]

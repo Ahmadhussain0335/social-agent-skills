@@ -13,6 +13,16 @@ export const SHARED_REFS = [
   { source: 'docs/platforms/meta-setup.md', prefix: 'facebook-', target: 'references/setup.md' },
   { source: 'docs/platforms/meta-setup.md', prefix: 'instagram-', target: 'references/setup.md' },
   { source: 'docs/platforms/meta-setup.md', prefix: 'threads-', target: 'references/setup.md' },
+  { source: 'docs/platforms/x-setup.md', prefix: 'x-post', target: 'references/setup.md' },
+  { source: 'docs/platforms/linkedin-setup.md', prefix: 'linkedin-', target: 'references/setup.md' },
+  { source: 'docs/platforms/pinterest-setup.md', prefix: 'pinterest-', target: 'references/setup.md' },
+  { source: 'docs/platforms/tiktok-setup.md', prefix: 'tiktok-', target: 'references/setup.md' },
+  { source: 'docs/platforms/telegram-setup.md', prefix: 'telegram-', target: 'references/setup.md' },
+  { source: 'docs/platforms/discord-setup.md', prefix: 'discord-', target: 'references/setup.md' },
+  { source: 'docs/platforms/bluesky-setup.md', prefix: 'bluesky-', target: 'references/setup.md' },
+  { source: 'docs/platforms/mastodon-setup.md', prefix: 'mastodon-', target: 'references/setup.md' },
+  { source: 'docs/platforms/google-business-setup.md', prefix: 'google-business-', target: 'references/setup.md' },
+  { source: 'docs/platforms/reddit-setup.md', prefix: 'reddit-', target: 'references/setup.md' },
 ];
 
 export function syncTargets() {

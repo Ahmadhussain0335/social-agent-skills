@@ -22,6 +22,21 @@ const skillScripts = {
   'skills/content-calendar/scripts/calendar': 'src/scripts/cross/calendar.ts',
   'skills/social-analytics/scripts/analytics': 'src/scripts/cross/analytics.ts',
   'skills/social-inbox/scripts/inbox': 'src/scripts/cross/inbox.ts',
+  'skills/x-post/scripts/publish': 'src/scripts/platforms/x-publish.ts',
+  'skills/linkedin-post/scripts/publish': 'src/scripts/platforms/linkedin-publish.ts',
+  'skills/pinterest-post/scripts/publish': 'src/scripts/platforms/pinterest-publish.ts',
+  'skills/tiktok-post/scripts/publish': 'src/scripts/platforms/tiktok-publish.ts',
+  'skills/telegram-post/scripts/publish': 'src/scripts/platforms/telegram-publish.ts',
+  'skills/discord-post/scripts/publish': 'src/scripts/platforms/discord-publish.ts',
+  'skills/bluesky-post/scripts/publish': 'src/scripts/platforms/bluesky-publish.ts',
+  'skills/mastodon-post/scripts/publish': 'src/scripts/platforms/mastodon-publish.ts',
+  'skills/google-business-post/scripts/publish': 'src/scripts/platforms/gbp-publish.ts',
+  'skills/x-post/scripts/auth': 'src/scripts/platforms/oauth-auth.ts',
+  'skills/linkedin-post/scripts/auth': 'src/scripts/platforms/oauth-auth.ts',
+  'skills/pinterest-post/scripts/auth': 'src/scripts/platforms/oauth-auth.ts',
+  'skills/tiktok-post/scripts/auth': 'src/scripts/platforms/oauth-auth.ts',
+  'skills/google-business-post/scripts/auth': 'src/scripts/platforms/gbp-auth.ts',
+  'skills/reddit-draft/scripts/draft': 'src/scripts/platforms/reddit-draft.ts',
 };
 
 export default defineConfig([

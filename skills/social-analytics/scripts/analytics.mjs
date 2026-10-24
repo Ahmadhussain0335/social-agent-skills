@@ -6557,8 +6557,8 @@ var require_node_domexception = __commonJS({
 });
 
 // node_modules/fetch-blob/from.js
-import { statSync as statSync3, createReadStream as createReadStream2, promises as fs } from "fs";
-import { basename as basename2 } from "path";
+import { statSync as statSync7, createReadStream as createReadStream2, promises as fs } from "fs";
+import { basename as basename5 } from "path";
 var import_node_domexception, stat, blobFromSync, blobFrom, fileFrom, fileFromSync, fromBlob, fromFile, BlobDataItem;
 var init_from = __esm({
   "node_modules/fetch-blob/from.js"() {
@@ -6567,10 +6567,10 @@ var init_from = __esm({
     init_file();
     init_fetch_blob();
     ({ stat } = fs);
-    blobFromSync = (path, type) => fromBlob(statSync3(path), path, type);
+    blobFromSync = (path, type) => fromBlob(statSync7(path), path, type);
     blobFrom = (path, type) => stat(path).then((stat2) => fromBlob(stat2, path, type));
     fileFrom = (path, type) => stat(path).then((stat2) => fromFile(stat2, path, type));
-    fileFromSync = (path, type) => fromFile(statSync3(path), path, type);
+    fileFromSync = (path, type) => fromFile(statSync7(path), path, type);
     fromBlob = (stat2, path, type = "") => new fetch_blob_default([new BlobDataItem({
       path,
       size: stat2.size,
@@ -6582,7 +6582,7 @@ var init_from = __esm({
       size: stat2.size,
       lastModified: stat2.mtimeMs,
       start: 0
-    })], basename2(path), { type, lastModified: stat2.mtimeMs });
+    })], basename5(path), { type, lastModified: stat2.mtimeMs });
     BlobDataItem = class _BlobDataItem {
       #path;
       #start;
@@ -12483,11 +12483,11 @@ var require_oauth2client = __commonJS({
     var crypto_1 = require_crypto3();
     var authclient_1 = require_authclient();
     var loginticket_1 = require_loginticket();
-    var CodeChallengeMethod2;
-    (function(CodeChallengeMethod3) {
-      CodeChallengeMethod3["Plain"] = "plain";
-      CodeChallengeMethod3["S256"] = "S256";
-    })(CodeChallengeMethod2 || (exports.CodeChallengeMethod = CodeChallengeMethod2 = {}));
+    var CodeChallengeMethod3;
+    (function(CodeChallengeMethod4) {
+      CodeChallengeMethod4["Plain"] = "plain";
+      CodeChallengeMethod4["S256"] = "S256";
+    })(CodeChallengeMethod3 || (exports.CodeChallengeMethod = CodeChallengeMethod3 = {}));
     var CertificateFormat;
     (function(CertificateFormat2) {
       CertificateFormat2["PEM"] = "PEM";
@@ -12499,7 +12499,7 @@ var require_oauth2client = __commonJS({
       ClientAuthentication2["ClientSecretBasic"] = "ClientSecretBasic";
       ClientAuthentication2["None"] = "None";
     })(ClientAuthentication || (exports.ClientAuthentication = ClientAuthentication = {}));
-    var OAuth2Client2 = class _OAuth2Client extends authclient_1.AuthClient {
+    var OAuth2Client3 = class _OAuth2Client extends authclient_1.AuthClient {
       redirectUri;
       certificateCache = {};
       certificateExpiry = null;
@@ -12520,12 +12520,12 @@ var require_oauth2client = __commonJS({
        * @param clientSecret **@DEPRECATED**. Provide a {@link OAuth2ClientOptions `OAuth2ClientOptions`} object in the first parameter instead.
        * @param redirectUri **@DEPRECATED**. Provide a {@link OAuth2ClientOptions `OAuth2ClientOptions`} object in the first parameter instead.
        */
-      constructor(options = {}, clientSecret, redirectUri) {
+      constructor(options = {}, clientSecret2, redirectUri) {
         super(typeof options === "object" ? options : {});
         if (typeof options !== "object") {
           options = {
             clientId: options,
-            clientSecret,
+            clientSecret: clientSecret2,
             redirectUri
           };
         }
@@ -12617,8 +12617,8 @@ var require_oauth2client = __commonJS({
           redirect_uri: options.redirect_uri || this.redirectUri
         };
         if (this.clientAuthentication === ClientAuthentication.ClientSecretBasic) {
-          const basic = Buffer.from(`${this._clientId}:${this._clientSecret}`);
-          headers.set("authorization", `Basic ${basic.toString("base64")}`);
+          const basic2 = Buffer.from(`${this._clientId}:${this._clientSecret}`);
+          headers.set("authorization", `Basic ${basic2.toString("base64")}`);
         }
         if (this.clientAuthentication === ClientAuthentication.ClientSecretPost) {
           values.client_secret = this._clientSecret;
@@ -12913,13 +12913,13 @@ var require_oauth2client = __commonJS({
        * @param accessToken Required.  The Access Token for which you want to get
        * user info.
        */
-      async getTokenInfo(accessToken) {
+      async getTokenInfo(accessToken2) {
         const { data } = await this.transporter.request({
           ..._OAuth2Client.RETRY_CONFIG,
           method: "POST",
           headers: {
             "content-type": "application/x-www-form-urlencoded;charset=UTF-8",
-            authorization: `Bearer ${accessToken}`
+            authorization: `Bearer ${accessToken2}`
           },
           url: this.endpoints.tokenInfoUrl.toString()
         });
@@ -13146,7 +13146,7 @@ var require_oauth2client = __commonJS({
         return expiryDate ? expiryDate <= (/* @__PURE__ */ new Date()).getTime() + this.eagerRefreshThresholdMillis : false;
       }
     };
-    exports.OAuth2Client = OAuth2Client2;
+    exports.OAuth2Client = OAuth2Client3;
   }
 });
 
@@ -13179,11 +13179,11 @@ var require_computeclient = __commonJS({
        * @param refreshToken Unused parameter
        */
       async refreshTokenNoCache() {
-        const tokenPath2 = `service-accounts/${this.serviceAccountEmail}/token`;
+        const tokenPath3 = `service-accounts/${this.serviceAccountEmail}/token`;
         let data;
         try {
           const instanceOptions = {
-            property: tokenPath2
+            property: tokenPath3
           };
           if (this.scopes.length > 0) {
             instanceOptions.params = {
@@ -14209,8 +14209,8 @@ var require_revokeToken = __commonJS({
     exports.revokeToken = revokeToken;
     var GOOGLE_REVOKE_TOKEN_URL = "https://oauth2.googleapis.com/revoke?token=";
     var DEFAULT_RETRY_VALUE = true;
-    async function revokeToken(accessToken, transporter) {
-      const url = GOOGLE_REVOKE_TOKEN_URL + accessToken;
+    async function revokeToken(accessToken2, transporter) {
+      const url = GOOGLE_REVOKE_TOKEN_URL + accessToken2;
       return await transporter.request({
         url,
         retry: DEFAULT_RETRY_VALUE
@@ -14790,10 +14790,10 @@ var require_refreshclient = __commonJS({
        * @param eagerRefreshThresholdMillis **@DEPRECATED**. Provide a {@link UserRefreshClientOptions `UserRefreshClientOptions`} object in the first parameter instead.
        * @param forceRefreshOnFailure **@DEPRECATED**. Provide a {@link UserRefreshClientOptions `UserRefreshClientOptions`} object in the first parameter instead.
        */
-      constructor(optionsOrClientId, clientSecret, refreshToken, eagerRefreshThresholdMillis, forceRefreshOnFailure) {
+      constructor(optionsOrClientId, clientSecret2, refreshToken, eagerRefreshThresholdMillis, forceRefreshOnFailure) {
         const opts = optionsOrClientId && typeof optionsOrClientId === "object" ? optionsOrClientId : {
           clientId: optionsOrClientId,
-          clientSecret,
+          clientSecret: clientSecret2,
           refreshToken,
           eagerRefreshThresholdMillis,
           forceRefreshOnFailure
@@ -15132,9 +15132,9 @@ var require_oauth2common = __commonJS({
           });
         } else if (this.#clientAuthentication?.confidentialClientType === "basic") {
           opts.headers = gaxios_1.Gaxios.mergeHeaders(opts.headers);
-          const clientId = this.#clientAuthentication.clientId;
-          const clientSecret = this.#clientAuthentication.clientSecret || "";
-          const base64EncodedCreds = this.#crypto.encodeBase64StringUtf8(`${clientId}:${clientSecret}`);
+          const clientId2 = this.#clientAuthentication.clientId;
+          const clientSecret2 = this.#clientAuthentication.clientSecret || "";
+          const base64EncodedCreds = this.#crypto.encodeBase64StringUtf8(`${clientId2}:${clientSecret2}`);
           gaxios_1.Gaxios.mergeHeaders(opts.headers, {
             authorization: `Basic ${base64EncodedCreds}`
           });
@@ -15376,8 +15376,8 @@ var require_baseexternalclient = __commonJS({
         if (type && type !== exports.EXTERNAL_ACCOUNT_TYPE) {
           throw new Error(`Expected "${exports.EXTERNAL_ACCOUNT_TYPE}" type but received "${options.type}"`);
         }
-        const clientId = opts.get("client_id");
-        const clientSecret = opts.get("client_secret");
+        const clientId2 = opts.get("client_id");
+        const clientSecret2 = opts.get("client_secret");
         this.tokenUrl = opts.get("token_url") ?? DEFAULT_TOKEN_URL.replace("{universeDomain}", this.universeDomain);
         const subjectTokenType = opts.get("subject_token_type");
         const workforcePoolUserProject = opts.get("workforce_pool_user_project");
@@ -15385,11 +15385,11 @@ var require_baseexternalclient = __commonJS({
         const serviceAccountImpersonation = opts.get("service_account_impersonation");
         const serviceAccountImpersonationLifetime = (0, util_1.originalOrCamelOptions)(serviceAccountImpersonation).get("token_lifetime_seconds");
         this.cloudResourceManagerURL = new URL(opts.get("cloud_resource_manager_url") || `https://cloudresourcemanager.${this.universeDomain}/v1/projects/`);
-        if (clientId) {
+        if (clientId2) {
           this.clientAuth = {
             confidentialClientType: "basic",
-            clientId,
-            clientSecret
+            clientId: clientId2,
+            clientSecret: clientSecret2
           };
         }
         this.stsCredential = new sts.StsCredentials({
@@ -15662,9 +15662,9 @@ var require_baseexternalclient = __commonJS({
        * @param accessToken The credentials to check for expiration.
        * @return Whether the credentials are expired or not.
        */
-      isExpired(accessToken) {
+      isExpired(accessToken2) {
         const now = (/* @__PURE__ */ new Date()).getTime();
-        return accessToken.expiry_date ? now >= accessToken.expiry_date - this.eagerRefreshThresholdMillis : false;
+        return accessToken2.expiry_date ? now >= accessToken2.expiry_date - this.eagerRefreshThresholdMillis : false;
       }
       /**
        * @return The list of scopes for the requested GCP access token.
@@ -19781,10 +19781,10 @@ var require_get_proto = __commonJS({
 var require_hasown = __commonJS({
   "node_modules/hasown/index.js"(exports, module) {
     "use strict";
-    var call = Function.prototype.call;
+    var call2 = Function.prototype.call;
     var $hasOwn = Object.prototype.hasOwnProperty;
     var bind = require_function_bind();
-    module.exports = bind.call(call, $hasOwn);
+    module.exports = bind.call(call2, $hasOwn);
   }
 });
 
@@ -25485,7 +25485,7 @@ var require_build = __commonJS({
 
 // src/scripts/cross/analytics.ts
 import { writeFileSync as writeFileSync4 } from "fs";
-import { join as join12, resolve as resolve2 } from "path";
+import { join as join22, resolve as resolve2 } from "path";
 
 // src/shared/errors.ts
 var PlatformError = class extends Error {
@@ -25624,10 +25624,10 @@ function loadThreadsTokens(env = process.env, now = Date.now()) {
 function needsRefresh(tokens, now = Date.now()) {
   return Date.parse(tokens.expiresAt) - now < 7 * DAY_MS && now - Date.parse(tokens.obtainedAt) >= DAY_MS;
 }
-function toTokens(accessToken, userId, expiresIn, now = Date.now()) {
-  const seconds = Number.isFinite(expiresIn) && expiresIn > 0 ? expiresIn : 60 * 24 * 60 * 60;
+function toTokens(accessToken2, userId, expiresIn2, now = Date.now()) {
+  const seconds = Number.isFinite(expiresIn2) && expiresIn2 > 0 ? expiresIn2 : 60 * 24 * 60 * 60;
   return {
-    accessToken,
+    accessToken: accessToken2,
     userId,
     obtainedAt: new Date(now).toISOString(),
     expiresAt: new Date(now + seconds * 1e3).toISOString()
@@ -25931,8 +25931,8 @@ var GraphClient = class {
     return json2;
   }
 };
-function appSecretProof(accessToken, appSecret) {
-  return createHmac("sha256", appSecret).update(accessToken).digest("hex");
+function appSecretProof(accessToken2, appSecret) {
+  return createHmac("sha256", appSecret).update(accessToken2).digest("hex");
 }
 function parseUsage(headers) {
   const values = [];
@@ -26101,8 +26101,8 @@ async function facebookReply(comment, text, env) {
 }
 async function instagramMetrics(mediaId, env) {
   const client = igClient(env, mediaId);
-  const basic = await client.get(mediaId, { fields: "like_count,comments_count" });
-  const metrics = { likes: count(basic.like_count), comments: count(basic.comments_count) };
+  const basic2 = await client.get(mediaId, { fields: "like_count,comments_count" });
+  const metrics = { likes: count(basic2.like_count), comments: count(basic2.comments_count) };
   try {
     const insights = await client.get(`${mediaId}/insights`, { metric: "views,reach,saved,shares" });
     for (const m2 of insights.data ?? []) metrics[m2.name] = count(m2.total_value?.value ?? m2.values?.[0]?.value);
@@ -26531,47 +26531,62 @@ registerPostPlatform({
   }
 });
 
-// src/platforms/published.ts
-import { existsSync as existsSync4, readdirSync, readFileSync as readFileSync3 } from "fs";
-import { join as join10, relative } from "path";
-function findPublished(root, maxDepth = 4) {
-  const items = [];
-  const walk = (dir, depth) => {
-    if (existsSync4(join10(dir, STATE_FILE))) {
-      const history = loadState(dir).history;
-      const folder = relative(root, dir) || ".";
-      if (existsSync4(join10(dir, POST_FILE))) {
-        const draft = JSON.parse(readFileSync3(join10(dir, POST_FILE), "utf8"));
-        for (const h2 of history.filter((e2) => e2.event === "published" && e2.detail)) {
-          items.push({ folder, platform: draft.platform, postId: h2.detail, publishedAt: h2.at });
-        }
-      }
-      for (const h2 of history.filter((e2) => e2.event === "uploaded" && e2.detail)) {
-        items.push({
-          folder,
-          platform: "youtube",
-          postId: h2.detail.split(" ")[0],
-          publishedAt: h2.at
-        });
-      }
-    }
-    if (depth >= maxDepth) return;
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "node_modules")
-        walk(join10(dir, entry.name), depth + 1);
-    }
-  };
-  walk(root, 0);
-  return items.sort((a, b) => a.publishedAt.localeCompare(b.publishedAt));
-}
+// src/platforms/x/index.ts
+import { openAsBlob as openAsBlob3, statSync as statSync3 } from "fs";
+import { extname as extname3, join as join11 } from "path";
 
-// src/platforms/youtube/client.ts
-var import_youtube = __toESM(require_build(), 1);
-var import_google_auth_library = __toESM(require_src5(), 1);
-import { spawn } from "child_process";
-import { randomBytes as randomBytes2 } from "crypto";
-import { existsSync as existsSync6, readFileSync as readFileSync5 } from "fs";
+// src/shared/api.ts
+var ApiClient = class {
+  constructor(opts) {
+    this.opts = opts;
+  }
+  opts;
+  async request(method, path, body, extraHeaders = {}) {
+    const url = /^https?:\/\//.test(path) ? path : `${this.opts.base}${path}`;
+    const headers = {
+      authorization: `Bearer ${await this.opts.token()}`,
+      accept: "application/json",
+      ...this.opts.headers,
+      ...extraHeaders
+    };
+    let payload;
+    if (body instanceof FormData || body instanceof Blob || typeof body === "string")
+      payload = body;
+    else if (body !== void 0) {
+      payload = JSON.stringify(body);
+      headers["content-type"] = "application/json";
+    }
+    const res = await fetchWithRetry(
+      url,
+      { method, headers, body: payload },
+      { retryOn: method === "GET" ? void 0 : [429], fetchImpl: this.opts.fetchImpl, sleep: this.opts.sleep }
+    );
+    const text = await res.text();
+    let parsed = text;
+    try {
+      parsed = text ? JSON.parse(text) : {};
+    } catch {
+    }
+    if (!res.ok) {
+      throw this.opts.onError?.(res.status, parsed) ?? new PlatformError(
+        `HTTP_${res.status}`,
+        `Request to ${new URL(url).pathname} failed (HTTP ${res.status}): ${typeof parsed === "string" ? parsed.slice(0, 300) : JSON.stringify(parsed).slice(0, 300)}`
+      );
+    }
+    return { status: res.status, headers: res.headers, body: parsed };
+  }
+  get(path) {
+    return this.request("GET", path);
+  }
+  post(path, body, headers) {
+    return this.request("POST", path, body, headers);
+  }
+};
+
+// src/shared/oauth.ts
+import { createHash as createHash2, randomBytes as randomBytes2 } from "crypto";
 import { createServer } from "http";
+import { join as join10 } from "path";
 
 // src/shared/log.ts
 var SECRET_ENV_NAMES = /(TOKEN|SECRET|KEY|PASSWORD|CREDENTIAL)/i;
@@ -26603,11 +26618,1580 @@ function printJson(value) {
 `);
 }
 
+// src/shared/oauth.ts
+var PENDING_MAX_AGE_MS = 60 * 60 * 1e3;
+function tokenPath(platform, env = process.env) {
+  return join10(platformDir(platform, env), "token.json");
+}
+function saveToken(platform, token, env = process.env) {
+  writeSecretJson(tokenPath(platform, env), token);
+}
+function loadToken(platform, env = process.env) {
+  const token = readSecretJson(tokenPath(platform, env));
+  if (!token?.accessToken) {
+    throw new PlatformError(
+      "AUTH_REQUIRED",
+      `Not signed in to ${platform}.`,
+      `Run the ${platform} skill's auth script first (node scripts/auth.mjs).`
+    );
+  }
+  return token;
+}
+async function accessToken(platform, refresh, env = process.env, now = Date.now()) {
+  const token = loadToken(platform, env);
+  const expiresAt = token.expiresAt ? Date.parse(token.expiresAt) : Number.POSITIVE_INFINITY;
+  if (expiresAt - now > 5 * 6e4) return token.accessToken;
+  if (!refresh || !token.refreshToken) {
+    throw new PlatformError(
+      "AUTH_EXPIRED",
+      `The ${platform} sign-in has expired.`,
+      `Sign in again with the ${platform} auth script.`
+    );
+  }
+  const fresh = await refresh(token);
+  saveToken(platform, fresh, env);
+  return fresh.accessToken;
+}
+function expiresIn(seconds, now = Date.now()) {
+  const n = Number(seconds);
+  return Number.isFinite(n) && n > 0 ? new Date(now + n * 1e3).toISOString() : void 0;
+}
+async function postForm(url, form, headers = {}, fetchImpl = fetch) {
+  const body = new URLSearchParams();
+  for (const [k, v] of Object.entries(form)) if (v !== void 0) body.set(k, v);
+  const res = await fetchImpl(url, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded", accept: "application/json", ...headers },
+    body: body.toString()
+  });
+  const text = await res.text();
+  let json2 = {};
+  try {
+    json2 = text ? JSON.parse(text) : {};
+  } catch {
+  }
+  if (!res.ok || json2.error) {
+    const message = String(
+      json2.error_description ?? json2.message ?? json2.error ?? text.slice(0, 200) ?? `HTTP ${res.status}`
+    );
+    throw new PlatformError("AUTH_TOKEN_REQUEST", `Token request failed: ${message}`);
+  }
+  return json2;
+}
+
+// src/platforms/x/index.ts
+var X_ENV = { clientId: "X_CLIENT_ID", redirectUri: "X_REDIRECT_URI" };
+var X_PRICES = { checkedOn: "2026-10-24", post: 0.015, postWithUrl: 0.2, currency: "USD" };
+var API = "https://api.x.com";
+var URL_PATTERN = /https?:\/\/[^\s]+/g;
+var IMAGE_EXT = /* @__PURE__ */ new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
+var VIDEO_EXT = /* @__PURE__ */ new Set([".mp4", ".mov"]);
+function xLength(text) {
+  let n = 0;
+  const withoutUrls = text.replace(URL_PATTERN, () => {
+    n += 23;
+    return "";
+  });
+  for (const ch of withoutUrls) {
+    const cp = ch.codePointAt(0) ?? 0;
+    const narrow = cp <= 4351 || cp >= 8192 && cp <= 8205 || cp >= 8208 && cp <= 8223 || cp >= 8242 && cp <= 8247;
+    n += narrow ? 1 : 2;
+  }
+  return n;
+}
+function xCost(draft) {
+  return URL_PATTERN.test(draft.text ?? "") || draft.link ? X_PRICES.postWithUrl : X_PRICES.post;
+}
+function checkXPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  const text = draft.link ? `${draft.text ?? ""} ${draft.link}`.trim() : draft.text ?? "";
+  if (draft.platform !== "x") errors.push('platform must be "x"');
+  if (!["text", "media", "poll"].includes(draft.kind)) errors.push("kind must be text, media or poll");
+  if (!text.trim() && media.length === 0) errors.push("text or media is required");
+  if (xLength(text) > 280) errors.push(`text is ${xLength(text)} weighted characters; the limit is 280`);
+  if (draft.scheduledAt) errors.push("the X API has no scheduling; use content-calendar to publish later");
+  const images = media.filter((m2) => m2.type === "image");
+  const videos = media.filter((m2) => m2.type === "video");
+  if (images.length > 4) errors.push("at most 4 images");
+  if (videos.length > 1 || videos.length === 1 && images.length > 0)
+    errors.push("a video must be the only media item");
+  for (const m2 of media) {
+    if (isRemote(m2.source)) errors.push(`${m2.source}: X uploads local files; download the media into the post folder`);
+    const ext = extname3(m2.source).toLowerCase();
+    if (m2.type === "image" && !IMAGE_EXT.has(ext)) errors.push(`${m2.source}: images must be JPG, PNG, WEBP or GIF`);
+    if (m2.type === "video" && !VIDEO_EXT.has(ext)) errors.push(`${m2.source}: videos must be MP4 or MOV`);
+  }
+  const poll = draft.options?.poll;
+  if (draft.kind === "poll") {
+    if (!poll?.options || poll.options.length < 2 || poll.options.length > 4)
+      errors.push("options.poll.options needs 2-4 choices");
+    if (poll?.options?.some((o) => o.length < 1 || o.length > 25)) errors.push("poll choices must be 1-25 characters");
+    const d = poll?.durationMinutes ?? 1440;
+    if (d < 5 || d > 10080) errors.push("options.poll.durationMinutes must be 5-10080");
+    if (media.length > 0) errors.push("polls cannot have media");
+  }
+  if (xCost(draft) === X_PRICES.postWithUrl)
+    warnings.push(`this post contains a link, which X prices at $${X_PRICES.postWithUrl} instead of $${X_PRICES.post}`);
+  return { ok: errors.length === 0, errors, warnings };
+}
+function clientId(env) {
+  const id = env[X_ENV.clientId];
+  if (!id)
+    throw new PlatformError("X_ENV_MISSING", "X_CLIENT_ID is not set.", "See the x-post skill references/setup.md.");
+  return id;
+}
+function toToken(res, previous) {
+  return {
+    accessToken: String(res.access_token),
+    refreshToken: res.refresh_token ?? previous?.refreshToken,
+    expiresAt: expiresIn(res.expires_in),
+    obtainedAt: (/* @__PURE__ */ new Date()).toISOString()
+  };
+}
+function xClient(env = process.env, fetchImpl) {
+  return new ApiClient({
+    base: API,
+    fetchImpl,
+    token: () => accessToken(
+      "x",
+      async (t2) => toToken(
+        await postForm(`${API}/2/oauth2/token`, {
+          grant_type: "refresh_token",
+          refresh_token: t2.refreshToken,
+          client_id: clientId(env)
+        }),
+        t2
+      ),
+      env
+    ),
+    onError: (status, body) => {
+      const b = body;
+      const hint = status === 402 || b.type?.includes("usage-capped") ? "Your X API credits are used up. Add credits in the X Developer Console." : status === 403 ? "X refused the request: check the app has write access and enough credits, and that the content is not a duplicate." : status === 429 ? "Rate limit reached (100 posts per 15 minutes per user). Wait and retry." : void 0;
+      return new PlatformError(
+        `X_${status}`,
+        `${b.title ?? "X API error"}: ${b.detail ?? JSON.stringify(body).slice(0, 200)}`,
+        hint
+      );
+    }
+  });
+}
+async function uploadXMedia(client, path, type, sleep = (ms) => new Promise((r2) => setTimeout(r2, ms))) {
+  const size = statSync3(path).size;
+  const ext = extname3(path).toLowerCase();
+  const mime = type === "video" ? ext === ".mov" ? "video/quicktime" : "video/mp4" : ext === ".png" ? "image/png" : ext === ".gif" ? "image/gif" : ext === ".webp" ? "image/webp" : "image/jpeg";
+  const category = type === "video" ? "tweet_video" : ext === ".gif" ? "tweet_gif" : "tweet_image";
+  const init = await client.post("/2/media/upload/initialize", {
+    media_type: mime,
+    total_bytes: size,
+    media_category: category
+  });
+  const id = init.body.data?.id;
+  if (!id) throw new PlatformError("X_MEDIA_INIT", "X did not return a media id.");
+  const blob = await openAsBlob3(path, { type: mime });
+  const chunk = 4 * 1024 * 1024;
+  for (let offset = 0, index = 0; offset < size; offset += chunk, index++) {
+    const form = new FormData();
+    form.set("segment_index", String(index));
+    form.set("media", blob.slice(offset, Math.min(size, offset + chunk)));
+    await client.post(`/2/media/upload/${id}/append`, form);
+  }
+  const fin = await client.post(
+    `/2/media/upload/${id}/finalize`
+  );
+  let info = fin.body.data?.processing_info;
+  for (let i2 = 0; info && info.state !== "succeeded" && i2 < 60; i2++) {
+    if (info.state === "failed") throw new PlatformError("X_MEDIA_FAILED", `X could not process ${path}.`);
+    await sleep((info.check_after_secs ?? 5) * 1e3);
+    info = (await client.get(
+      `/2/media/upload?command=STATUS&media_id=${id}`
+    )).body.data?.processing_info;
+  }
+  return id;
+}
+async function publishX(client, dir, draft) {
+  const media_ids = [];
+  for (const m2 of draft.media ?? []) media_ids.push(await uploadXMedia(client, join11(dir, m2.source), m2.type));
+  const poll = draft.options?.poll;
+  const text = draft.link ? `${draft.text ?? ""} ${draft.link}`.trim() : draft.text;
+  const res = await client.post("/2/tweets", {
+    text,
+    ...media_ids.length ? { media: { media_ids } } : {},
+    ...draft.kind === "poll" && poll ? { poll: { options: poll.options, duration_minutes: poll.durationMinutes ?? 1440 } } : {},
+    ...draft.options?.madeWithAi ? { made_with_ai: true } : {},
+    ...draft.options?.paidPartnership ? { paid_partnership: true } : {}
+  });
+  const id = res.body.data?.id;
+  if (!id) throw new PlatformError("X_NO_ID", "X returned no post id.");
+  return { id, url: `https://x.com/i/web/status/${id}`, estimatedCost: `$${xCost(draft)}` };
+}
+registerPostPlatform({
+  id: "x",
+  label: "X",
+  kinds: ["text", "media", "poll"],
+  textLimit: 280,
+  scheduling: false,
+  notes: [
+    "Pay-per-use: about $0.015 per post, $0.20 when the post contains a link.",
+    "URLs count as 23 characters; up to 4 images or 1 video.",
+    "No identical cross-posting and no unsolicited @mentions (X developer guidelines)."
+  ],
+  check: (draft) => checkXPost(draft),
+  approvalNotes: (draft) => [`Estimated X API cost: $${xCost(draft)} (X price list checked ${X_PRICES.checkedOn}).`],
+  publish: (dir, draft, env) => publishX(xClient(env), dir, draft),
+  async metrics(postId, env) {
+    const res = await xClient(env).get(
+      `/2/tweets/${postId}?tweet.fields=public_metrics`
+    );
+    return res.body.data?.public_metrics ?? {};
+  }
+});
+
+// src/platforms/linkedin/index.ts
+import { openAsBlob as openAsBlob4, statSync as statSync4 } from "fs";
+import { extname as extname4, join as join12 } from "path";
+var LI_ENV = {
+  clientId: "LINKEDIN_CLIENT_ID",
+  clientSecret: "LINKEDIN_CLIENT_SECRET",
+  redirectUri: "LINKEDIN_REDIRECT_URI",
+  version: "LINKEDIN_VERSION"
+};
+var LI_DEFAULT_VERSION = "202610";
+var API2 = "https://api.linkedin.com";
+function escapeLittleText(text) {
+  return text.replace(/[\\|{}@[\]()<>*_~]/g, (c) => `\\${c}`);
+}
+function checkLinkedInPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  if (draft.platform !== "linkedin") errors.push('platform must be "linkedin"');
+  if (!["text", "link", "image", "video"].includes(draft.kind)) errors.push("kind must be text, link, image or video");
+  if (!draft.text?.trim()) errors.push("text is required");
+  if ([...draft.text ?? ""].length > 3e3) errors.push("text exceeds 3,000 characters");
+  if (draft.scheduledAt) errors.push("the LinkedIn API has no scheduling; use content-calendar to publish later");
+  if (draft.kind === "link" && !draft.link) errors.push('link posts need "link"');
+  if (draft.kind === "link" && !draft.options?.title)
+    warnings.push("LinkedIn does not fetch link previews via the API; set options.title for the card");
+  if (draft.kind === "image" && (media.length !== 1 || media[0]?.type !== "image"))
+    errors.push("image posts need exactly one image");
+  if (draft.kind === "video" && (media.length !== 1 || media[0]?.type !== "video"))
+    errors.push("video posts need exactly one MP4 video");
+  for (const m2 of media) {
+    if (isRemote(m2.source))
+      errors.push(`${m2.source}: LinkedIn uploads local files; download the media into the post folder`);
+    if (m2.type === "image" && ![".jpg", ".jpeg", ".png", ".gif"].includes(extname4(m2.source).toLowerCase()))
+      errors.push(`${m2.source}: images must be JPG, PNG or GIF`);
+    if (m2.type === "video" && extname4(m2.source).toLowerCase() !== ".mp4") errors.push(`${m2.source}: video must be MP4`);
+  }
+  if (/@\[/.test(draft.text ?? "")) warnings.push("mentions are sent as plain text by this skill");
+  return { ok: errors.length === 0, errors, warnings };
+}
+function linkedInClient(env = process.env, fetchImpl) {
+  return new ApiClient({
+    base: API2,
+    fetchImpl,
+    token: () => accessToken("linkedin", void 0, env),
+    headers: { "LinkedIn-Version": env[LI_ENV.version] || LI_DEFAULT_VERSION, "X-Restli-Protocol-Version": "2.0.0" },
+    onError: (status, body) => {
+      const b = body;
+      const hint = status === 401 ? "The LinkedIn sign-in expired (tokens last 60 days). Sign in again." : status === 426 || /version/i.test(b.message ?? "") ? "LinkedIn API version is no longer supported; set LINKEDIN_VERSION to a current YYYYMM version." : status === 403 ? 'Missing permission: the app needs the "Share on LinkedIn" product (w_member_social).' : void 0;
+      return new PlatformError(`LINKEDIN_${status}`, b.message ?? `LinkedIn API error ${status}`, hint);
+    }
+  });
+}
+async function uploadImage(client, owner, path) {
+  const init = await client.post(
+    "/rest/images?action=initializeUpload",
+    { initializeUploadRequest: { owner } }
+  );
+  await client.request("PUT", init.body.value.uploadUrl, await openAsBlob4(path));
+  return init.body.value.image;
+}
+async function uploadVideo(client, owner, path, sleep) {
+  const size = statSync4(path).size;
+  const init = await client.post("/rest/videos?action=initializeUpload", {
+    initializeUploadRequest: { owner, fileSizeBytes: size, uploadCaptions: false, uploadThumbnail: false }
+  });
+  const blob = await openAsBlob4(path);
+  const etags = [];
+  for (const part of init.body.value.uploadInstructions) {
+    const res = await client.request("PUT", part.uploadUrl, blob.slice(part.firstByte, part.lastByte + 1));
+    etags.push(res.headers.get("etag") ?? "");
+  }
+  await client.post("/rest/videos?action=finalizeUpload", {
+    finalizeUploadRequest: {
+      video: init.body.value.video,
+      uploadToken: init.body.value.uploadToken ?? "",
+      uploadedPartIds: etags
+    }
+  });
+  const urn = init.body.value.video;
+  for (let i2 = 0; i2 < 30; i2++) {
+    const status = await client.get(`/rest/videos/${encodeURIComponent(urn)}`);
+    if (status.body.status === "AVAILABLE") return urn;
+    if (status.body.status === "PROCESSING_FAILED")
+      throw new PlatformError("LINKEDIN_VIDEO_FAILED", "LinkedIn could not process the video.");
+    await sleep(1e4);
+  }
+  throw new PlatformError(
+    "LINKEDIN_VIDEO_TIMEOUT",
+    "The video is still processing; nothing was posted. Try publishing again later."
+  );
+}
+async function publishLinkedIn(client, author, dir, draft, sleep = (ms) => new Promise((r2) => setTimeout(r2, ms))) {
+  const media = draft.media?.[0];
+  let content;
+  if (draft.kind === "image" && media)
+    content = { media: { id: await uploadImage(client, author, join12(dir, media.source)), altText: media.altText } };
+  if (draft.kind === "video" && media)
+    content = {
+      media: { id: await uploadVideo(client, author, join12(dir, media.source), sleep), title: draft.options?.title }
+    };
+  if (draft.kind === "link" && draft.link) {
+    content = {
+      article: {
+        source: draft.link,
+        title: draft.options?.title ?? draft.link,
+        description: draft.options?.description
+      }
+    };
+  }
+  const res = await client.post("/rest/posts", {
+    author,
+    commentary: escapeLittleText(draft.text ?? ""),
+    visibility: "PUBLIC",
+    distribution: { feedDistribution: "MAIN_FEED", targetEntities: [], thirdPartyDistributionChannels: [] },
+    ...content ? { content } : {},
+    lifecycleState: "PUBLISHED",
+    isReshareDisabledByAuthor: false
+  });
+  const id = res.headers.get("x-restli-id") ?? "";
+  return { id, url: `https://www.linkedin.com/feed/update/${id}/` };
+}
+registerPostPlatform({
+  id: "linkedin",
+  label: "LinkedIn (personal profile)",
+  kinds: ["text", "link", "image", "video"],
+  textLimit: 3e3,
+  scheduling: false,
+  notes: [
+    "Posts to your personal profile. Company pages need the Community Management API (vetted organisation).",
+    "Link previews are not fetched by the API; set options.title for the card.",
+    "Sign-in lasts 60 days; there is no refresh for self-serve apps."
+  ],
+  check: (draft) => checkLinkedInPost(draft),
+  async publish(dir, draft, env) {
+    const token = loadToken("linkedin", env);
+    const author = draft.options?.organizationUrn ?? token.extra?.personUrn;
+    if (!author) throw new PlatformError("LINKEDIN_NO_MEMBER", "Sign in to LinkedIn again; the member id is missing.");
+    return publishLinkedIn(linkedInClient(env), author, dir, draft);
+  }
+});
+
+// src/platforms/pinterest/index.ts
+import { openAsBlob as openAsBlob5, readFileSync as readFileSync3 } from "fs";
+import { extname as extname5, join as join13 } from "path";
+var PIN_ENV = {
+  appId: "PINTEREST_APP_ID",
+  appSecret: "PINTEREST_APP_SECRET",
+  redirectUri: "PINTEREST_REDIRECT_URI",
+  sandbox: "PINTEREST_SANDBOX"
+};
+var PIN_LIMITS = {
+  title: 100,
+  description: 800,
+  link: 2048,
+  altText: 500,
+  carouselMin: 2,
+  carouselMax: 5
+};
+function need(env, name) {
+  const v = env[name];
+  if (!v)
+    throw new PlatformError(
+      "PINTEREST_ENV_MISSING",
+      `${name} is not set.`,
+      "See the pinterest-post skill references/setup.md."
+    );
+  return v;
+}
+function apiBase(env) {
+  return env[PIN_ENV.sandbox] === "1" ? "https://api-sandbox.pinterest.com/v5" : "https://api.pinterest.com/v5";
+}
+function basic(env) {
+  return {
+    authorization: `Basic ${Buffer.from(`${need(env, PIN_ENV.appId)}:${need(env, PIN_ENV.appSecret)}`).toString("base64")}`
+  };
+}
+function toToken2(res, previous) {
+  return {
+    accessToken: String(res.access_token),
+    refreshToken: res.refresh_token ?? previous?.refreshToken,
+    expiresAt: expiresIn(res.expires_in),
+    refreshExpiresAt: expiresIn(res.refresh_token_expires_in) ?? previous?.refreshExpiresAt,
+    obtainedAt: (/* @__PURE__ */ new Date()).toISOString()
+  };
+}
+function pinterestClient(env = process.env, fetchImpl) {
+  return new ApiClient({
+    base: apiBase(env),
+    fetchImpl,
+    token: () => accessToken(
+      "pinterest",
+      async (t2) => toToken2(
+        await postForm(
+          "https://api.pinterest.com/v5/oauth/token",
+          { grant_type: "refresh_token", refresh_token: t2.refreshToken },
+          basic(env)
+        ),
+        t2
+      ),
+      env
+    ),
+    onError: (status, body) => {
+      const b = body;
+      const hint = status === 403 && /PINNER_DATA_ACCESS_DENIED/.test(JSON.stringify(body)) ? "Pinterest restricts apps registered after 2026-09-14 from personal accounts; use a Pinterest business account." : status === 401 ? "Sign in to Pinterest again." : void 0;
+      return new PlatformError(`PINTEREST_${status}`, b.message ?? `Pinterest API error ${status}`, hint);
+    }
+  });
+}
+function checkPinterestPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  const o = draft.options ?? {};
+  if (draft.platform !== "pinterest") errors.push('platform must be "pinterest"');
+  if (!["image", "carousel", "video"].includes(draft.kind)) errors.push("kind must be image, carousel or video");
+  if (!o.boardId) errors.push("options.boardId is required (list boards with the auth script --boards)");
+  if (o.title && String(o.title).length > PIN_LIMITS.title)
+    errors.push(`options.title exceeds ${PIN_LIMITS.title} characters`);
+  if ((draft.text ?? "").length > PIN_LIMITS.description)
+    errors.push(`text (description) exceeds ${PIN_LIMITS.description} characters`);
+  if (draft.link && draft.link.length > PIN_LIMITS.link) errors.push("link exceeds 2048 characters");
+  if (draft.scheduledAt) errors.push("scheduling is not supported by this skill; use content-calendar");
+  if (draft.kind === "image" && (media.length !== 1 || media[0]?.type !== "image"))
+    errors.push("image pins need exactly one image");
+  if (draft.kind === "carousel" && (media.length < 2 || media.length > 5 || media.some((m2) => m2.type !== "image")))
+    errors.push("carousels need 2-5 images");
+  if (draft.kind === "video") {
+    if (media.length !== 1 || media[0]?.type !== "video") errors.push("video pins need exactly one video");
+    if (media[0] && isRemote(media[0].source)) errors.push("videos are uploaded from a local file");
+    if (!o.coverImageUrl) errors.push("options.coverImageUrl (public https image) is required for video pins");
+  }
+  for (const m2 of media)
+    if (m2.altText && m2.altText.length > PIN_LIMITS.altText) errors.push(`${m2.source}: altText exceeds 500 characters`);
+  if (media.some((m2) => m2.type === "image" && !m2.altText)) warnings.push("add altText to images");
+  return { ok: errors.length === 0, errors, warnings };
+}
+function imageSource(dir, source) {
+  if (isRemote(source)) return { url: source };
+  const ext = extname5(source).toLowerCase();
+  return {
+    content_type: ext === ".png" ? "image/png" : "image/jpeg",
+    data: readFileSync3(join13(dir, source)).toString("base64")
+  };
+}
+async function publishPinterest(client, dir, draft, sleep = (ms) => new Promise((r2) => setTimeout(r2, ms))) {
+  const media = draft.media ?? [];
+  const o = draft.options ?? {};
+  let media_source;
+  if (draft.kind === "carousel") {
+    const remote = media.every((m2) => isRemote(m2.source));
+    media_source = remote ? {
+      source_type: "multiple_image_urls",
+      items: media.map((m2) => ({
+        url: m2.source,
+        alt_text: m2.altText,
+        title: o.title,
+        description: draft.text,
+        link: draft.link
+      }))
+    } : {
+      source_type: "multiple_image_base64",
+      items: media.map((m2) => ({ ...imageSource(dir, m2.source), alt_text: m2.altText }))
+    };
+  } else if (draft.kind === "video") {
+    const path = join13(dir, media[0].source);
+    const reg = await client.post(
+      "/media",
+      { media_type: "video" }
+    );
+    const form = new FormData();
+    for (const [k, v] of Object.entries(reg.body.upload_parameters)) form.set(k, v);
+    form.set("file", await openAsBlob5(path), "video.mp4");
+    const s3 = await fetch(reg.body.upload_url, { method: "POST", body: form });
+    if (!s3.ok) throw new PlatformError("PINTEREST_UPLOAD", `Video upload failed (HTTP ${s3.status}).`);
+    let status = "registered";
+    for (let i2 = 0; i2 < 40 && status !== "succeeded"; i2++) {
+      await sleep(i2 === 0 ? 2e3 : 1e4);
+      status = (await client.get(`/media/${reg.body.media_id}`)).body.status;
+      if (status === "failed")
+        throw new PlatformError("PINTEREST_VIDEO_FAILED", "Pinterest could not process the video.");
+    }
+    if (status !== "succeeded")
+      throw new PlatformError("PINTEREST_VIDEO_TIMEOUT", "The video is still processing; nothing was posted.");
+    media_source = { source_type: "video_id", media_id: reg.body.media_id, cover_image_url: o.coverImageUrl };
+  } else {
+    const m2 = media[0];
+    const src = imageSource(dir, m2.source);
+    media_source = src.url ? { source_type: "image_url", url: src.url } : { source_type: "image_base64", ...src };
+  }
+  const res = await client.post("/pins", {
+    board_id: o.boardId,
+    title: o.title,
+    description: draft.text,
+    link: draft.link,
+    alt_text: media[0]?.altText,
+    media_source
+  });
+  return { id: res.body.id, url: `https://www.pinterest.com/pin/${res.body.id}/` };
+}
+registerPostPlatform({
+  id: "pinterest",
+  label: "Pinterest",
+  kinds: ["image", "carousel", "video"],
+  textLimit: PIN_LIMITS.description,
+  scheduling: false,
+  notes: [
+    "Every Pin needs a board (options.boardId) and benefits from a title (options.title, 100 chars).",
+    "Trial-access apps create Pins visible only to you until Standard access is granted.",
+    "Images may be local files or https URLs; video Pins need options.coverImageUrl."
+  ],
+  check: (draft) => checkPinterestPost(draft),
+  publish: (dir, draft, env) => publishPinterest(pinterestClient(env), dir, draft),
+  async metrics(postId, env) {
+    const end = /* @__PURE__ */ new Date();
+    const start = new Date(end.getTime() - 89 * 24 * 60 * 60 * 1e3);
+    const day = (d) => d.toISOString().slice(0, 10);
+    const res = await pinterestClient(env).get(
+      `/pins/${postId}/analytics?start_date=${day(start)}&end_date=${day(end)}&metric_types=IMPRESSION,SAVE,PIN_CLICK,OUTBOUND_CLICK`
+    );
+    return res.body.all?.summary_metrics ?? res.body.all?.lifetime_metrics ?? {};
+  }
+});
+
+// src/platforms/tiktok/index.ts
+import { openAsBlob as openAsBlob6, statSync as statSync5 } from "fs";
+import { extname as extname6, join as join14 } from "path";
+var TT_ENV = {
+  clientKey: "TIKTOK_CLIENT_KEY",
+  clientSecret: "TIKTOK_CLIENT_SECRET",
+  redirectUri: "TIKTOK_REDIRECT_URI"
+};
+var API3 = "https://open.tiktokapis.com";
+var MIN_CHUNK = 5 * 1024 * 1024;
+var CHUNK = 10 * 1024 * 1024;
+function need2(env, name) {
+  const v = env[name];
+  if (!v)
+    throw new PlatformError(
+      "TIKTOK_ENV_MISSING",
+      `${name} is not set.`,
+      "See the tiktok-post skill references/setup.md."
+    );
+  return v;
+}
+function toToken3(res) {
+  return {
+    accessToken: String(res.access_token),
+    // TikTok may rotate the refresh token; always keep the newest one.
+    refreshToken: res.refresh_token,
+    expiresAt: expiresIn(res.expires_in),
+    refreshExpiresAt: expiresIn(res.refresh_expires_in),
+    obtainedAt: (/* @__PURE__ */ new Date()).toISOString(),
+    extra: { openId: String(res.open_id ?? "") }
+  };
+}
+function tiktokClient(env = process.env, fetchImpl) {
+  return new ApiClient({
+    base: API3,
+    fetchImpl,
+    token: () => accessToken(
+      "tiktok",
+      async (t2) => toToken3(
+        await postForm(`${API3}/v2/oauth/token/`, {
+          client_key: need2(env, TT_ENV.clientKey),
+          client_secret: need2(env, TT_ENV.clientSecret),
+          grant_type: "refresh_token",
+          refresh_token: t2.refreshToken
+        })
+      ),
+      env
+    ),
+    onError: (status, body) => {
+      const code = body.error?.code ?? "";
+      const hints = {
+        unaudited_client_can_only_post_to_private_accounts: "Unaudited apps can only direct-post to private accounts; use draft mode or make the account private.",
+        spam_risk_too_many_posts: "TikTok daily posting cap reached for this account (about 15 per day). Try tomorrow.",
+        reached_active_user_cap: "Unaudited apps allow at most 5 posting users per 24 hours.",
+        privacy_level_option_mismatch: "options.privacyLevel is not one the creator can use; run --creator-info again.",
+        url_ownership_unverified: "Pulling from a URL needs a verified domain in the TikTok developer portal.",
+        access_token_invalid: "Sign in to TikTok again.",
+        scope_not_authorized: "The app is not approved for this scope (video.upload or video.publish)."
+      };
+      return new PlatformError(
+        `TIKTOK_${status}`,
+        `${code || "TikTok API error"}: ${body.error?.message ?? ""}`,
+        hints[code]
+      );
+    }
+  });
+}
+async function creatorInfo(client) {
+  const res = await client.post("/v2/post/publish/creator_info/query/", {});
+  return res.body.data;
+}
+function checkTikTokPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const o = draft.options ?? {};
+  const media = draft.media ?? [];
+  const mode = o.mode ?? "draft";
+  if (draft.platform !== "tiktok") errors.push('platform must be "tiktok"');
+  if (draft.kind !== "video")
+    errors.push('kind must be "video" (photo posts need a verified URL domain and are not supported here)');
+  if (media.length !== 1 || media[0]?.type !== "video") errors.push("exactly one video is required");
+  if (media[0] && isRemote(media[0].source))
+    errors.push("upload a local video file; pulling from a URL needs a verified domain");
+  if (media[0] && ![".mp4", ".mov", ".webm"].includes(extname6(media[0].source).toLowerCase()))
+    errors.push("video must be MP4, MOV or WebM");
+  if (draft.scheduledAt) errors.push("TikTok has no API scheduling; use content-calendar");
+  if (!["draft", "direct"].includes(mode)) errors.push('options.mode must be "draft" or "direct"');
+  if (mode === "direct") {
+    if (!o.privacyLevel)
+      errors.push("direct mode needs options.privacyLevel chosen by the user from --creator-info (no default)");
+    if (!o.creatorNickname)
+      errors.push("direct mode needs options.creatorNickname from --creator-info, shown to the user at approval");
+    for (const k of ["allowComment", "allowDuet", "allowStitch"]) {
+      if (typeof o[k] !== "boolean")
+        errors.push(`direct mode needs options.${k} set explicitly by the user (true or false)`);
+    }
+    if (o.brandedContent && o.privacyLevel === "SELF_ONLY")
+      errors.push("branded content cannot be private (TikTok rule)");
+    if ([...draft.text ?? ""].length > 2200) errors.push("title exceeds 2,200 characters");
+    warnings.push("apps owned by one user stay unaudited: direct posts are visible only to you (SELF_ONLY)");
+  }
+  return { ok: errors.length === 0, errors, warnings };
+}
+async function uploadChunks(client, uploadUrl, path, size, chunkSize) {
+  const blob = await openAsBlob6(path);
+  const count2 = size < MIN_CHUNK ? 1 : Math.floor(size / chunkSize);
+  for (let i2 = 0; i2 < count2; i2++) {
+    const start = i2 * chunkSize;
+    const end = i2 === count2 - 1 ? size - 1 : start + chunkSize - 1;
+    await client.request("PUT", uploadUrl, blob.slice(start, end + 1), {
+      "content-type": extname6(path).toLowerCase() === ".mov" ? "video/quicktime" : extname6(path).toLowerCase() === ".webm" ? "video/webm" : "video/mp4",
+      "content-range": `bytes ${start}-${end}/${size}`
+    });
+  }
+}
+async function publishTikTok(client, dir, draft, sleep = (ms) => new Promise((r2) => setTimeout(r2, ms))) {
+  const o = draft.options ?? {};
+  const video = draft.media?.[0];
+  if (!video) throw new PlatformError("TIKTOK_NO_VIDEO", "post.json has no video.");
+  const path = join14(dir, video.source);
+  const size = statSync5(path).size;
+  const chunkSize = size < MIN_CHUNK ? size : CHUNK;
+  const source_info = {
+    source: "FILE_UPLOAD",
+    video_size: size,
+    chunk_size: chunkSize,
+    total_chunk_count: size < MIN_CHUNK ? 1 : Math.floor(size / chunkSize)
+  };
+  const direct = o.mode === "direct";
+  if (direct) {
+    const info = await creatorInfo(client);
+    if (!info.privacy_level_options.includes(String(o.privacyLevel))) {
+      throw new PlatformError(
+        "TIKTOK_PRIVACY",
+        `privacyLevel ${o.privacyLevel} is not available; options: ${info.privacy_level_options.join(", ")}`
+      );
+    }
+  }
+  const init = await client.post(
+    direct ? "/v2/post/publish/video/init/" : "/v2/post/publish/inbox/video/init/",
+    direct ? {
+      post_info: {
+        title: draft.text,
+        privacy_level: o.privacyLevel,
+        disable_comment: !o.allowComment,
+        disable_duet: !o.allowDuet,
+        disable_stitch: !o.allowStitch,
+        brand_content_toggle: Boolean(o.brandedContent),
+        brand_organic_toggle: Boolean(o.yourBrand),
+        is_aigc: Boolean(o.aiGenerated)
+      },
+      source_info
+    } : { source_info }
+  );
+  await uploadChunks(client, init.body.data.upload_url, path, size, chunkSize);
+  const publishId = init.body.data.publish_id;
+  let status = "PROCESSING_UPLOAD";
+  let detail = {};
+  for (let i2 = 0; i2 < 30 && /^PROCESSING/.test(status); i2++) {
+    await sleep(5e3);
+    detail = (await client.post("/v2/post/publish/status/fetch/", { publish_id: publishId })).body.data;
+    status = String(detail.status);
+  }
+  if (status === "FAILED")
+    throw new PlatformError("TIKTOK_FAILED", `TikTok could not publish: ${detail.fail_reason ?? "unknown reason"}`);
+  return {
+    id: publishId,
+    status,
+    mode: direct ? "direct" : "draft",
+    next: direct ? "Processing can take a few minutes." : "Open TikTok: the video is in your inbox notifications to edit and post."
+  };
+}
+registerPostPlatform({
+  id: "tiktok",
+  label: "TikTok",
+  kinds: ["video"],
+  textLimit: 2200,
+  scheduling: false,
+  notes: [
+    'Default "draft" mode sends the video to your TikTok inbox; you post it in the app.',
+    "Direct mode from your own (unaudited) app is private (SELF_ONLY) and needs explicit privacy and interaction choices.",
+    "TikTok allows about 15 posts per day per account across all apps."
+  ],
+  check: (draft) => checkTikTokPost(draft),
+  approvalNotes: (draft) => draft.options?.mode === "direct" ? [
+    `Posting as ${draft.options?.creatorNickname} with privacy ${draft.options?.privacyLevel}.`,
+    draft.options?.brandedContent ? "By posting, you agree to TikTok's Branded Content Policy and Music Usage Confirmation." : "By posting, you agree to TikTok's Music Usage Confirmation."
+  ] : ["Draft mode: the video goes to your TikTok inbox; nothing is public until you post it in the app."],
+  publish: (dir, draft, env) => publishTikTok(tiktokClient(env), dir, draft)
+});
+
+// src/platforms/telegram/index.ts
+import { openAsBlob as openAsBlob7 } from "fs";
+import { basename as basename2, join as join15 } from "path";
+var TG_ENV = { botToken: "TELEGRAM_BOT_TOKEN", chatId: "TELEGRAM_CHAT_ID" };
+var TG_LIMITS = { text: 4096, caption: 1024, albumMin: 2, albumMax: 10 };
+function checkTelegramPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  const text = draft.text ?? "";
+  if (draft.platform !== "telegram") errors.push('platform must be "telegram"');
+  if (!["text", "photo", "video", "album"].includes(draft.kind))
+    errors.push("kind must be text, photo, video or album");
+  if (draft.kind === "text" && !text.trim()) errors.push("text is required");
+  if (draft.kind === "text" && text.length > TG_LIMITS.text) errors.push(`text exceeds ${TG_LIMITS.text} characters`);
+  if (draft.kind !== "text" && text.length > TG_LIMITS.caption)
+    errors.push(`caption exceeds ${TG_LIMITS.caption} characters`);
+  if ((draft.kind === "photo" || draft.kind === "video") && media.length !== 1)
+    errors.push(`${draft.kind} posts need exactly one file`);
+  if (draft.kind === "album" && (media.length < TG_LIMITS.albumMin || media.length > TG_LIMITS.albumMax))
+    errors.push("albums need 2-10 photos or videos");
+  if (draft.scheduledAt) errors.push("the Telegram Bot API has no scheduling; use content-calendar");
+  const mode = draft.options?.parseMode;
+  if (mode !== void 0 && mode !== "HTML")
+    errors.push('options.parseMode may only be "HTML" (plain text is the default)');
+  if (mode === "HTML" && /<(?!\/?(b|strong|i|em|u|ins|s|strike|del|a|code|pre|blockquote|tg-spoiler)\b)/i.test(text)) {
+    warnings.push("text contains HTML tags Telegram may reject");
+  }
+  return { ok: errors.length === 0, errors, warnings };
+}
+async function call(token, method, body, fetchImpl) {
+  const isForm = body instanceof FormData;
+  const res = await fetchWithRetry(
+    `https://api.telegram.org/bot${token}/${method}`,
+    {
+      method: "POST",
+      body: isForm ? body : JSON.stringify(body),
+      headers: isForm ? void 0 : { "content-type": "application/json" }
+    },
+    { retryOn: [429], fetchImpl }
+  );
+  const json2 = await res.json();
+  if (!json2.ok) {
+    const hint = json2.error_code === 403 ? "The bot is not an admin of the chat or was removed. Add it as an administrator with permission to post." : json2.error_code === 400 && /chat not found/i.test(json2.description ?? "") ? "Check TELEGRAM_CHAT_ID (use @channelusername or the numeric -100... id)." : void 0;
+    throw new PlatformError(
+      `TELEGRAM_${json2.error_code ?? res.status}`,
+      json2.description ?? "Telegram API error",
+      hint
+    );
+  }
+  return json2.result ?? {};
+}
+async function publishTelegram(dir, draft, env, fetchImpl) {
+  const token = env[TG_ENV.botToken];
+  const chatId = draft.options?.chatId ?? env[TG_ENV.chatId];
+  if (!token)
+    throw new PlatformError(
+      "TELEGRAM_ENV_MISSING",
+      "TELEGRAM_BOT_TOKEN is not set.",
+      "Create a bot with @BotFather; see references/setup.md."
+    );
+  if (!chatId) throw new PlatformError("TELEGRAM_ENV_MISSING", "Set TELEGRAM_CHAT_ID or options.chatId.");
+  const parse = draft.options?.parseMode === "HTML" ? { parse_mode: "HTML" } : {};
+  const media = draft.media ?? [];
+  const fileField = async (form, name, source) => {
+    if (isRemote(source)) return source;
+    form.set(name, await openAsBlob7(join15(dir, source)), basename2(source));
+    return `attach://${name}`;
+  };
+  let result;
+  if (draft.kind === "text") {
+    result = await call(
+      token,
+      "sendMessage",
+      { chat_id: chatId, text: draft.text, ...parse, link_preview_options: { is_disabled: false } },
+      fetchImpl
+    );
+  } else if (draft.kind === "album") {
+    const form = new FormData();
+    const items = [];
+    for (const [i2, m2] of media.entries()) {
+      items.push({
+        type: m2.type === "video" ? "video" : "photo",
+        media: await fileField(form, `file${i2}`, m2.source),
+        ...i2 === 0 ? { caption: draft.text, ...parse } : {}
+      });
+    }
+    form.set("chat_id", chatId);
+    form.set("media", JSON.stringify(items));
+    result = await call(token, "sendMediaGroup", form, fetchImpl);
+  } else {
+    const m2 = media[0];
+    const field = draft.kind === "photo" ? "photo" : "video";
+    const form = new FormData();
+    form.set("chat_id", chatId);
+    if (draft.text) form.set("caption", draft.text);
+    if (parse.parse_mode) form.set("parse_mode", parse.parse_mode);
+    if (isRemote(m2.source)) form.set(field, m2.source);
+    else form.set(field, await openAsBlob7(join15(dir, m2.source)), basename2(m2.source));
+    result = await call(token, draft.kind === "photo" ? "sendPhoto" : "sendVideo", form, fetchImpl);
+  }
+  const first = Array.isArray(result) ? result[0] : result;
+  const chat = first?.chat;
+  const id = String(first?.message_id ?? "");
+  return { id, url: chat?.username ? `https://t.me/${chat.username}/${id}` : void 0 };
+}
+registerPostPlatform({
+  id: "telegram",
+  label: "Telegram channel",
+  kinds: ["text", "photo", "video", "album"],
+  textLimit: TG_LIMITS.text,
+  scheduling: false,
+  notes: [
+    "Posts as your bot to a channel or group where it is an admin.",
+    "Captions are limited to 1,024 characters.",
+    'Plain text by default; options.parseMode "HTML" for formatting.'
+  ],
+  check: (draft) => checkTelegramPost(draft),
+  publish: (dir, draft, env) => publishTelegram(dir, draft, env)
+});
+
+// src/platforms/discord/index.ts
+import { openAsBlob as openAsBlob8 } from "fs";
+import { basename as basename3, join as join16 } from "path";
+var DC_ENV = { webhookUrl: "DISCORD_WEBHOOK_URL" };
+function checkDiscordPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  if (draft.platform !== "discord") errors.push('platform must be "discord"');
+  if (!["text", "media"].includes(draft.kind)) errors.push("kind must be text or media");
+  const text = draft.link ? `${draft.text ?? ""}
+${draft.link}`.trim() : draft.text ?? "";
+  if (!text.trim() && media.length === 0) errors.push("text or media is required");
+  if (text.length > 2e3) errors.push("text exceeds 2,000 characters");
+  if (media.length > 10) errors.push("at most 10 attachments");
+  if (media.some((m2) => isRemote(m2.source)))
+    errors.push("attachments must be local files (remote URLs can go in the text)");
+  if (draft.scheduledAt) errors.push("webhooks have no scheduling; use content-calendar");
+  if (/@(everyone|here)|<@&\d+>/.test(text) && !draft.options?.allowMentions) {
+    warnings.push("@everyone, @here and role mentions will not ping unless options.allowMentions is true");
+  }
+  return { ok: errors.length === 0, errors, warnings };
+}
+async function publishDiscord(dir, draft, env, fetchImpl) {
+  const envName = draft.options?.webhookEnv ?? DC_ENV.webhookUrl;
+  const webhook = env[envName];
+  if (!webhook || !/^https:\/\/(discord\.com|discordapp\.com)\/api\/webhooks\//.test(webhook)) {
+    throw new PlatformError(
+      "DISCORD_ENV_MISSING",
+      `${envName} is not set to a Discord webhook URL.`,
+      "Channel settings > Integrations > Webhooks > New Webhook > Copy URL."
+    );
+  }
+  const content = draft.link ? `${draft.text ?? ""}
+${draft.link}`.trim() : draft.text ?? "";
+  const payload = {
+    content,
+    // Never ping everyone or roles by accident.
+    allowed_mentions: draft.options?.allowMentions ? { parse: ["users", "roles", "everyone"] } : { parse: [] },
+    ...draft.options?.username ? { username: draft.options.username } : {}
+  };
+  const form = new FormData();
+  form.set("payload_json", JSON.stringify(payload));
+  for (const [i2, m2] of (draft.media ?? []).entries())
+    form.set(`files[${i2}]`, await openAsBlob8(join16(dir, m2.source)), basename3(m2.source));
+  const url = new URL(webhook);
+  url.searchParams.set("wait", "true");
+  const res = await fetchWithRetry(url, { method: "POST", body: form }, { retryOn: [429], fetchImpl });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new PlatformError(
+      `DISCORD_${res.status}`,
+      body.message ?? `Discord webhook failed (HTTP ${res.status})`,
+      res.status === 404 ? "The webhook was deleted. Create a new one and update the environment variable; do not retry the old URL." : void 0
+    );
+  }
+  return { id: body.id, channelId: body.channel_id };
+}
+registerPostPlatform({
+  id: "discord",
+  label: "Discord channel",
+  kinds: ["text", "media"],
+  textLimit: 2e3,
+  scheduling: false,
+  notes: [
+    "Posts through a channel webhook.",
+    "Mentions never ping unless options.allowMentions is true.",
+    "Up to 10 local attachments, 20 MiB each by default."
+  ],
+  check: (draft) => checkDiscordPost(draft),
+  publish: (dir, draft, env) => publishDiscord(dir, draft, env)
+});
+
+// src/platforms/bluesky/index.ts
+import { readFileSync as readFileSync4, statSync as statSync6 } from "fs";
+import { extname as extname7, join as join17 } from "path";
+var BSKY_ENV = {
+  handle: "BLUESKY_HANDLE",
+  appPassword: "BLUESKY_APP_PASSWORD",
+  service: "BLUESKY_SERVICE"
+};
+var APPVIEW = "https://public.api.bsky.app";
+var MAX_IMAGE_BYTES = 2e6;
+function graphemes(text) {
+  return [...new Intl.Segmenter("en", { granularity: "grapheme" }).segment(text)].length;
+}
+function detectFacets(text) {
+  const facets = [];
+  const byteAt = (i2) => Buffer.byteLength(text.slice(0, i2));
+  for (const m2 of text.matchAll(/https?:\/\/[^\s)]+[^\s).,!?:;'"]/g)) {
+    const start = m2.index ?? 0;
+    facets.push({
+      index: { byteStart: byteAt(start), byteEnd: byteAt(start + m2[0].length) },
+      features: [{ $type: "app.bsky.richtext.facet#link", uri: m2[0] }]
+    });
+  }
+  for (const m2 of text.matchAll(/(^|\s)#([\p{L}\p{N}_]{1,64})/gu)) {
+    const start = (m2.index ?? 0) + m2[1].length;
+    const tag = m2[2];
+    if (/^\d+$/.test(tag)) continue;
+    facets.push({
+      index: { byteStart: byteAt(start), byteEnd: byteAt(start + tag.length + 1) },
+      features: [{ $type: "app.bsky.richtext.facet#tag", tag }]
+    });
+  }
+  return facets.sort((a, b) => a.index.byteStart - b.index.byteStart);
+}
+function checkBlueskyPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  if (draft.platform !== "bluesky") errors.push('platform must be "bluesky"');
+  if (!["text", "images", "link"].includes(draft.kind))
+    errors.push("kind must be text, images or link (video is not supported yet)");
+  if (!(draft.text ?? "").trim() && media.length === 0) errors.push("text is required");
+  if (graphemes(draft.text ?? "") > 300)
+    errors.push(`text is ${graphemes(draft.text ?? "")} characters; the limit is 300`);
+  if (Buffer.byteLength(draft.text ?? "") > 3e3) errors.push("text exceeds 3,000 bytes");
+  if (draft.scheduledAt) errors.push("Bluesky has no scheduling; use content-calendar");
+  if (draft.kind === "images" && (media.length < 1 || media.length > 4 || media.some((m2) => m2.type !== "image")))
+    errors.push("1 to 4 images");
+  if (draft.kind === "link" && (!draft.link || !draft.options?.title))
+    errors.push('link cards need "link" and options.title');
+  for (const m2 of media) {
+    if (isRemote(m2.source)) errors.push(`${m2.source}: upload local image files`);
+    if (!m2.altText) errors.push(`${m2.source}: alt text is required on Bluesky`);
+    if (![".jpg", ".jpeg", ".png", ".webp"].includes(extname7(m2.source).toLowerCase()))
+      errors.push(`${m2.source}: images must be JPG, PNG or WEBP`);
+  }
+  if (/@[\w.-]+\.[a-z]{2,}/i.test(draft.text ?? "")) warnings.push("@mentions are posted as plain text by this skill");
+  return { ok: errors.length === 0, errors, warnings };
+}
+async function xrpc(service, nsid, init, fetchImpl) {
+  const headers = {};
+  if (init.token) headers.authorization = `Bearer ${init.token}`;
+  let body;
+  if (init.raw) {
+    body = init.raw;
+    headers["content-type"] = init.contentType ?? "application/octet-stream";
+  } else if (init.body !== void 0) {
+    body = JSON.stringify(init.body);
+    headers["content-type"] = "application/json";
+  }
+  const res = await fetchWithRetry(
+    `${service}/xrpc/${nsid}`,
+    { method: init.method ?? (body ? "POST" : "GET"), headers, body },
+    { retryOn: init.method === "GET" || !body ? void 0 : [429], fetchImpl }
+  );
+  const json2 = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new PlatformError(
+      `BLUESKY_${json2.error ?? res.status}`,
+      json2.message ?? `Bluesky request ${nsid} failed (HTTP ${res.status})`,
+      json2.error === "AuthenticationRequired" || res.status === 401 ? "Check BLUESKY_HANDLE and BLUESKY_APP_PASSWORD (an app password, not your account password)." : void 0
+    );
+  }
+  return json2;
+}
+function sessionPath(env) {
+  return join17(platformDir("bluesky", env), "session.json");
+}
+async function blueskySession(env = process.env, fetchImpl) {
+  const service = env[BSKY_ENV.service] || "https://bsky.social";
+  const cached = readSecretJson(sessionPath(env));
+  if (cached?.refreshJwt) {
+    try {
+      const fresh = await xrpc(
+        cached.service,
+        "com.atproto.server.refreshSession",
+        { method: "POST", token: cached.refreshJwt },
+        fetchImpl
+      );
+      const session2 = { ...cached, ...fresh, service: cached.service };
+      writeSecretJson(sessionPath(env), session2);
+      return session2;
+    } catch {
+    }
+  }
+  const identifier = env[BSKY_ENV.handle];
+  const password = env[BSKY_ENV.appPassword];
+  if (!identifier || !password) {
+    throw new PlatformError(
+      "BLUESKY_ENV_MISSING",
+      "BLUESKY_HANDLE and BLUESKY_APP_PASSWORD must be set.",
+      "Create an app password in Bluesky Settings > Privacy and security > App passwords."
+    );
+  }
+  const created = await xrpc(
+    service,
+    "com.atproto.server.createSession",
+    { body: { identifier, password } },
+    fetchImpl
+  );
+  const session = { ...created, service };
+  writeSecretJson(sessionPath(env), session);
+  return session;
+}
+async function publishBluesky(dir, draft, env, fetchImpl) {
+  const s2 = await blueskySession(env, fetchImpl);
+  let embed;
+  if (draft.kind === "images") {
+    const images = [];
+    for (const m2 of draft.media ?? []) {
+      const path = join17(dir, m2.source);
+      if (statSync6(path).size > MAX_IMAGE_BYTES)
+        throw new PlatformError("BLUESKY_IMAGE_SIZE", `${m2.source} is larger than 2 MB; resize it.`);
+      const ext = extname7(path).toLowerCase();
+      const type = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
+      const { blob } = await xrpc(
+        s2.service,
+        "com.atproto.repo.uploadBlob",
+        { token: s2.accessJwt, raw: new Blob([readFileSync4(path)]), contentType: type },
+        fetchImpl
+      );
+      images.push({ image: blob, alt: m2.altText ?? "" });
+    }
+    embed = { $type: "app.bsky.embed.images", images };
+  } else if (draft.kind === "link" && draft.link) {
+    embed = {
+      $type: "app.bsky.embed.external",
+      external: {
+        uri: draft.link,
+        title: String(draft.options?.title ?? ""),
+        description: String(draft.options?.description ?? "")
+      }
+    };
+  }
+  const text = draft.text ?? "";
+  const facets = detectFacets(text);
+  const record = {
+    $type: "app.bsky.feed.post",
+    text,
+    createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+    langs: [draft.options?.lang ?? "en"],
+    ...facets.length ? { facets } : {},
+    ...embed ? { embed } : {}
+  };
+  const res = await xrpc(
+    s2.service,
+    "com.atproto.repo.createRecord",
+    { token: s2.accessJwt, body: { repo: s2.did, collection: "app.bsky.feed.post", record } },
+    fetchImpl
+  );
+  const rkey = res.uri.split("/").pop();
+  return { id: res.uri, cid: res.cid, url: `https://bsky.app/profile/${s2.handle}/post/${rkey}` };
+}
+registerPostPlatform({
+  id: "bluesky",
+  label: "Bluesky",
+  kinds: ["text", "images", "link"],
+  textLimit: 300,
+  scheduling: false,
+  notes: [
+    "300 characters (graphemes).",
+    "Alt text is required on every image; images up to 2 MB.",
+    "Links and #hashtags become clickable automatically."
+  ],
+  check: (draft) => checkBlueskyPost(draft),
+  publish: (dir, draft, env) => publishBluesky(dir, draft, env),
+  async metrics(postId) {
+    const res = await xrpc(
+      APPVIEW,
+      `app.bsky.feed.getPosts?uris=${encodeURIComponent(postId)}`,
+      { method: "GET" }
+    );
+    const p = res.posts?.[0] ?? {};
+    return {
+      likes: p.likeCount ?? 0,
+      reposts: p.repostCount ?? 0,
+      replies: p.replyCount ?? 0,
+      quotes: p.quoteCount ?? 0
+    };
+  },
+  async comments(postId) {
+    const res = await xrpc(
+      APPVIEW,
+      `app.bsky.feed.getPostThread?uri=${encodeURIComponent(postId)}&depth=1`,
+      { method: "GET" }
+    );
+    return (res.thread?.replies ?? []).map(
+      (r2) => ({
+        platform: "bluesky",
+        postId,
+        commentId: `${r2.post.uri}|${r2.post.cid}`,
+        author: r2.post.author.handle,
+        text: r2.post.record.text ?? "",
+        createdAt: r2.post.record.createdAt ?? ""
+      })
+    );
+  },
+  async reply(comment, text, env) {
+    const s2 = await blueskySession(env);
+    const root = await xrpc(
+      APPVIEW,
+      `app.bsky.feed.getPosts?uris=${encodeURIComponent(comment.postId)}`,
+      { method: "GET" }
+    );
+    const [parentUri, parentCid] = comment.commentId.split("|");
+    const rootRef = root.posts?.[0];
+    if (!rootRef || !parentUri || !parentCid)
+      throw new PlatformError("BLUESKY_REPLY", "Cannot resolve the post being replied to.");
+    const facets = detectFacets(text);
+    const res = await xrpc(s2.service, "com.atproto.repo.createRecord", {
+      token: s2.accessJwt,
+      body: {
+        repo: s2.did,
+        collection: "app.bsky.feed.post",
+        record: {
+          $type: "app.bsky.feed.post",
+          text,
+          createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+          reply: { root: rootRef, parent: { uri: parentUri, cid: parentCid } },
+          ...facets.length ? { facets } : {}
+        }
+      }
+    });
+    return { id: res.uri };
+  }
+});
+
+// src/platforms/mastodon/index.ts
+import { createHash as createHash3 } from "crypto";
+import { openAsBlob as openAsBlob9 } from "fs";
+import { basename as basename4, join as join18 } from "path";
+var MASTO_ENV = { instance: "MASTODON_INSTANCE", token: "MASTODON_ACCESS_TOKEN" };
+var DEFAULT_LIMITS = { maxCharacters: 500, maxMedia: 4, reservedPerUrl: 23 };
+function mastodonLength(text, reservedPerUrl = 23) {
+  let n = 0;
+  const rest = text.replace(/https?:\/\/[^\s]+/g, () => {
+    n += reservedPerUrl;
+    return "";
+  });
+  return n + [...rest].length;
+}
+function checkMastodonPost(draft, now = Date.now(), limits = DEFAULT_LIMITS) {
+  const errors = [];
+  const warnings = [];
+  const media = draft.media ?? [];
+  const text = draft.link ? `${draft.text ?? ""} ${draft.link}`.trim() : draft.text ?? "";
+  if (draft.platform !== "mastodon") errors.push('platform must be "mastodon"');
+  if (!["text", "media", "poll"].includes(draft.kind)) errors.push("kind must be text, media or poll");
+  if (!text.trim() && media.length === 0) errors.push("text is required");
+  if (mastodonLength(text, limits.reservedPerUrl) > limits.maxCharacters) {
+    errors.push(
+      `text exceeds ${limits.maxCharacters} characters (the instance may allow more; checked again at publish)`
+    );
+  }
+  if (media.length > limits.maxMedia) errors.push(`at most ${limits.maxMedia} attachments`);
+  if (media.some((m2) => isRemote(m2.source))) errors.push("attachments must be local files");
+  if (media.some((m2) => !m2.altText)) warnings.push("add altText (image descriptions) to every attachment");
+  if (draft.kind === "poll" && media.length > 0) errors.push("polls cannot have media");
+  const visibility = draft.options?.visibility ?? "public";
+  if (!["public", "unlisted", "private", "direct"].includes(String(visibility)))
+    errors.push("options.visibility must be public, unlisted, private or direct");
+  if (draft.scheduledAt && Date.parse(draft.scheduledAt) - now < 5 * 6e4)
+    errors.push("scheduledAt must be at least 5 minutes ahead");
+  return { ok: errors.length === 0, errors, warnings };
+}
+function mastodonClient(env = process.env, fetchImpl) {
+  const instance = env[MASTO_ENV.instance];
+  const token = env[MASTO_ENV.token];
+  if (!instance || !token) {
+    throw new PlatformError(
+      "MASTODON_ENV_MISSING",
+      "MASTODON_INSTANCE and MASTODON_ACCESS_TOKEN must be set.",
+      "See the mastodon-post skill references/setup.md."
+    );
+  }
+  return new ApiClient({
+    base: instance.replace(/\/$/, "").replace(/^(?!https:\/\/)/, "https://"),
+    fetchImpl,
+    token: async () => token,
+    onError: (status, body) => new PlatformError(
+      `MASTODON_${status}`,
+      String(body.error ?? `Mastodon API error ${status}`),
+      status === 401 || status === 403 ? "The access token is invalid or lacks write:statuses / write:media." : void 0
+    )
+  });
+}
+async function publishMastodon(client, dir, draft, sleep = (ms) => new Promise((r2) => setTimeout(r2, ms))) {
+  const instance = await client.get("/api/v2/instance");
+  const cfg = instance.body.configuration?.statuses;
+  const limits = {
+    maxCharacters: cfg?.max_characters ?? DEFAULT_LIMITS.maxCharacters,
+    maxMedia: cfg?.max_media_attachments ?? DEFAULT_LIMITS.maxMedia,
+    reservedPerUrl: cfg?.characters_reserved_per_url ?? DEFAULT_LIMITS.reservedPerUrl
+  };
+  const check = checkMastodonPost(draft, Date.now(), limits);
+  if (!check.ok) throw new PlatformError("MASTODON_INVALID", check.errors.join("; "));
+  const media_ids = [];
+  for (const m2 of draft.media ?? []) {
+    const form = new FormData();
+    form.set("file", await openAsBlob9(join18(dir, m2.source)), basename4(m2.source));
+    if (m2.altText) form.set("description", m2.altText);
+    const up = await client.post("/api/v2/media", form);
+    let ready = up.status === 200 && Boolean(up.body.url);
+    for (let i2 = 0; !ready && i2 < 30; i2++) {
+      await sleep(2e3);
+      const st = await client.get(`/api/v1/media/${up.body.id}`);
+      ready = st.status === 200 && Boolean(st.body.url);
+    }
+    media_ids.push(up.body.id);
+  }
+  const text = draft.link ? `${draft.text ?? ""} ${draft.link}`.trim() : draft.text;
+  const poll = draft.options?.poll;
+  const idempotency = createHash3("sha256").update(`${dir}
+${JSON.stringify(draft)}`).digest("hex");
+  const res = await client.post(
+    "/api/v1/statuses",
+    {
+      status: text,
+      visibility: draft.options?.visibility ?? "public",
+      ...media_ids.length ? { media_ids } : {},
+      ...poll ? { poll: { options: poll.options, expires_in: poll.expiresInSeconds ?? 86400 } } : {},
+      ...draft.options?.spoilerText ? { spoiler_text: draft.options.spoilerText } : {},
+      ...draft.options?.lang ? { language: draft.options.lang } : {},
+      ...draft.scheduledAt ? { scheduled_at: draft.scheduledAt } : {}
+    },
+    { "Idempotency-Key": idempotency }
+  );
+  return { id: res.body.id, url: res.body.url, scheduledAt: res.body.scheduled_at };
+}
+registerPostPlatform({
+  id: "mastodon",
+  label: "Mastodon",
+  kinds: ["text", "media", "poll"],
+  textLimit: 500,
+  scheduling: true,
+  notes: [
+    "Character limit is per instance (500 by default); links count as 23.",
+    "Add alt text to every attachment.",
+    "Scheduling needs at least 5 minutes notice."
+  ],
+  check: (draft, now) => checkMastodonPost(draft, now),
+  publish: (dir, draft, env) => publishMastodon(mastodonClient(env), dir, draft),
+  async metrics(postId, env) {
+    const s2 = (await mastodonClient(env).get(`/api/v1/statuses/${postId}`)).body;
+    return { favourites: s2.favourites_count ?? 0, boosts: s2.reblogs_count ?? 0, replies: s2.replies_count ?? 0 };
+  },
+  async comments(postId, env) {
+    const ctx = await mastodonClient(env).get(`/api/v1/statuses/${postId}/context`);
+    return (ctx.body.descendants ?? []).filter((d) => d.in_reply_to_id === postId).map(
+      (d) => ({
+        platform: "mastodon",
+        postId,
+        commentId: d.id,
+        author: d.account?.acct ?? "unknown",
+        text: (d.content ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+        createdAt: d.created_at ?? ""
+      })
+    );
+  },
+  async reply(comment, text, env) {
+    const res = await mastodonClient(env).post("/api/v1/statuses", {
+      status: `@${comment.author} ${text}`,
+      in_reply_to_id: comment.commentId,
+      visibility: "public"
+    });
+    return { id: res.body.id };
+  }
+});
+
+// src/platforms/gbp/index.ts
+var import_google_auth_library = __toESM(require_src5(), 1);
+import { spawn } from "child_process";
+import { randomBytes as randomBytes3 } from "crypto";
+import { existsSync as existsSync4, readFileSync as readFileSync5 } from "fs";
+import { createServer as createServer2 } from "http";
+import { join as join19 } from "path";
+var GBP_ENV = { clientSecretPath: "GBP_CLIENT_SECRET_PATH" };
+var V4 = "https://mybusiness.googleapis.com/v4";
+var CTA_TYPES = ["BOOK", "ORDER", "SHOP", "LEARN_MORE", "SIGN_UP", "CALL"];
+function clientSecret(env) {
+  const path = env[GBP_ENV.clientSecretPath] || env.YT_CLIENT_SECRET_PATH;
+  if (!path || !existsSync4(path)) {
+    throw new PlatformError(
+      "GBP_CLIENT_SECRET_MISSING",
+      "Set GBP_CLIENT_SECRET_PATH (or YT_CLIENT_SECRET_PATH) to a Desktop app OAuth client JSON.",
+      "See the google-business-post skill references/setup.md."
+    );
+  }
+  const installed = JSON.parse(readFileSync5(path, "utf8")).installed;
+  if (!installed) throw new PlatformError("GBP_CLIENT_TYPE", 'The OAuth client must be of type "Desktop app".');
+  return { clientId: installed.client_id, clientSecret: installed.client_secret };
+}
+function tokenFile(env) {
+  return join19(platformDir("gbp", env), "token.json");
+}
+function gbpClient(base, env = process.env, fetchImpl) {
+  const tokens = readSecretJson(tokenFile(env));
+  if (!tokens?.refresh_token)
+    throw new PlatformError(
+      "GBP_NOT_AUTHORISED",
+      "Not signed in to Google Business Profile.",
+      "Run the google-business-post auth script."
+    );
+  const { clientId: clientId2, clientSecret: secret } = clientSecret(env);
+  const auth = new import_google_auth_library.OAuth2Client({ clientId: clientId2, clientSecret: secret });
+  auth.setCredentials(tokens);
+  auth.on(
+    "tokens",
+    (fresh) => writeSecretJson(tokenFile(env), {
+      ...tokens,
+      ...fresh,
+      refresh_token: fresh.refresh_token ?? tokens.refresh_token
+    })
+  );
+  return new ApiClient({
+    base,
+    fetchImpl,
+    token: async () => String((await auth.getAccessToken()).token),
+    onError: (status, body) => {
+      const message = body.error?.message ?? `HTTP ${status}`;
+      const hint = status === 429 || /quota/i.test(message) ? "Your Cloud project may not be approved for the Business Profile APIs yet (quota 0). Apply via the GBP API access form." : status === 403 ? "The signed-in account cannot manage this location, or the API is not enabled." : void 0;
+      return new PlatformError(`GBP_${status}`, message, hint);
+    }
+  });
+}
+function checkGbpPost(draft) {
+  const errors = [];
+  const warnings = [];
+  const o = draft.options ?? {};
+  if (draft.platform !== "google-business") errors.push('platform must be "google-business"');
+  if (!["standard", "event", "offer"].includes(draft.kind)) errors.push("kind must be standard, event or offer");
+  if (!/^accounts\/[^/]+\/locations\/[^/]+$/.test(String(o.location ?? "")))
+    errors.push('options.location must be "accounts/<id>/locations/<id>" (list them with the auth script --locations)');
+  if (!draft.text?.trim()) errors.push("text (summary) is required");
+  if ((draft.text ?? "").length > 1500) warnings.push("summaries over 1,500 characters are usually rejected");
+  const cta = o.cta;
+  if (cta && !CTA_TYPES.includes(String(cta.actionType)))
+    errors.push(`options.cta.actionType must be one of ${CTA_TYPES.join(", ")}`);
+  if (cta && cta.actionType !== "CALL" && !cta.url) errors.push("options.cta.url is required for this call to action");
+  if ((draft.kind === "event" || draft.kind === "offer") && !o.event)
+    errors.push(`${draft.kind} posts need options.event { title, schedule }`);
+  if ((draft.media ?? []).some((m2) => !isRemote(m2.source) || m2.type !== "image"))
+    errors.push("media must be photos at public https URLs");
+  if (draft.scheduledAt) errors.push("local posts cannot be scheduled via the API; use content-calendar");
+  return { ok: errors.length === 0, errors, warnings };
+}
+async function publishGbp(client, draft) {
+  const o = draft.options ?? {};
+  const res = await client.post(`/${o.location}/localPosts`, {
+    languageCode: o.lang ?? "en",
+    summary: draft.text,
+    topicType: draft.kind.toUpperCase(),
+    ...o.cta ? { callToAction: o.cta } : {},
+    ...(draft.media ?? []).length ? { media: (draft.media ?? []).map((m2) => ({ mediaFormat: "PHOTO", sourceUrl: m2.source })) } : {},
+    ...o.event ? { event: o.event } : {},
+    ...o.offer ? { offer: o.offer } : {}
+  });
+  return { id: res.body.name, url: res.body.searchUrl, state: res.body.state };
+}
+function locationOf(postName) {
+  const m2 = /^(accounts\/[^/]+)\/(locations\/[^/]+)/.exec(postName);
+  if (!m2) throw new PlatformError("GBP_POST_ID", `Not a local post name: ${postName}`);
+  return { account: m2[1], location: m2[2] };
+}
+registerPostPlatform({
+  id: "google-business",
+  label: "Google Business Profile",
+  kinds: ["standard", "event", "offer"],
+  textLimit: 1500,
+  scheduling: false,
+  notes: [
+    "Needs Google approval for the Business Profile APIs (profile verified 60+ days, business website).",
+    "Photos must be at public https URLs.",
+    "Calls to action: BOOK, ORDER, SHOP, LEARN_MORE, SIGN_UP, CALL."
+  ],
+  check: (draft) => checkGbpPost(draft),
+  publish: (_dir, draft, env) => publishGbp(gbpClient(V4, env), draft),
+  async metrics(postId, env) {
+    const { location } = locationOf(postId);
+    const end = /* @__PURE__ */ new Date();
+    const start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1e3);
+    const d = (x2, p) => `dailyRange.${p}.year=${x2.getUTCFullYear()}&dailyRange.${p}.month=${x2.getUTCMonth() + 1}&dailyRange.${p}.day=${x2.getUTCDate()}`;
+    const metrics = [
+      "BUSINESS_IMPRESSIONS_MOBILE_SEARCH",
+      "BUSINESS_IMPRESSIONS_DESKTOP_SEARCH",
+      "BUSINESS_IMPRESSIONS_MOBILE_MAPS",
+      "BUSINESS_IMPRESSIONS_DESKTOP_MAPS",
+      "WEBSITE_CLICKS",
+      "CALL_CLICKS",
+      "BUSINESS_DIRECTION_REQUESTS"
+    ];
+    const res = await gbpClient("https://businessprofileperformance.googleapis.com/v1", env).get(
+      `/${location}:fetchMultiDailyMetricsTimeSeries?${metrics.map((m2) => `dailyMetrics=${m2}`).join("&")}&${d(start, "start_date")}&${d(end, "end_date")}`
+    );
+    const totals = {};
+    for (const group of res.body.multiDailyMetricTimeSeries ?? []) {
+      for (const series of group.dailyMetricTimeSeries ?? []) {
+        totals[`${series.dailyMetric.toLowerCase()}_30d`] = (series.timeSeries?.datedValues ?? []).reduce(
+          (s2, v) => s2 + Number(v.value ?? 0),
+          0
+        );
+      }
+    }
+    return totals;
+  },
+  async comments(postId, env) {
+    const { account, location } = locationOf(postId);
+    const res = await gbpClient(V4, env).get(`/${account}/${location}/reviews?pageSize=50`);
+    return (res.body.reviews ?? []).filter((r2) => !r2.reviewReply).map(
+      (r2) => ({
+        platform: "google-business",
+        postId,
+        commentId: `${account}/${location}/reviews/${r2.reviewId}`,
+        author: r2.reviewer?.displayName ?? "Google user",
+        text: `[${r2.starRating ?? "?"} stars] ${r2.comment ?? ""}`.trim(),
+        createdAt: r2.createTime ?? ""
+      })
+    );
+  },
+  async reply(comment, text, env) {
+    if (Buffer.byteLength(text) > 4096)
+      throw new PlatformError("GBP_REPLY_LENGTH", "Review replies are limited to 4096 bytes.");
+    await gbpClient(V4, env).request("PUT", `/${comment.commentId}/reply`, { comment: text });
+    return { id: `${comment.commentId}/reply` };
+  }
+});
+
+// src/platforms/reddit/index.ts
+function checkRedditDraft(draft) {
+  const errors = [];
+  const warnings = [];
+  const o = draft.options ?? {};
+  if (draft.platform !== "reddit") errors.push('platform must be "reddit"');
+  if (!["self", "link"].includes(draft.kind)) errors.push('kind must be "self" (text post) or "link"');
+  if (!/^[A-Za-z0-9_]{2,21}$/.test(String(o.subreddit ?? "")))
+    errors.push("options.subreddit must be a subreddit name without r/");
+  const title = String(o.title ?? "");
+  if (!title.trim()) errors.push("options.title is required");
+  if ([...title].length > 300) errors.push("options.title exceeds 300 characters");
+  if (draft.kind === "link" && !draft.link) errors.push('link posts need "link"');
+  if ((draft.text ?? "").length > 4e4) errors.push("text exceeds 40,000 characters");
+  if (!o.rulesChecked)
+    warnings.push("confirm the subreddit rules were read (set options.rulesChecked to true after checking)");
+  if (/\b(buy now|limited offer|discount code)\b/i.test(draft.text ?? ""))
+    warnings.push("promotional wording is banned in many subreddits");
+  return { ok: errors.length === 0, errors, warnings };
+}
+registerPostPlatform({
+  id: "reddit",
+  label: "Reddit (draft only)",
+  kinds: ["self", "link"],
+  textLimit: 4e4,
+  scheduling: false,
+  notes: [
+    "Draft only: the user posts on reddit.com. Reddit API access requires approval and targets moderation.",
+    "Read the subreddit rules first; many ban self-promotion or require flair.",
+    "Never post the same text to several subreddits."
+  ],
+  check: (draft) => checkRedditDraft(draft),
+  async publish() {
+    throw new PlatformError(
+      "REDDIT_DRAFT_ONLY",
+      "Reddit posts are not published automatically.",
+      "Open the draft with the reddit-draft skill, post it on reddit.com yourself, then record the URL with --mark-posted."
+    );
+  }
+});
+
+// src/platforms/published.ts
+import { existsSync as existsSync5, readdirSync, readFileSync as readFileSync6 } from "fs";
+import { join as join20, relative } from "path";
+function findPublished(root, maxDepth = 4) {
+  const items = [];
+  const walk = (dir, depth) => {
+    if (existsSync5(join20(dir, STATE_FILE))) {
+      const history = loadState(dir).history;
+      const folder = relative(root, dir) || ".";
+      if (existsSync5(join20(dir, POST_FILE))) {
+        const draft = JSON.parse(readFileSync6(join20(dir, POST_FILE), "utf8"));
+        for (const h2 of history.filter((e2) => e2.event === "published" && e2.detail)) {
+          items.push({ folder, platform: draft.platform, postId: h2.detail, publishedAt: h2.at });
+        }
+      }
+      for (const h2 of history.filter((e2) => e2.event === "uploaded" && e2.detail)) {
+        items.push({
+          folder,
+          platform: "youtube",
+          postId: h2.detail.split(" ")[0],
+          publishedAt: h2.at
+        });
+      }
+    }
+    if (depth >= maxDepth) return;
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "node_modules")
+        walk(join20(dir, entry.name), depth + 1);
+    }
+  };
+  walk(root, 0);
+  return items.sort((a, b) => a.publishedAt.localeCompare(b.publishedAt));
+}
+
+// src/platforms/youtube/client.ts
+var import_youtube = __toESM(require_build(), 1);
+var import_google_auth_library2 = __toESM(require_src5(), 1);
+import { spawn as spawn2 } from "child_process";
+import { randomBytes as randomBytes4 } from "crypto";
+import { existsSync as existsSync7, readFileSync as readFileSync8 } from "fs";
+import { createServer as createServer3 } from "http";
+
 // src/platforms/youtube/config.ts
-import { join as join11 } from "path";
+import { join as join21 } from "path";
 
 // src/shared/quota.ts
-import { existsSync as existsSync5, mkdirSync as mkdirSync3, readFileSync as readFileSync4, writeFileSync as writeFileSync3 } from "fs";
+import { existsSync as existsSync6, mkdirSync as mkdirSync3, readFileSync as readFileSync7, writeFileSync as writeFileSync3 } from "fs";
 import { dirname as dirname2 } from "path";
 var QuotaLedger = class {
   constructor(opts) {
@@ -26640,9 +28224,9 @@ var QuotaLedger = class {
     writeFileSync3(this.opts.path, JSON.stringify({ day: this.today(), used }));
   }
   read() {
-    if (!existsSync5(this.opts.path)) return void 0;
+    if (!existsSync6(this.opts.path)) return void 0;
     try {
-      return JSON.parse(readFileSync4(this.opts.path, "utf8"));
+      return JSON.parse(readFileSync7(this.opts.path, "utf8"));
     } catch {
       return void 0;
     }
@@ -26680,7 +28264,7 @@ var YT_QUOTA = {
 function quotaLedger(method, env = process.env) {
   const { bucket } = YT_QUOTA.cost[method];
   return new QuotaLedger({
-    path: join11(platformDir("youtube", env), `quota-${bucket}.json`),
+    path: join21(platformDir("youtube", env), `quota-${bucket}.json`),
     dailyLimit: YT_QUOTA.buckets[bucket].dailyLimit,
     resetTimeZone: YT_QUOTA.resetTimeZone
   });
@@ -26870,7 +28454,7 @@ runScript(HELP, { root: { type: "string" }, out: { type: "string" } }, async (fl
     }
   }
   const generatedAt = (/* @__PURE__ */ new Date()).toISOString();
-  writeFileSync4(join12(out, "report.json"), `${JSON.stringify({ generatedAt, root, rows }, null, 2)}
+  writeFileSync4(join22(out, "report.json"), `${JSON.stringify({ generatedAt, root, rows }, null, 2)}
 `);
   const lines = [
     `# Social analytics`,
@@ -26885,9 +28469,9 @@ runScript(HELP, { root: { type: "string" }, out: { type: "string" } }, async (fl
       return `| ${String(r2.publishedAt).slice(0, 10)} | ${r2.platform} | ${r2.folder} | ${r2.postId} | ${metrics.replace(/\|/g, "/").replace(/\n/g, " ")} |`;
     })
   ];
-  writeFileSync4(join12(out, "report.md"), `${lines.join("\n")}
+  writeFileSync4(join22(out, "report.md"), `${lines.join("\n")}
 `);
-  printJson({ ok: true, items: rows.length, report: join12(out, "report.md") });
+  printJson({ ok: true, items: rows.length, report: join22(out, "report.md") });
 });
 /*! Bundled license information:
 

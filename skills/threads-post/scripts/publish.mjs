@@ -2,10 +2,6 @@
 import { createRequire as __createRequire } from 'node:module';
 const require = __createRequire(import.meta.url);
 
-// src/scripts/meta/publish-runner.ts
-import { readFileSync as readFileSync3 } from "fs";
-import { join as join10, resolve as resolve2 } from "path";
-
 // src/shared/errors.ts
 var PlatformError = class extends Error {
   constructor(code, message, hint, docsUrl) {
@@ -1114,6 +1110,10 @@ registerPostPlatform({
   }
 });
 
+// src/scripts/publish-runner.ts
+import { readFileSync as readFileSync3 } from "fs";
+import { join as join10, resolve as resolve2 } from "path";
+
 // src/shared/log.ts
 var SECRET_ENV_NAMES = /(TOKEN|SECRET|KEY|PASSWORD|CREDENTIAL)/i;
 var SECRET_PATTERNS = [
@@ -1196,7 +1196,7 @@ function requireFlag(flags, name) {
   return value;
 }
 
-// src/scripts/meta/publish-runner.ts
+// src/scripts/publish-runner.ts
 function runPublishScript(spec) {
   runScript(
     spec.help,

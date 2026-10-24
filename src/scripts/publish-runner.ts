@@ -1,11 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { postPlatform } from '../../platforms/all-posting';
-import { loadState, saveState } from '../../shared/approval';
-import { PlatformError } from '../../shared/errors';
-import { log, printJson } from '../../shared/log';
-import { alreadyPublished, POST_FILE, type PostDraft, requirePublishApproval } from '../../shared/post-project';
-import { requireFlag, runScript } from '../run';
+import { postPlatform } from '../platforms/posting';
+import { loadState, saveState } from '../shared/approval';
+import { PlatformError } from '../shared/errors';
+import { log, printJson } from '../shared/log';
+import { alreadyPublished, POST_FILE, type PostDraft, requirePublishApproval } from '../shared/post-project';
+import { requireFlag, runScript } from './run';
 
 export interface PublishSpec {
   help: string;
