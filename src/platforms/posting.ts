@@ -16,6 +16,8 @@ export interface PostPlatform {
   /** Short notes an agent should know when drafting for this platform. */
   notes: readonly string[];
   check(draft: PostDraft, now?: number): CheckResult;
+  /** Extra lines shown to the user at approval (costs, platform declarations). */
+  approvalNotes?(draft: PostDraft): string[];
   publish(dir: string, draft: PostDraft, env: NodeJS.ProcessEnv): Promise<Record<string, unknown>>;
   /** Public engagement counts for a published post (social-analytics). */
   metrics?(postId: string, env: NodeJS.ProcessEnv): Promise<Record<string, number>>;
