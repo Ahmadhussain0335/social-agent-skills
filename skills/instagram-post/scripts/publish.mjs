@@ -617,6 +617,127 @@ function selectInstagram(tokens, igUserId) {
   return { page: match, igUserId: match.instagram.id };
 }
 
+// src/platforms/meta/engagement.ts
+function pageClient(env, page) {
+  return new GraphClient({
+    baseUrl: GRAPH_FACEBOOK,
+    version: graphVersion(env),
+    accessToken: page.accessToken,
+    appSecret: env[META_ENV.appSecret]
+  });
+}
+function pageFor(env, objectId) {
+  const { pages } = loadFacebookTokens(env);
+  const byPrefix = pages.find((p) => objectId.startsWith(`${p.id}_`));
+  const page = byPrefix ?? (pages.length === 1 ? pages[0] : void 0);
+  if (!page) throw new Error(`Cannot tell which Page owns ${objectId}; several Pages are connected.`);
+  return page;
+}
+function igClient(env, mediaId) {
+  const { pages } = loadFacebookTokens(env);
+  const page = pages.find((p) => p.instagram) ?? pages[0];
+  if (!page) throw new Error(`No connected Instagram account for ${mediaId}.`);
+  return pageClient(env, page);
+}
+function threadsClient(env) {
+  const tokens = loadThreadsTokens(env);
+  return {
+    client: new GraphClient({
+      baseUrl: THREADS_GRAPH,
+      version: THREADS_VERSION,
+      accessToken: tokens.accessToken,
+      appSecret: env[THREADS_ENV.appSecret]
+    }),
+    userId: tokens.userId
+  };
+}
+var count = (v) => typeof v === "number" ? v : 0;
+async function facebookMetrics(postId, env) {
+  const res = await pageClient(env, pageFor(env, postId)).get(postId, {
+    fields: "reactions.summary(total_count).limit(0),comments.summary(total_count).limit(0),shares"
+  });
+  return {
+    reactions: count(res.reactions?.summary?.total_count),
+    comments: count(res.comments?.summary?.total_count),
+    shares: count(res.shares?.count)
+  };
+}
+async function facebookComments(postId, env) {
+  const res = await pageClient(env, pageFor(env, postId)).get(`${postId}/comments`, {
+    fields: "id,message,from{name},created_time",
+    filter: "toplevel",
+    limit: 100
+  });
+  return (res.data ?? []).map((c) => ({
+    platform: "facebook",
+    postId,
+    commentId: c.id,
+    author: c.from?.name ?? "unknown",
+    text: c.message ?? "",
+    createdAt: c.created_time ?? ""
+  }));
+}
+async function facebookReply(comment, text, env) {
+  return await pageClient(env, pageFor(env, comment.postId)).post(`${comment.commentId}/comments`, {
+    message: text
+  });
+}
+async function instagramMetrics(mediaId, env) {
+  const client = igClient(env, mediaId);
+  const basic = await client.get(mediaId, { fields: "like_count,comments_count" });
+  const metrics = { likes: count(basic.like_count), comments: count(basic.comments_count) };
+  try {
+    const insights = await client.get(`${mediaId}/insights`, { metric: "views,reach,saved,shares" });
+    for (const m of insights.data ?? []) metrics[m.name] = count(m.total_value?.value ?? m.values?.[0]?.value);
+  } catch {
+  }
+  return metrics;
+}
+async function instagramComments(mediaId, env) {
+  const res = await igClient(env, mediaId).get(`${mediaId}/comments`, {
+    fields: "id,text,username,timestamp",
+    limit: 100
+  });
+  return (res.data ?? []).map((c) => ({
+    platform: "instagram",
+    postId: mediaId,
+    commentId: c.id,
+    author: c.username ?? "unknown",
+    text: c.text ?? "",
+    createdAt: c.timestamp ?? ""
+  }));
+}
+async function instagramReply(comment, text, env) {
+  return await igClient(env, comment.postId).post(`${comment.commentId}/replies`, { message: text });
+}
+async function threadsMetrics(mediaId, env) {
+  const { client } = threadsClient(env);
+  const res = await client.get(`${mediaId}/insights`, { metric: "views,likes,replies,reposts,quotes" });
+  return Object.fromEntries((res.data ?? []).map((m) => [m.name, count(m.total_value?.value ?? m.values?.[0]?.value)]));
+}
+async function threadsComments(mediaId, env) {
+  const { client } = threadsClient(env);
+  const res = await client.get(`${mediaId}/replies`, { fields: "id,text,username,timestamp" });
+  return (res.data ?? []).map((c) => ({
+    platform: "threads",
+    postId: mediaId,
+    commentId: c.id,
+    author: c.username ?? "unknown",
+    text: c.text ?? "",
+    createdAt: c.timestamp ?? ""
+  }));
+}
+async function threadsReply(comment, text, env, sleep) {
+  const { client, userId } = threadsClient(env);
+  const { id: containerId } = await client.post(`${userId}/threads`, {
+    media_type: "TEXT",
+    text,
+    reply_to_id: comment.commentId
+  });
+  await waitForContainer(client, containerId, { field: "status", sleep, firstDelayMs: 1e3 });
+  return await client.post(`${userId}/threads_publish`, { creation_id: containerId });
+}
+
 // src/platforms/meta/facebook.ts
 import { extname, join as join8 } from "path";
 var FB_KINDS = ["text", "link", "photo", "photos", "video"];
@@ -906,6 +1027,9 @@ registerPostPlatform({
     "Schedule 10 minutes to 30 days ahead."
   ],
   check: (draft, now) => checkFacebookPost(draft, now),
+  metrics: facebookMetrics,
+  comments: facebookComments,
+  reply: facebookReply,
   async publish(dir, draft, env) {
     const page = selectPage(loadFacebookTokens(env), draft.options?.pageId);
     const client = new GraphClient({
@@ -929,6 +1053,9 @@ registerPostPlatform({
     `Up to ${IG_LIMITS.hashtags} hashtags and ${IG_LIMITS.mentions} mentions; links in captions are not clickable.`
   ],
   check: (draft) => checkInstagramPost(draft),
+  metrics: instagramMetrics,
+  comments: instagramComments,
+  reply: instagramReply,
   async publish(dir, draft, env) {
     const { page, igUserId } = selectInstagram(
       loadFacebookTokens(env),
@@ -964,6 +1091,9 @@ registerPostPlatform({
   scheduling: false,
   notes: ["Emoji count as several characters.", "At most 5 links.", "Media must be at public https URLs."],
   check: (draft) => checkThreadsPost(draft),
+  metrics: threadsMetrics,
+  comments: threadsComments,
+  reply: (comment, text, env) => threadsReply(comment, text, env),
   async publish(_dir, draft, env) {
     let tokens = loadThreadsTokens(env);
     if (needsRefresh(tokens)) tokens = await refreshThreadsToken(env);
