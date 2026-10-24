@@ -158,7 +158,14 @@ describe('findInstalled from the home directory', () => {
 describe('withDependencies', () => {
   it('expands transitively and rejects unknown skills', () => {
     const all = bundledSkills(join(import.meta.dirname, '..', 'skills'));
-    expect(withDependencies(['youtube-pipeline'], all).map((s) => s.name)).toEqual(ALL);
+    expect(withDependencies(['youtube-pipeline'], all).map((s) => s.name)).toEqual(
+      ALL.filter((name) => name === 'social-core' || name.startsWith('youtube-')),
+    );
+    expect(withDependencies(['whatsapp-broadcast'], all).map((s) => s.name)).toEqual([
+      'social-core',
+      'whatsapp-broadcast',
+      'whatsapp-templates',
+    ]);
     expect(() => withDependencies(['nope'], all)).toThrow(/Unknown skill "nope"/);
   });
 });

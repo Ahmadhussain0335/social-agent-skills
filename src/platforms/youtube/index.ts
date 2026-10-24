@@ -45,7 +45,11 @@ export const youtubePlatform: Platform = {
 
     const secret = env[YT_ENV.clientSecretPath];
     if (!secret) {
-      checks.push({ name: YT_ENV.clientSecretPath, status: 'fail', detail: 'not set (needed for upload)' });
+      checks.push({
+        name: YT_ENV.clientSecretPath,
+        status: 'warn',
+        detail: 'not set (needed for youtube-upload only)',
+      });
     } else if (!existsSync(secret)) {
       checks.push({ name: YT_ENV.clientSecretPath, status: 'fail', detail: `file not found: ${secret}` });
     } else {
