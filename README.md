@@ -4,8 +4,14 @@ Agent Skills for social media work that keep a person in the loop. The skills fo
 open [Agent Skills specification](https://agentskills.io/specification) and work with
 Claude Code, OpenAI Codex, Gemini CLI, GitHub Copilot, Cursor and other compatible agents.
 
-Phase 1 ships the YouTube pipeline: research, script, visuals, assembly with FFmpeg,
-metadata, and upload through the official YouTube Data API v3.
+Included:
+
+- **YouTube:** research, script, visuals, assembly with FFmpeg, metadata, and upload
+  through the official YouTube Data API v3.
+- **Facebook Pages, Instagram, Threads:** single posts through the official Graph and
+  Threads APIs, with one shared Meta sign-in.
+- **WhatsApp Business Platform (Cloud API):** templates, opt-in broadcasts with cost
+  estimates, and a business-scoped support bot.
 
 ## Principles
 
@@ -78,6 +84,13 @@ installed skill versions.
 | `youtube-assemble` | Renders the MP4 with FFmpeg |
 | `youtube-metadata` | Title, description, chapters, tags, thumbnail brief; validated |
 | `youtube-upload` | Uploads the approved video; private by default |
+| `meta-auth` | Connects your own Meta app to your Pages, Instagram and Threads |
+| `facebook-post` | Text, link, photo(s) or video on a Facebook Page; scheduling |
+| `instagram-post` | Image, carousel, Reel or Story on a Business/Creator account |
+| `threads-post` | Text (with link), image, video or carousel on Threads |
+| `whatsapp-templates` | Drafts templates and submits them for Meta review |
+| `whatsapp-broadcast` | Sends an approved template to opted-in contacts, with a cost estimate |
+| `whatsapp-support-bot` | Answers FAQs and order status from an approved knowledge base |
 
 Ask your agent something like "make a YouTube video about BLE pairing for beginners" and
 it will follow `youtube-pipeline`.
@@ -127,6 +140,34 @@ Limits to know:
   applies. The upload script still warns if YouTube sets a different privacy status than
   you requested.
 
+## Meta setup (Facebook, Instagram, Threads)
+
+Full steps: [docs/platforms/meta-setup.md](docs/platforms/meta-setup.md). Your own app
+works on your own accounts without App Review. Limits to know:
+
+- Facebook: Pages only, never personal profiles.
+- Instagram: Business or Creator account linked to a Facebook Page. Images must be at a
+  public https URL; Reels can be uploaded from a local file. No scheduling via the API.
+- Threads: images and videos must be at a public https URL. No scheduling via the API.
+- Sign-in is "open link, paste back the URL": Threads does not allow localhost redirects.
+
+Every post lives in a folder with `post.json` and media, and is published only after you
+approve that exact post in your terminal (`social-core` `scripts/post.mjs --approve`).
+
+## WhatsApp setup
+
+Full steps: [docs/platforms/whatsapp-setup.md](docs/platforms/whatsapp-setup.md).
+Official Cloud API only; no whatsapp-web.js, Baileys or personal-account automation.
+
+- Broadcasts go only to contacts with a recorded opt-in, honour opt-outs, and skip US
+  numbers for marketing templates (WhatsApp does not deliver those).
+- The broadcast cost estimate uses a `rates.json` you copy from Meta's rate card; Meta
+  has no pricing API.
+- The support bot has no AI model. Meta's WhatsApp Business terms (section 4.7, from
+  2026-01-15) prohibit general-purpose AI assistants; the bot answers only from your
+  approved knowledge base and hands everything else to a person.
+- From 2026-10-01, service replies are charged after 1,000 free per month per number.
+
 ## FFmpeg
 
 `youtube-assemble` looks for FFmpeg in this order:
@@ -165,7 +206,6 @@ without a build; CI fails if they are out of date.
 
 ## Roadmap
 
-- Phase 2: Instagram, Facebook Pages, Threads, WhatsApp Business Platform (Cloud API)
 - Phase 3: LinkedIn, X, TikTok, Pinterest
 - Phase 4: Telegram, Discord, Reddit (draft-only), Bluesky, Mastodon, Google Business Profile
 - Phase 5: cross-platform repurposing, content calendar, analytics, inbox

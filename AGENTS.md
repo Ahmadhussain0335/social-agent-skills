@@ -5,8 +5,10 @@ load skills automatically, use them manually:
 
 1. Read `skills/social-core/SKILL.md` before drafting or publishing any social media
    content, and follow it.
-2. For YouTube work, read `skills/youtube-pipeline/SKILL.md` and follow its steps. When a
-   step names another skill, read that skill's `SKILL.md`.
+2. For YouTube work, read `skills/youtube-pipeline/SKILL.md` and follow its steps. For a
+   Facebook, Instagram or Threads post read that platform's `*-post` skill and `meta-auth`;
+   for WhatsApp read the `whatsapp-*` skills. When a step names another skill, read that
+   skill's `SKILL.md`.
 3. Run scripts with Node.js 22.12 or newer from the skill's directory, for example
    `node skills/youtube-upload/scripts/upload.mjs --help`. Every script supports `--help`.
 4. Never publish, upload or send anything without the user's explicit approval of that
