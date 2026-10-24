@@ -321,6 +321,12 @@ var META_ENV = {
   redirectUri: "META_REDIRECT_URI",
   configId: "META_LOGIN_CONFIG_ID"
 };
+var FACEBOOK_ENGAGEMENT_SCOPES = [
+  "pages_read_user_engagement",
+  "pages_manage_engagement",
+  "instagram_manage_comments",
+  "instagram_manage_insights"
+];
 var FACEBOOK_SCOPES = [
   "pages_show_list",
   "pages_read_engagement",
@@ -338,7 +344,7 @@ function need(env, name) {
 function facebookTokenPath(env = process.env) {
   return join4(platformDir("meta", env), "facebook.json");
 }
-function startFacebookLogin(env = process.env) {
+function startFacebookLogin(env = process.env, withEngagement = false) {
   const configId = env[META_ENV.configId];
   return startPasteback(
     "facebook",
@@ -346,7 +352,7 @@ function startFacebookLogin(env = process.env) {
     {
       client_id: need(env, META_ENV.appId),
       // Facebook Login for Business uses a configuration instead of a scope list.
-      ...configId ? { config_id: configId } : { scope: FACEBOOK_SCOPES.join(",") }
+      ...configId ? { config_id: configId } : { scope: [...FACEBOOK_SCOPES, ...withEngagement ? FACEBOOK_ENGAGEMENT_SCOPES : []].join(",") }
     },
     need(env, META_ENV.redirectUri),
     env
@@ -427,6 +433,7 @@ var THREADS_ENV = {
 };
 var THREADS_GRAPH = "https://graph.threads.net";
 var THREADS_SCOPES = ["threads_basic", "threads_content_publish"];
+var THREADS_ENGAGEMENT_SCOPES = ["threads_read_replies", "threads_manage_replies", "threads_manage_insights"];
 var DAY_MS = 24 * 60 * 60 * 1e3;
 function need2(env, name) {
   const value = env[name];
@@ -441,11 +448,14 @@ function need2(env, name) {
 function threadsTokenPath(env = process.env) {
   return join5(platformDir("meta", env), "threads.json");
 }
-function startThreadsLogin(env = process.env) {
+function startThreadsLogin(env = process.env, withEngagement = false) {
   return startPasteback(
     "threads",
     "https://threads.com/oauth/authorize",
-    { client_id: need2(env, THREADS_ENV.appId), scope: THREADS_SCOPES.join(",") },
+    {
+      client_id: need2(env, THREADS_ENV.appId),
+      scope: [...THREADS_SCOPES, ...withEngagement ? THREADS_ENGAGEMENT_SCOPES : []].join(",")
+    },
     need2(env, THREADS_ENV.redirectUri),
     env
   );
@@ -602,7 +612,7 @@ function requireFlag(flags, name) {
 // src/scripts/meta/auth.ts
 var HELP = `
 Usage:
-  node scripts/auth.mjs --platform <facebook|threads> --start
+  node scripts/auth.mjs --platform <facebook|threads> --start [--with-engagement]
   node scripts/auth.mjs --platform <facebook|threads> --finish --url "<redirected URL>"
   node scripts/auth.mjs --platform <facebook|threads> --status
   node scripts/auth.mjs --platform threads --refresh
@@ -614,6 +624,9 @@ Instagram professional accounts linked to them; "threads" uses the separate Thre
 They copy the full URL from the address bar; --finish --url "<that URL>" completes sign-in.
 Tokens are stored in the user config directory with mode 0600. Facebook Page tokens do not
 expire; Threads tokens last 60 days and are refreshed automatically when publishing.
+
+--with-engagement also requests reading comments and replying, and insights (needed by
+social-inbox and social-analytics). Without it only posting permissions are requested.
 
 Environment:
   facebook: META_APP_ID, META_APP_SECRET, META_REDIRECT_URI, optional META_LOGIN_CONFIG_ID
@@ -627,7 +640,8 @@ runScript(
     finish: { type: "boolean" },
     url: { type: "string" },
     status: { type: "boolean" },
-    refresh: { type: "boolean" }
+    refresh: { type: "boolean" },
+    "with-engagement": { type: "boolean" }
   },
   async (flags) => {
     const platform = requireFlag(flags, "platform");
@@ -635,7 +649,8 @@ runScript(
       throw new PlatformError("META_PLATFORM", "--platform must be facebook or threads (Instagram uses facebook).");
     }
     if (flags.start) {
-      const url = platform === "facebook" ? startFacebookLogin() : startThreadsLogin();
+      const engagement = Boolean(flags["with-engagement"]);
+      const url = platform === "facebook" ? startFacebookLogin(process.env, engagement) : startThreadsLogin(process.env, engagement);
       printJson({
         ok: true,
         signInUrl: url,

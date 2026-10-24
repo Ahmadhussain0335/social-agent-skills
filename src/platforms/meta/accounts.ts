@@ -17,6 +17,14 @@ export const META_ENV = {
   configId: 'META_LOGIN_CONFIG_ID',
 } as const;
 
+// Requested only with --with-engagement, for social-inbox and social-analytics.
+export const FACEBOOK_ENGAGEMENT_SCOPES = [
+  'pages_read_user_engagement',
+  'pages_manage_engagement',
+  'instagram_manage_comments',
+  'instagram_manage_insights',
+];
+
 export const FACEBOOK_SCOPES = [
   'pages_show_list',
   'pages_read_engagement',
@@ -51,7 +59,7 @@ export function facebookTokenPath(env: NodeJS.ProcessEnv = process.env): string 
   return join(platformDir('meta', env), 'facebook.json');
 }
 
-export function startFacebookLogin(env: NodeJS.ProcessEnv = process.env): string {
+export function startFacebookLogin(env: NodeJS.ProcessEnv = process.env, withEngagement = false): string {
   const configId = env[META_ENV.configId];
   return startPasteback(
     'facebook',
@@ -59,7 +67,9 @@ export function startFacebookLogin(env: NodeJS.ProcessEnv = process.env): string
     {
       client_id: need(env, META_ENV.appId),
       // Facebook Login for Business uses a configuration instead of a scope list.
-      ...(configId ? { config_id: configId } : { scope: FACEBOOK_SCOPES.join(',') }),
+      ...(configId
+        ? { config_id: configId }
+        : { scope: [...FACEBOOK_SCOPES, ...(withEngagement ? FACEBOOK_ENGAGEMENT_SCOPES : [])].join(',') }),
     },
     need(env, META_ENV.redirectUri),
     env,

@@ -17,6 +17,8 @@ export const THREADS_ENV = {
 export const THREADS_GRAPH = 'https://graph.threads.net';
 export const THREADS_VERSION = 'v1.0';
 export const THREADS_SCOPES = ['threads_basic', 'threads_content_publish'];
+// Requested only with --with-engagement, for social-inbox and social-analytics.
+export const THREADS_ENGAGEMENT_SCOPES = ['threads_read_replies', 'threads_manage_replies', 'threads_manage_insights'];
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -42,11 +44,14 @@ export function threadsTokenPath(env: NodeJS.ProcessEnv = process.env): string {
   return join(platformDir('meta', env), 'threads.json');
 }
 
-export function startThreadsLogin(env: NodeJS.ProcessEnv = process.env): string {
+export function startThreadsLogin(env: NodeJS.ProcessEnv = process.env, withEngagement = false): string {
   return startPasteback(
     'threads',
     'https://threads.com/oauth/authorize',
-    { client_id: need(env, THREADS_ENV.appId), scope: THREADS_SCOPES.join(',') },
+    {
+      client_id: need(env, THREADS_ENV.appId),
+      scope: [...THREADS_SCOPES, ...(withEngagement ? THREADS_ENGAGEMENT_SCOPES : [])].join(','),
+    },
     need(env, THREADS_ENV.redirectUri),
     env,
   );

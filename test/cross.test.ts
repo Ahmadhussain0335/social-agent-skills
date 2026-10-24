@@ -96,3 +96,28 @@ describe('calendar', () => {
     expect(() => readCalendar(path)).toThrow(/ISO 8601/);
   });
 });
+
+describe('findPublished', () => {
+  it('finds published posts and uploaded YouTube videos from state history', async () => {
+    const { findPublished } = await import('../src/platforms/published');
+    const root = tmp();
+    const post = join(root, 'posts', 'th-1');
+    saveState(post, newState('th-1'));
+    write(join(post, 'post.json'), JSON.stringify({ platform: 'threads', kind: 'text', text: 'hi' }));
+    const s = loadState(post);
+    s.history.push({ at: '2026-10-20T00:00:00Z', event: 'published', detail: 'th123' });
+    saveState(post, s);
+
+    const yt = join(root, 'yt-demo');
+    saveState(yt, newState('yt'));
+    const y = loadState(yt);
+    y.history.push({ at: '2026-10-21T00:00:00Z', event: 'uploaded', detail: 'vid42 abcdef' });
+    saveState(yt, y);
+
+    saveState(join(root, 'draft-only'), newState('draft'));
+    expect(findPublished(root).map((i) => [i.platform, i.postId, i.folder])).toEqual([
+      ['threads', 'th123', join('posts', 'th-1')],
+      ['youtube', 'vid42', 'yt-demo'],
+    ]);
+  });
+});

@@ -17,6 +17,21 @@ export interface PostPlatform {
   notes: readonly string[];
   check(draft: PostDraft, now?: number): CheckResult;
   publish(dir: string, draft: PostDraft, env: NodeJS.ProcessEnv): Promise<Record<string, unknown>>;
+  /** Public engagement counts for a published post (social-analytics). */
+  metrics?(postId: string, env: NodeJS.ProcessEnv): Promise<Record<string, number>>;
+  /** Comments or replies on a published post (social-inbox). */
+  comments?(postId: string, env: NodeJS.ProcessEnv): Promise<InboxComment[]>;
+  /** Replies to a comment after the user approved the reply text (social-inbox). */
+  reply?(comment: InboxComment, text: string, env: NodeJS.ProcessEnv): Promise<{ id: string }>;
+}
+
+export interface InboxComment {
+  platform: string;
+  postId: string;
+  commentId: string;
+  author: string;
+  text: string;
+  createdAt: string;
 }
 
 const registry = new Map<string, PostPlatform>();

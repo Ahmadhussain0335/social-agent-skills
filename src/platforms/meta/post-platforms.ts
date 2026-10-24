@@ -11,6 +11,17 @@ import {
 import { checkThreadsPost, publishThreads, THREADS_KINDS, THREADS_LIMITS, threadsQuota } from '../threads/publish';
 import { loadFacebookTokens, META_ENV, selectInstagram, selectPage } from './accounts';
 import { GRAPH_FACEBOOK, graphVersion } from './config';
+import {
+  facebookComments,
+  facebookMetrics,
+  facebookReply,
+  instagramComments,
+  instagramMetrics,
+  instagramReply,
+  threadsComments,
+  threadsMetrics,
+  threadsReply,
+} from './engagement';
 import { checkFacebookPost, FB_KINDS, publishFacebook } from './facebook';
 import { GraphClient, type GraphErrorBody } from './graph';
 import { checkInstagramPost, IG_KINDS, IG_LIMITS, instagramHint, publishInstagram, publishingLimit } from './instagram';
@@ -27,6 +38,9 @@ registerPostPlatform({
     'Schedule 10 minutes to 30 days ahead.',
   ],
   check: (draft, now) => checkFacebookPost(draft, now),
+  metrics: facebookMetrics,
+  comments: facebookComments,
+  reply: facebookReply,
   async publish(dir, draft, env) {
     const page = selectPage(loadFacebookTokens(env), draft.options?.pageId as string | undefined);
     const client = new GraphClient({
@@ -51,6 +65,9 @@ registerPostPlatform({
     `Up to ${IG_LIMITS.hashtags} hashtags and ${IG_LIMITS.mentions} mentions; links in captions are not clickable.`,
   ],
   check: (draft) => checkInstagramPost(draft),
+  metrics: instagramMetrics,
+  comments: instagramComments,
+  reply: instagramReply,
   async publish(dir, draft, env) {
     const { page, igUserId } = selectInstagram(
       loadFacebookTokens(env),
@@ -87,6 +104,9 @@ registerPostPlatform({
   scheduling: false,
   notes: ['Emoji count as several characters.', 'At most 5 links.', 'Media must be at public https URLs.'],
   check: (draft) => checkThreadsPost(draft),
+  metrics: threadsMetrics,
+  comments: threadsComments,
+  reply: (comment, text, env) => threadsReply(comment, text, env),
   async publish(_dir, draft, env) {
     let tokens = loadThreadsTokens(env);
     if (needsRefresh(tokens)) tokens = await refreshThreadsToken(env);

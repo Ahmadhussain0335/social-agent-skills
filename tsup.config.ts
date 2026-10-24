@@ -20,6 +20,8 @@ const skillScripts = {
   'skills/threads-post/scripts/publish': 'src/scripts/meta/threads.ts',
   'skills/content-repurpose/scripts/repurpose': 'src/scripts/cross/repurpose.ts',
   'skills/content-calendar/scripts/calendar': 'src/scripts/cross/calendar.ts',
+  'skills/social-analytics/scripts/analytics': 'src/scripts/cross/analytics.ts',
+  'skills/social-inbox/scripts/inbox': 'src/scripts/cross/inbox.ts',
 };
 
 export default defineConfig([

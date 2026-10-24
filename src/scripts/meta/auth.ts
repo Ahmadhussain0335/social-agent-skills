@@ -11,7 +11,7 @@ import { requireFlag, runScript } from '../run';
 
 const HELP = `
 Usage:
-  node scripts/auth.mjs --platform <facebook|threads> --start
+  node scripts/auth.mjs --platform <facebook|threads> --start [--with-engagement]
   node scripts/auth.mjs --platform <facebook|threads> --finish --url "<redirected URL>"
   node scripts/auth.mjs --platform <facebook|threads> --status
   node scripts/auth.mjs --platform threads --refresh
@@ -23,6 +23,9 @@ Instagram professional accounts linked to them; "threads" uses the separate Thre
 They copy the full URL from the address bar; --finish --url "<that URL>" completes sign-in.
 Tokens are stored in the user config directory with mode 0600. Facebook Page tokens do not
 expire; Threads tokens last 60 days and are refreshed automatically when publishing.
+
+--with-engagement also requests reading comments and replying, and insights (needed by
+social-inbox and social-analytics). Without it only posting permissions are requested.
 
 Environment:
   facebook: META_APP_ID, META_APP_SECRET, META_REDIRECT_URI, optional META_LOGIN_CONFIG_ID
@@ -38,6 +41,7 @@ runScript(
     url: { type: 'string' },
     status: { type: 'boolean' },
     refresh: { type: 'boolean' },
+    'with-engagement': { type: 'boolean' },
   },
   async (flags) => {
     const platform = requireFlag(flags, 'platform');
@@ -46,7 +50,11 @@ runScript(
     }
 
     if (flags.start) {
-      const url = platform === 'facebook' ? startFacebookLogin() : startThreadsLogin();
+      const engagement = Boolean(flags['with-engagement']);
+      const url =
+        platform === 'facebook'
+          ? startFacebookLogin(process.env, engagement)
+          : startThreadsLogin(process.env, engagement);
       printJson({
         ok: true,
         signInUrl: url,
