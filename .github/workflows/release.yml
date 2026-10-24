@@ -1,0 +1,43 @@
+name: Release
+
+# Publishes to npm with trusted publishing (OIDC) and provenance. No NPM_TOKEN secret.
+# One-time setup on npmjs.com: package settings > Trusted publishing > GitHub Actions,
+# repository Ahmadhussain0335/social-agent-skills, workflow release.yml, environment npm.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Tag must match package.json version
+        run: |
+          version="v$(node -p "require('./package.json').version")"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Release tag $GITHUB_REF_NAME does not match package.json $version"
+            exit 1
+          fi
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+      - run: git diff --exit-code -- skills/
+      - run: npm test
+      - name: Publish
+        run: npm publish --provenance --access public
