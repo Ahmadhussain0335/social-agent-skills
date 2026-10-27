@@ -194,7 +194,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -258,7 +258,7 @@ function mastodonClient(env = process.env, fetchImpl) {
     throw new PlatformError(
       "MASTODON_ENV_MISSING",
       "MASTODON_INSTANCE and MASTODON_ACCESS_TOKEN must be set.",
-      "See the mastodon-post skill references/setup.md."
+      "See the socialkit-mastodon-post skill references/setup.md."
     );
   }
   return new ApiClient({
@@ -489,7 +489,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to Mastodon through its official API. --publish requires the user's
-approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds: text, media (local files with altText), poll (options.poll).
 options.visibility: public | unlisted | private | direct. scheduledAt at least 5 minutes ahead.

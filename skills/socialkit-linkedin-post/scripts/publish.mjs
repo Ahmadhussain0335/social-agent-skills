@@ -325,7 +325,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -367,7 +367,8 @@ function checkLinkedInPost(draft) {
   if (!["text", "link", "image", "video"].includes(draft.kind)) errors.push("kind must be text, link, image or video");
   if (!draft.text?.trim()) errors.push("text is required");
   if ([...draft.text ?? ""].length > 3e3) errors.push("text exceeds 3,000 characters");
-  if (draft.scheduledAt) errors.push("the LinkedIn API has no scheduling; use content-calendar to publish later");
+  if (draft.scheduledAt)
+    errors.push("the LinkedIn API has no scheduling; use socialkit-content-calendar to publish later");
   if (draft.kind === "link" && !draft.link) errors.push('link posts need "link"');
   if (draft.kind === "link" && !draft.options?.title)
     warnings.push("LinkedIn does not fetch link previews via the API; set options.title for the card");
@@ -577,7 +578,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to LinkedIn (personal profile) through its official API. --publish requires the user's
-approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds: text, link (options.title, options.description), image (local JPG/PNG/GIF),
 video (local MP4). Up to 3,000 characters. No API scheduling.

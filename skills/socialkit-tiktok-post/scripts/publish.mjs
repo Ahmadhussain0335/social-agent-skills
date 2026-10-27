@@ -351,7 +351,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -388,7 +388,7 @@ function need(env, name) {
     throw new PlatformError(
       "TIKTOK_ENV_MISSING",
       `${name} is not set.`,
-      "See the tiktok-post skill references/setup.md."
+      "See the socialkit-tiktok-post skill references/setup.md."
     );
   return v;
 }
@@ -456,7 +456,7 @@ function checkTikTokPost(draft) {
     errors.push("upload a local video file; pulling from a URL needs a verified domain");
   if (media[0] && ![".mp4", ".mov", ".webm"].includes(extname(media[0].source).toLowerCase()))
     errors.push("video must be MP4, MOV or WebM");
-  if (draft.scheduledAt) errors.push("TikTok has no API scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("TikTok has no API scheduling; use socialkit-content-calendar");
   if (!["draft", "direct"].includes(mode)) errors.push('options.mode must be "draft" or "direct"');
   if (mode === "direct") {
     if (!o.privacyLevel)
@@ -652,7 +652,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to TikTok through its official API. --publish requires the user's
-approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kind: video (one local MP4/MOV/WebM).
 options.mode "draft" (default): sent to your TikTok inbox, you post it in the app.

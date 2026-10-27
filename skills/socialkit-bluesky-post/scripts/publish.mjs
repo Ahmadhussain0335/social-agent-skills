@@ -159,7 +159,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -258,7 +258,7 @@ function checkBlueskyPost(draft) {
   if (graphemes(draft.text ?? "") > 300)
     errors.push(`text is ${graphemes(draft.text ?? "")} characters; the limit is 300`);
   if (Buffer.byteLength(draft.text ?? "") > 3e3) errors.push("text exceeds 3,000 bytes");
-  if (draft.scheduledAt) errors.push("Bluesky has no scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("Bluesky has no scheduling; use socialkit-content-calendar");
   if (draft.kind === "images" && (media.length < 1 || media.length > 4 || media.some((m) => m.type !== "image")))
     errors.push("1 to 4 images");
   if (draft.kind === "link" && (!draft.link || !draft.options?.title))
@@ -594,7 +594,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to Bluesky through its official API. --publish requires the user's
-approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds: text (300 characters), images (1-4 local, 2 MB, altText required),
 link (link + options.title, options.description). Links and #hashtags become clickable.

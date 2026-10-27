@@ -413,7 +413,7 @@ function need(env, name) {
     throw new PlatformError(
       "LINKEDIN_ENV_MISSING",
       `${name} is not set.`,
-      "See the linkedin-post skill references/setup.md."
+      "See the socialkit-linkedin-post skill references/setup.md."
     );
   return v;
 }
@@ -463,7 +463,8 @@ function checkLinkedInPost(draft) {
   if (!["text", "link", "image", "video"].includes(draft.kind)) errors.push("kind must be text, link, image or video");
   if (!draft.text?.trim()) errors.push("text is required");
   if ([...draft.text ?? ""].length > 3e3) errors.push("text exceeds 3,000 characters");
-  if (draft.scheduledAt) errors.push("the LinkedIn API has no scheduling; use content-calendar to publish later");
+  if (draft.scheduledAt)
+    errors.push("the LinkedIn API has no scheduling; use socialkit-content-calendar to publish later");
   if (draft.kind === "link" && !draft.link) errors.push('link posts need "link"');
   if (draft.kind === "link" && !draft.options?.title)
     warnings.push("LinkedIn does not fetch link previews via the API; set options.title for the card");
@@ -607,7 +608,7 @@ function need2(env, name) {
     throw new PlatformError(
       "PINTEREST_ENV_MISSING",
       `${name} is not set.`,
-      "See the pinterest-post skill references/setup.md."
+      "See the socialkit-pinterest-post skill references/setup.md."
     );
   return v;
 }
@@ -685,7 +686,7 @@ function checkPinterestPost(draft) {
   if ((draft.text ?? "").length > PIN_LIMITS.description)
     errors.push(`text (description) exceeds ${PIN_LIMITS.description} characters`);
   if (draft.link && draft.link.length > PIN_LIMITS.link) errors.push("link exceeds 2048 characters");
-  if (draft.scheduledAt) errors.push("scheduling is not supported by this skill; use content-calendar");
+  if (draft.scheduledAt) errors.push("scheduling is not supported by this skill; use socialkit-content-calendar");
   if (draft.kind === "image" && (media.length !== 1 || media[0]?.type !== "image"))
     errors.push("image pins need exactly one image");
   if (draft.kind === "carousel" && (media.length < 2 || media.length > 5 || media.some((m) => m.type !== "image")))
@@ -810,7 +811,7 @@ function need3(env, name) {
     throw new PlatformError(
       "TIKTOK_ENV_MISSING",
       `${name} is not set.`,
-      "See the tiktok-post skill references/setup.md."
+      "See the socialkit-tiktok-post skill references/setup.md."
     );
   return v;
 }
@@ -902,7 +903,7 @@ function checkTikTokPost(draft) {
     errors.push("upload a local video file; pulling from a URL needs a verified domain");
   if (media[0] && ![".mp4", ".mov", ".webm"].includes(extname3(media[0].source).toLowerCase()))
     errors.push("video must be MP4, MOV or WebM");
-  if (draft.scheduledAt) errors.push("TikTok has no API scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("TikTok has no API scheduling; use socialkit-content-calendar");
   if (!["draft", "direct"].includes(mode)) errors.push('options.mode must be "draft" or "direct"');
   if (mode === "direct") {
     if (!o.privacyLevel)
@@ -1044,7 +1045,7 @@ function checkXPost(draft) {
   if (!["text", "media", "poll"].includes(draft.kind)) errors.push("kind must be text, media or poll");
   if (!text.trim() && media.length === 0) errors.push("text or media is required");
   if (xLength(text) > 280) errors.push(`text is ${xLength(text)} weighted characters; the limit is 280`);
-  if (draft.scheduledAt) errors.push("the X API has no scheduling; use content-calendar to publish later");
+  if (draft.scheduledAt) errors.push("the X API has no scheduling; use socialkit-content-calendar to publish later");
   const images = media.filter((m) => m.type === "image");
   const videos = media.filter((m) => m.type === "video");
   if (images.length > 4) errors.push("at most 4 images");
@@ -1072,7 +1073,11 @@ function checkXPost(draft) {
 function clientId(env) {
   const id = env[X_ENV.clientId];
   if (!id)
-    throw new PlatformError("X_ENV_MISSING", "X_CLIENT_ID is not set.", "See the x-post skill references/setup.md.");
+    throw new PlatformError(
+      "X_ENV_MISSING",
+      "X_CLIENT_ID is not set.",
+      "See the socialkit-x-post skill references/setup.md."
+    );
   return id;
 }
 async function signInX(env = process.env, onUrl) {

@@ -71,7 +71,7 @@ registerPostPlatform({
     throw new PlatformError(
       "REDDIT_DRAFT_ONLY",
       "Reddit posts are not published automatically.",
-      "Open the draft with the reddit-draft skill, post it on reddit.com yourself, then record the URL with --mark-posted."
+      "Open the draft with the socialkit-reddit-draft skill, post it on reddit.com yourself, then record the URL with --mark-posted."
     );
   }
 });

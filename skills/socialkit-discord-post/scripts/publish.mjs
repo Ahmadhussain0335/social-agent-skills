@@ -145,7 +145,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -182,7 +182,7 @@ ${draft.link}`.trim() : draft.text ?? "";
   if (media.length > 10) errors.push("at most 10 attachments");
   if (media.some((m) => isRemote(m.source)))
     errors.push("attachments must be local files (remote URLs can go in the text)");
-  if (draft.scheduledAt) errors.push("webhooks have no scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("webhooks have no scheduling; use socialkit-content-calendar");
   if (/@(everyone|here)|<@&\d+>/.test(text) && !draft.options?.allowMentions) {
     warnings.push("@everyone, @here and role mentions will not ping unless options.allowMentions is true");
   }
@@ -372,7 +372,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to Discord through its official API. --publish requires the user's
-approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds: text (2,000 characters), media (up to 10 local attachments).
 options.webhookEnv names another env var holding a different channel's webhook URL.

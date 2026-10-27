@@ -337,7 +337,11 @@ var FACEBOOK_SCOPES = [
 function need(env, name) {
   const value = env[name];
   if (!value) {
-    throw new PlatformError("META_ENV_MISSING", `${name} is not set.`, "See the meta-auth skill references/setup.md.");
+    throw new PlatformError(
+      "META_ENV_MISSING",
+      `${name} is not set.`,
+      "See the socialkit-meta-auth skill references/setup.md."
+    );
   }
   return value;
 }
@@ -406,7 +410,7 @@ function loadFacebookTokens(env = process.env) {
     throw new PlatformError(
       "META_NOT_AUTHORISED",
       "No Facebook/Instagram sign-in found.",
-      "Run the meta-auth skill: node scripts/auth.mjs --platform facebook --start, then --finish."
+      "Run the socialkit-meta-auth skill: node scripts/auth.mjs --platform facebook --start, then --finish."
     );
   }
   return tokens;
@@ -441,7 +445,7 @@ function need2(env, name) {
     throw new PlatformError(
       "THREADS_ENV_MISSING",
       `${name} is not set.`,
-      "See the meta-auth skill references/setup.md."
+      "See the socialkit-meta-auth skill references/setup.md."
     );
   return value;
 }
@@ -507,14 +511,14 @@ function loadThreadsTokens(env = process.env, now = Date.now()) {
     throw new PlatformError(
       "THREADS_NOT_AUTHORISED",
       "No Threads sign-in found.",
-      "Run the meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish."
+      "Run the socialkit-meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish."
     );
   }
   if (Date.parse(tokens.expiresAt) <= now) {
     throw new PlatformError(
       "THREADS_TOKEN_EXPIRED",
       "The Threads token has expired and cannot be refreshed.",
-      "Sign in again with the meta-auth skill (--platform threads --start)."
+      "Sign in again with the socialkit-meta-auth skill (--platform threads --start)."
     );
   }
   return tokens;
@@ -626,7 +630,7 @@ Tokens are stored in the user config directory with mode 0600. Facebook Page tok
 expire; Threads tokens last 60 days and are refreshed automatically when publishing.
 
 --with-engagement also requests reading comments and replying, and insights (needed by
-social-inbox and social-analytics). Without it only posting permissions are requested.
+socialkit-social-inbox and socialkit-social-analytics). Without it only posting permissions are requested.
 
 Environment:
   facebook: META_APP_ID, META_APP_SECRET, META_REDIRECT_URI, optional META_LOGIN_CONFIG_ID

@@ -351,7 +351,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -394,7 +394,7 @@ function need(env, name) {
     throw new PlatformError(
       "PINTEREST_ENV_MISSING",
       `${name} is not set.`,
-      "See the pinterest-post skill references/setup.md."
+      "See the socialkit-pinterest-post skill references/setup.md."
     );
   return v;
 }
@@ -451,7 +451,7 @@ function checkPinterestPost(draft) {
   if ((draft.text ?? "").length > PIN_LIMITS.description)
     errors.push(`text (description) exceeds ${PIN_LIMITS.description} characters`);
   if (draft.link && draft.link.length > PIN_LIMITS.link) errors.push("link exceeds 2048 characters");
-  if (draft.scheduledAt) errors.push("scheduling is not supported by this skill; use content-calendar");
+  if (draft.scheduledAt) errors.push("scheduling is not supported by this skill; use socialkit-content-calendar");
   if (draft.kind === "image" && (media.length !== 1 || media[0]?.type !== "image"))
     errors.push("image pins need exactly one image");
   if (draft.kind === "carousel" && (media.length < 2 || media.length > 5 || media.some((m) => m.type !== "image")))
@@ -643,7 +643,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to Pinterest through its official API. --publish requires the user's
-approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds: image (local file or https), carousel (2-5 images), video (local + options.coverImageUrl).
 Required: options.boardId. Optional: options.title (100), text = description (800), link, altText (500).

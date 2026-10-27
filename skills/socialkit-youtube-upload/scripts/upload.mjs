@@ -25749,7 +25749,7 @@ function authorisedClient(env = process.env) {
     throw new PlatformError(
       "YT_NOT_AUTHORISED",
       "No YouTube OAuth token found.",
-      "Ask the user to run the youtube-upload auth script in their own terminal: node scripts/auth.mjs"
+      "Ask the user to run the socialkit-youtube-upload auth script in their own terminal: node scripts/auth.mjs"
     );
   }
   if (isTooOpen(path)) log.warn(`${path} is readable by other users. Run: chmod 600 "${path}"`);
@@ -26283,7 +26283,7 @@ runScript(
         throw new PlatformError(
           "FILE_MISSING",
           `Video not found: ${plan.file}`,
-          "Run the youtube-assemble script first or pass --file."
+          "Run the socialkit-youtube-assemble script first or pass --file."
         );
       }
       writeUploadPlan(dir, plan);
@@ -26291,7 +26291,7 @@ runScript(
         ok: true,
         wrote: FILES.uploadPlan,
         plan,
-        next: "Show the user the final video and this plan, then ask them to run: node <youtube-pipeline>/scripts/state.mjs --dir <dir> --approve upload"
+        next: "Show the user the final video and this plan, then ask them to run: node <socialkit-youtube-pipeline>/scripts/state.mjs --dir <dir> --approve upload"
       });
       return;
     }

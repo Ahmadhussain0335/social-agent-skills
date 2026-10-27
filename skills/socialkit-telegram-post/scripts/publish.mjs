@@ -145,7 +145,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -186,7 +186,7 @@ function checkTelegramPost(draft) {
     errors.push(`${draft.kind} posts need exactly one file`);
   if (draft.kind === "album" && (media.length < TG_LIMITS.albumMin || media.length > TG_LIMITS.albumMax))
     errors.push("albums need 2-10 photos or videos");
-  if (draft.scheduledAt) errors.push("the Telegram Bot API has no scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("the Telegram Bot API has no scheduling; use socialkit-content-calendar");
   const mode = draft.options?.parseMode;
   if (mode !== void 0 && mode !== "HTML")
     errors.push('options.parseMode may only be "HTML" (plain text is the default)');
@@ -420,7 +420,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to Telegram through its official API. --publish requires the user's
-approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds: text (4,096), photo, video, album (2-10), captions 1,024.
 Media may be local files or https URLs. options.chatId overrides TELEGRAM_CHAT_ID.

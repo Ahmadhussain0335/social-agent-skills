@@ -351,7 +351,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -405,7 +405,7 @@ function checkXPost(draft) {
   if (!["text", "media", "poll"].includes(draft.kind)) errors.push("kind must be text, media or poll");
   if (!text.trim() && media.length === 0) errors.push("text or media is required");
   if (xLength(text) > 280) errors.push(`text is ${xLength(text)} weighted characters; the limit is 280`);
-  if (draft.scheduledAt) errors.push("the X API has no scheduling; use content-calendar to publish later");
+  if (draft.scheduledAt) errors.push("the X API has no scheduling; use socialkit-content-calendar to publish later");
   const images = media.filter((m) => m.type === "image");
   const videos = media.filter((m) => m.type === "video");
   if (images.length > 4) errors.push("at most 4 images");
@@ -433,7 +433,11 @@ function checkXPost(draft) {
 function clientId(env) {
   const id = env[X_ENV.clientId];
   if (!id)
-    throw new PlatformError("X_ENV_MISSING", "X_CLIENT_ID is not set.", "See the x-post skill references/setup.md.");
+    throw new PlatformError(
+      "X_ENV_MISSING",
+      "X_CLIENT_ID is not set.",
+      "See the socialkit-x-post skill references/setup.md."
+    );
   return id;
 }
 function toToken(res, previous) {
@@ -632,7 +636,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to X through its official API. --publish requires the user's
-approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds:
   text    up to 280 weighted characters (URLs count 23)

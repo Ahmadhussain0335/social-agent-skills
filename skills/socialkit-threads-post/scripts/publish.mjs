@@ -124,14 +124,14 @@ function loadThreadsTokens(env = process.env, now = Date.now()) {
     throw new PlatformError(
       "THREADS_NOT_AUTHORISED",
       "No Threads sign-in found.",
-      "Run the meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish."
+      "Run the socialkit-meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish."
     );
   }
   if (Date.parse(tokens.expiresAt) <= now) {
     throw new PlatformError(
       "THREADS_TOKEN_EXPIRED",
       "The Threads token has expired and cannot be refreshed.",
-      "Sign in again with the meta-auth skill (--platform threads --start)."
+      "Sign in again with the socialkit-meta-auth skill (--platform threads --start)."
     );
   }
   return tokens;
@@ -244,7 +244,7 @@ async function requirePublishApproval(dir, draft) {
     throw new PlatformError(
       "APPROVAL_REQUIRED",
       `Publishing is not approved: ${result.problems.join("; ")}`,
-      "Show the user the final post, then ask them to run the social-core approve command in their own terminal."
+      "Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal."
     );
   }
 }
@@ -582,7 +582,7 @@ function loadFacebookTokens(env = process.env) {
     throw new PlatformError(
       "META_NOT_AUTHORISED",
       "No Facebook/Instagram sign-in found.",
-      "Run the meta-auth skill: node scripts/auth.mjs --platform facebook --start, then --finish."
+      "Run the socialkit-meta-auth skill: node scripts/auth.mjs --platform facebook --start, then --finish."
     );
   }
   return tokens;
@@ -1244,7 +1244,7 @@ var HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to Threads through the official Threads API. --publish requires the
-user's approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+user's approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds:
   text      up to 500 characters, optional "link" attachment

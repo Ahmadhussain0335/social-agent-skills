@@ -25609,14 +25609,14 @@ function loadThreadsTokens(env = process.env, now = Date.now()) {
     throw new PlatformError(
       "THREADS_NOT_AUTHORISED",
       "No Threads sign-in found.",
-      "Run the meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish."
+      "Run the socialkit-meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish."
     );
   }
   if (Date.parse(tokens.expiresAt) <= now) {
     throw new PlatformError(
       "THREADS_TOKEN_EXPIRED",
       "The Threads token has expired and cannot be refreshed.",
-      "Sign in again with the meta-auth skill (--platform threads --start)."
+      "Sign in again with the socialkit-meta-auth skill (--platform threads --start)."
     );
   }
   return tokens;
@@ -26003,7 +26003,7 @@ function loadFacebookTokens(env = process.env) {
     throw new PlatformError(
       "META_NOT_AUTHORISED",
       "No Facebook/Instagram sign-in found.",
-      "Run the meta-auth skill: node scripts/auth.mjs --platform facebook --start, then --finish."
+      "Run the socialkit-meta-auth skill: node scripts/auth.mjs --platform facebook --start, then --finish."
     );
   }
   return tokens;
@@ -26711,7 +26711,7 @@ function checkXPost(draft) {
   if (!["text", "media", "poll"].includes(draft.kind)) errors.push("kind must be text, media or poll");
   if (!text.trim() && media.length === 0) errors.push("text or media is required");
   if (xLength(text) > 280) errors.push(`text is ${xLength(text)} weighted characters; the limit is 280`);
-  if (draft.scheduledAt) errors.push("the X API has no scheduling; use content-calendar to publish later");
+  if (draft.scheduledAt) errors.push("the X API has no scheduling; use socialkit-content-calendar to publish later");
   const images = media.filter((m2) => m2.type === "image");
   const videos = media.filter((m2) => m2.type === "video");
   if (images.length > 4) errors.push("at most 4 images");
@@ -26739,7 +26739,11 @@ function checkXPost(draft) {
 function clientId(env) {
   const id = env[X_ENV.clientId];
   if (!id)
-    throw new PlatformError("X_ENV_MISSING", "X_CLIENT_ID is not set.", "See the x-post skill references/setup.md.");
+    throw new PlatformError(
+      "X_ENV_MISSING",
+      "X_CLIENT_ID is not set.",
+      "See the socialkit-x-post skill references/setup.md."
+    );
   return id;
 }
 function toToken(res, previous) {
@@ -26870,7 +26874,8 @@ function checkLinkedInPost(draft) {
   if (!["text", "link", "image", "video"].includes(draft.kind)) errors.push("kind must be text, link, image or video");
   if (!draft.text?.trim()) errors.push("text is required");
   if ([...draft.text ?? ""].length > 3e3) errors.push("text exceeds 3,000 characters");
-  if (draft.scheduledAt) errors.push("the LinkedIn API has no scheduling; use content-calendar to publish later");
+  if (draft.scheduledAt)
+    errors.push("the LinkedIn API has no scheduling; use socialkit-content-calendar to publish later");
   if (draft.kind === "link" && !draft.link) errors.push('link posts need "link"');
   if (draft.kind === "link" && !draft.options?.title)
     warnings.push("LinkedIn does not fetch link previews via the API; set options.title for the card");
@@ -27013,7 +27018,7 @@ function need(env, name) {
     throw new PlatformError(
       "PINTEREST_ENV_MISSING",
       `${name} is not set.`,
-      "See the pinterest-post skill references/setup.md."
+      "See the socialkit-pinterest-post skill references/setup.md."
     );
   return v;
 }
@@ -27070,7 +27075,7 @@ function checkPinterestPost(draft) {
   if ((draft.text ?? "").length > PIN_LIMITS.description)
     errors.push(`text (description) exceeds ${PIN_LIMITS.description} characters`);
   if (draft.link && draft.link.length > PIN_LIMITS.link) errors.push("link exceeds 2048 characters");
-  if (draft.scheduledAt) errors.push("scheduling is not supported by this skill; use content-calendar");
+  if (draft.scheduledAt) errors.push("scheduling is not supported by this skill; use socialkit-content-calendar");
   if (draft.kind === "image" && (media.length !== 1 || media[0]?.type !== "image"))
     errors.push("image pins need exactly one image");
   if (draft.kind === "carousel" && (media.length < 2 || media.length > 5 || media.some((m2) => m2.type !== "image")))
@@ -27189,7 +27194,7 @@ function need2(env, name) {
     throw new PlatformError(
       "TIKTOK_ENV_MISSING",
       `${name} is not set.`,
-      "See the tiktok-post skill references/setup.md."
+      "See the socialkit-tiktok-post skill references/setup.md."
     );
   return v;
 }
@@ -27257,7 +27262,7 @@ function checkTikTokPost(draft) {
     errors.push("upload a local video file; pulling from a URL needs a verified domain");
   if (media[0] && ![".mp4", ".mov", ".webm"].includes(extname6(media[0].source).toLowerCase()))
     errors.push("video must be MP4, MOV or WebM");
-  if (draft.scheduledAt) errors.push("TikTok has no API scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("TikTok has no API scheduling; use socialkit-content-calendar");
   if (!["draft", "direct"].includes(mode)) errors.push('options.mode must be "draft" or "direct"');
   if (mode === "direct") {
     if (!o.privacyLevel)
@@ -27384,7 +27389,7 @@ function checkTelegramPost(draft) {
     errors.push(`${draft.kind} posts need exactly one file`);
   if (draft.kind === "album" && (media.length < TG_LIMITS.albumMin || media.length > TG_LIMITS.albumMax))
     errors.push("albums need 2-10 photos or videos");
-  if (draft.scheduledAt) errors.push("the Telegram Bot API has no scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("the Telegram Bot API has no scheduling; use socialkit-content-calendar");
   const mode = draft.options?.parseMode;
   if (mode !== void 0 && mode !== "HTML")
     errors.push('options.parseMode may only be "HTML" (plain text is the default)');
@@ -27501,7 +27506,7 @@ ${draft.link}`.trim() : draft.text ?? "";
   if (media.length > 10) errors.push("at most 10 attachments");
   if (media.some((m2) => isRemote(m2.source)))
     errors.push("attachments must be local files (remote URLs can go in the text)");
-  if (draft.scheduledAt) errors.push("webhooks have no scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("webhooks have no scheduling; use socialkit-content-calendar");
   if (/@(everyone|here)|<@&\d+>/.test(text) && !draft.options?.allowMentions) {
     warnings.push("@everyone, @here and role mentions will not ping unless options.allowMentions is true");
   }
@@ -27602,7 +27607,7 @@ function checkBlueskyPost(draft) {
   if (graphemes(draft.text ?? "") > 300)
     errors.push(`text is ${graphemes(draft.text ?? "")} characters; the limit is 300`);
   if (Buffer.byteLength(draft.text ?? "") > 3e3) errors.push("text exceeds 3,000 bytes");
-  if (draft.scheduledAt) errors.push("Bluesky has no scheduling; use content-calendar");
+  if (draft.scheduledAt) errors.push("Bluesky has no scheduling; use socialkit-content-calendar");
   if (draft.kind === "images" && (media.length < 1 || media.length > 4 || media.some((m2) => m2.type !== "image")))
     errors.push("1 to 4 images");
   if (draft.kind === "link" && (!draft.link || !draft.options?.title))
@@ -27849,7 +27854,7 @@ function mastodonClient(env = process.env, fetchImpl) {
     throw new PlatformError(
       "MASTODON_ENV_MISSING",
       "MASTODON_INSTANCE and MASTODON_ACCESS_TOKEN must be set.",
-      "See the mastodon-post skill references/setup.md."
+      "See the socialkit-mastodon-post skill references/setup.md."
     );
   }
   return new ApiClient({
@@ -27962,7 +27967,7 @@ function clientSecret(env) {
     throw new PlatformError(
       "GBP_CLIENT_SECRET_MISSING",
       "Set GBP_CLIENT_SECRET_PATH (or YT_CLIENT_SECRET_PATH) to a Desktop app OAuth client JSON.",
-      "See the google-business-post skill references/setup.md."
+      "See the socialkit-google-business-post skill references/setup.md."
     );
   }
   const installed = JSON.parse(readFileSync5(path, "utf8")).installed;
@@ -27978,7 +27983,7 @@ function gbpClient(base, env = process.env, fetchImpl) {
     throw new PlatformError(
       "GBP_NOT_AUTHORISED",
       "Not signed in to Google Business Profile.",
-      "Run the google-business-post auth script."
+      "Run the socialkit-google-business-post auth script."
     );
   const { clientId: clientId2, clientSecret: secret } = clientSecret(env);
   const auth = new import_google_auth_library.OAuth2Client({ clientId: clientId2, clientSecret: secret });
@@ -28020,7 +28025,7 @@ function checkGbpPost(draft) {
     errors.push(`${draft.kind} posts need options.event { title, schedule }`);
   if ((draft.media ?? []).some((m2) => !isRemote(m2.source) || m2.type !== "image"))
     errors.push("media must be photos at public https URLs");
-  if (draft.scheduledAt) errors.push("local posts cannot be scheduled via the API; use content-calendar");
+  if (draft.scheduledAt) errors.push("local posts cannot be scheduled via the API; use socialkit-content-calendar");
   return { ok: errors.length === 0, errors, warnings };
 }
 async function publishGbp(client, draft) {
@@ -28140,7 +28145,7 @@ registerPostPlatform({
     throw new PlatformError(
       "REDDIT_DRAFT_ONLY",
       "Reddit posts are not published automatically.",
-      "Open the draft with the reddit-draft skill, post it on reddit.com yourself, then record the URL with --mark-posted."
+      "Open the draft with the socialkit-reddit-draft skill, post it on reddit.com yourself, then record the URL with --mark-posted."
     );
   }
 });
@@ -28437,7 +28442,7 @@ reactions, ...). Platforms count differently, so the report does not combine the
 one engagement score.
 
 Requirements: YouTube needs YT_API_KEY. Instagram insights and Threads metrics need the
-meta-auth sign-in with --with-engagement. Platforms without a metrics API are listed as such.
+socialkit-meta-auth sign-in with --with-engagement. Platforms without a metrics API are listed as such.
 `;
 runScript(HELP, { root: { type: "string" }, out: { type: "string" } }, async (flags) => {
   const root = resolve2(requireFlag(flags, "root"));

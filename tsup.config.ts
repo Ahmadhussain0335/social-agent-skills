@@ -36,7 +36,7 @@ const skillScripts = {
   'skills/socialkit-pinterest-post/scripts/auth': 'src/scripts/platforms/oauth-auth.ts',
   'skills/socialkit-tiktok-post/scripts/auth': 'src/scripts/platforms/oauth-auth.ts',
   'skills/socialkit-google-business-post/scripts/auth': 'src/scripts/platforms/gbp-auth.ts',
-  'skills/socialkit-reddit-draft/scripts/draft': 'src/scripts/platforms/socialkit-reddit-draft.ts',
+  'skills/socialkit-reddit-draft/scripts/draft': 'src/scripts/platforms/reddit-draft.ts',
 };
 
 export default defineConfig([
