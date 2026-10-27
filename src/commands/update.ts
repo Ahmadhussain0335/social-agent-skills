@@ -1,6 +1,6 @@
 import type { Scope } from '../agents';
-import { bundledSkills } from '../core/catalog';
-import { type InstallAction, installSkill, type Outcome } from '../core/installer';
+import { bundledSkills, RENAMED_SKILLS } from '../core/catalog';
+import { type InstallAction, installSkill, type Outcome, uninstallSkill } from '../core/installer';
 import { type CliContext, installContext } from './context';
 import { reportInstall } from './install';
 import { findInstalled } from './list';
@@ -20,6 +20,22 @@ export function runUpdate(opts: UpdateOptions, ctx: CliContext): Outcome<Install
 
   const outcomes: Outcome<InstallAction>[] = [];
   for (const item of findInstalled(ctx, scopes)) {
+    const renamedTo = RENAMED_SKILLS.get(item.skill);
+    const target = renamedTo ? bundled.get(renamedTo) : undefined;
+    if (renamedTo && target) {
+      const outcome = installSkill(target, item.skillsDir, ictx);
+      outcomes.push(outcome);
+      reportInstall(outcome, ctx);
+      // The old copy goes away only once the new one is in place. Edited copies are moved
+      // to the backup folder by uninstallSkill, never deleted.
+      if (outcome.action !== 'skipped') {
+        const removed = uninstallSkill(item.skill, item.skillsDir, { ...ictx, force: true });
+        ctx.out(
+          `  renamed   ${item.skill} -> ${renamedTo}${removed.backup ? ` (your edited copy: ${removed.backup})` : ''}`,
+        );
+      }
+      continue;
+    }
     const source = bundled.get(item.skill);
     if (!source) {
       ctx.err(`  ${item.skill} is no longer part of the package; leaving it in place.`);

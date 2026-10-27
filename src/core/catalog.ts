@@ -63,3 +63,41 @@ export function withDependencies(selected: readonly string[], all: readonly Bund
   selected.forEach(visit);
   return [...result.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
+
+// Skills renamed in 0.2.0 with the socialkit- prefix (unique names on ClawHub).
+// `update` installs the new name and removes the old managed copy.
+const RENAMED_IN_0_2_0 = [
+  'bluesky-post',
+  'content-calendar',
+  'content-repurpose',
+  'discord-post',
+  'facebook-post',
+  'google-business-post',
+  'instagram-post',
+  'linkedin-post',
+  'mastodon-post',
+  'meta-auth',
+  'pinterest-post',
+  'reddit-draft',
+  'social-analytics',
+  'social-core',
+  'social-inbox',
+  'telegram-post',
+  'threads-post',
+  'tiktok-post',
+  'whatsapp-broadcast',
+  'whatsapp-support-bot',
+  'whatsapp-templates',
+  'x-post',
+  'youtube-assemble',
+  'youtube-metadata',
+  'youtube-pipeline',
+  'youtube-research',
+  'youtube-script',
+  'youtube-upload',
+  'youtube-visuals',
+];
+
+export const RENAMED_SKILLS: ReadonlyMap<string, string> = new Map(
+  RENAMED_IN_0_2_0.map((old) => [old, `socialkit-${old}`]),
+);
