@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.0 (2026-10-27)
+
+### Changed
+
+- All 29 skills are renamed with the `socialkit-` prefix (for example `x-post` is now
+  `socialkit-x-post`). Ten of the old names were already used by other publishers on
+  ClawHub, so a bare install such as `openclaw skills install x-post` could install
+  someone else's skill. Every `socialkit-*` name is unique, so bare installs work:
+  `openclaw skills install socialkit-youtube-pipeline`.
+
+### Migration
+
+- `social-skills update` moves 0.1.0 installs to the new names: it installs each renamed
+  skill and removes the old copy. A copy you edited is moved to the backup folder, never
+  deleted.
+
 ## 0.1.0 (2026-10-24)
 
 First release, published to npm as `social-agent-skills` (commands `social-agent-skills` and `social-skills`).
