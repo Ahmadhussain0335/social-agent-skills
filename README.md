@@ -53,7 +53,7 @@ Credentials come only from environment variables (keep them in
 
 ## Install
 
-Two ways to install, same skills.
+Three ways to install, same skills.
 
 From GitHub, with the [skills CLI](https://github.com/vercel-labs/skills):
 
@@ -66,6 +66,17 @@ From npm, with this package's installer:
 ```sh
 npx social-agent-skills install
 ```
+
+From [ClawHub](https://clawhub.ai/Ahmadhussain0335), one skill at a time:
+
+```sh
+clawhub install @Ahmadhussain0335/youtube-pipeline
+```
+
+Each skill has its own ClawHub page, linked in the [skills table](#skills). Skills that
+build on others list them under `metadata.requires` in their `SKILL.md` (every skill
+needs `social-core`); install those too, or use the npm installer, which adds them
+automatically.
 
 The installer detects installed agents, asks which to target, and copies the skills into
 the directories those agents read:
@@ -104,35 +115,35 @@ installed skill versions.
 
 | Skill | What it does |
 | - | - |
-| `social-core` | Voice, tone, formatting, disclosure and approval rules shared by all skills |
-| `youtube-pipeline` | Runs the whole workflow and stops at three approval checkpoints |
-| `youtube-research` | Searches YouTube and summarises top videos and gaps (API key) |
-| `youtube-script` | Writes the script with sources and visual cues |
-| `youtube-visuals` | Builds a shot list from the script; the user supplies the assets |
-| `youtube-assemble` | Renders the MP4 with FFmpeg |
-| `youtube-metadata` | Title, description, chapters, tags, thumbnail brief; validated |
-| `youtube-upload` | Uploads the approved video; private by default |
-| `meta-auth` | Connects your own Meta app to your Pages, Instagram and Threads |
-| `facebook-post` | Text, link, photo(s) or video on a Facebook Page; scheduling |
-| `instagram-post` | Image, carousel, Reel or Story on a Business/Creator account |
-| `threads-post` | Text (with link), image, video or carousel on Threads |
-| `whatsapp-templates` | Drafts templates and submits them for Meta review |
-| `whatsapp-broadcast` | Sends an approved template to opted-in contacts, with a cost estimate |
-| `whatsapp-support-bot` | Answers FAQs and order status from an approved knowledge base |
-| `x-post` | Post, media or poll on X; shows the pay-per-use cost before approval |
-| `linkedin-post` | Text, link, image or video on your personal LinkedIn profile |
-| `pinterest-post` | Image, carousel or video Pin on a chosen board |
-| `tiktok-post` | Sends a video to your TikTok inbox as a draft (default) or posts privately |
-| `telegram-post` | Message, photo, video or album to a channel your bot administers |
-| `discord-post` | Message with attachments through a channel webhook; never pings by default |
-| `bluesky-post` | Post with images or a link card, using an app password |
-| `mastodon-post` | Post, media or poll on your instance; scheduling supported |
-| `google-business-post` | Update, event or offer on your Business Profile; review replies via the inbox |
-| `reddit-draft` | Drafts a rule-following post and a prefilled reddit.com link; never posts |
-| `content-repurpose` | One source into separate drafts per platform |
-| `content-calendar` | Publishes approved posts across platforms when they are due |
-| `social-analytics` | One report of each platform's own metrics |
-| `social-inbox` | Collects comments and reviews, sends only approved replies |
+| [`social-core`](https://clawhub.ai/Ahmadhussain0335/skills/social-core) | Voice, tone, formatting, disclosure and approval rules shared by all skills |
+| [`youtube-pipeline`](https://clawhub.ai/Ahmadhussain0335/skills/youtube-pipeline) | Runs the whole workflow and stops at three approval checkpoints |
+| [`youtube-research`](https://clawhub.ai/Ahmadhussain0335/skills/youtube-research) | Searches YouTube and summarises top videos and gaps (API key) |
+| [`youtube-script`](https://clawhub.ai/Ahmadhussain0335/skills/youtube-script) | Writes the script with sources and visual cues |
+| [`youtube-visuals`](https://clawhub.ai/Ahmadhussain0335/skills/youtube-visuals) | Builds a shot list from the script; the user supplies the assets |
+| [`youtube-assemble`](https://clawhub.ai/Ahmadhussain0335/skills/youtube-assemble) | Renders the MP4 with FFmpeg |
+| [`youtube-metadata`](https://clawhub.ai/Ahmadhussain0335/skills/youtube-metadata) | Title, description, chapters, tags, thumbnail brief; validated |
+| [`youtube-upload`](https://clawhub.ai/Ahmadhussain0335/skills/youtube-upload) | Uploads the approved video; private by default |
+| [`meta-auth`](https://clawhub.ai/Ahmadhussain0335/skills/meta-auth) | Connects your own Meta app to your Pages, Instagram and Threads |
+| [`facebook-post`](https://clawhub.ai/Ahmadhussain0335/skills/facebook-post) | Text, link, photo(s) or video on a Facebook Page; scheduling |
+| [`instagram-post`](https://clawhub.ai/Ahmadhussain0335/skills/instagram-post) | Image, carousel, Reel or Story on a Business/Creator account |
+| [`threads-post`](https://clawhub.ai/Ahmadhussain0335/skills/threads-post) | Text (with link), image, video or carousel on Threads |
+| [`whatsapp-templates`](https://clawhub.ai/Ahmadhussain0335/skills/whatsapp-templates) | Drafts templates and submits them for Meta review |
+| [`whatsapp-broadcast`](https://clawhub.ai/Ahmadhussain0335/skills/whatsapp-broadcast) | Sends an approved template to opted-in contacts, with a cost estimate |
+| [`whatsapp-support-bot`](https://clawhub.ai/Ahmadhussain0335/skills/whatsapp-support-bot) | Answers FAQs and order status from an approved knowledge base |
+| [`x-post`](https://clawhub.ai/Ahmadhussain0335/skills/x-post) | Post, media or poll on X; shows the pay-per-use cost before approval |
+| [`linkedin-post`](https://clawhub.ai/Ahmadhussain0335/skills/linkedin-post) | Text, link, image or video on your personal LinkedIn profile |
+| [`pinterest-post`](https://clawhub.ai/Ahmadhussain0335/skills/pinterest-post) | Image, carousel or video Pin on a chosen board |
+| [`tiktok-post`](https://clawhub.ai/Ahmadhussain0335/skills/tiktok-post) | Sends a video to your TikTok inbox as a draft (default) or posts privately |
+| [`telegram-post`](https://clawhub.ai/Ahmadhussain0335/skills/telegram-post) | Message, photo, video or album to a channel your bot administers |
+| [`discord-post`](https://clawhub.ai/Ahmadhussain0335/skills/discord-post) | Message with attachments through a channel webhook; never pings by default |
+| [`bluesky-post`](https://clawhub.ai/Ahmadhussain0335/skills/bluesky-post) | Post with images or a link card, using an app password |
+| [`mastodon-post`](https://clawhub.ai/Ahmadhussain0335/skills/mastodon-post) | Post, media or poll on your instance; scheduling supported |
+| [`google-business-post`](https://clawhub.ai/Ahmadhussain0335/skills/google-business-post) | Update, event or offer on your Business Profile; review replies via the inbox |
+| [`reddit-draft`](https://clawhub.ai/Ahmadhussain0335/skills/reddit-draft) | Drafts a rule-following post and a prefilled reddit.com link; never posts |
+| [`content-repurpose`](https://clawhub.ai/Ahmadhussain0335/skills/content-repurpose) | One source into separate drafts per platform |
+| [`content-calendar`](https://clawhub.ai/Ahmadhussain0335/skills/content-calendar) | Publishes approved posts across platforms when they are due |
+| [`social-analytics`](https://clawhub.ai/Ahmadhussain0335/skills/social-analytics) | One report of each platform's own metrics |
+| [`social-inbox`](https://clawhub.ai/Ahmadhussain0335/skills/social-inbox) | Collects comments and reviews, sends only approved replies |
 
 Ask your agent something like "make a YouTube video about BLE pairing for beginners" and
 it will follow `youtube-pipeline`.
