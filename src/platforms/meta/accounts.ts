@@ -17,7 +17,7 @@ export const META_ENV = {
   configId: 'META_LOGIN_CONFIG_ID',
 } as const;
 
-// Requested only with --with-engagement, for social-inbox and social-analytics.
+// Requested only with --with-engagement, for socialkit-social-inbox and socialkit-social-analytics.
 export const FACEBOOK_ENGAGEMENT_SCOPES = [
   'pages_read_user_engagement',
   'pages_manage_engagement',
@@ -50,7 +50,11 @@ export interface FacebookTokens {
 function need(env: NodeJS.ProcessEnv, name: string): string {
   const value = env[name];
   if (!value) {
-    throw new PlatformError('META_ENV_MISSING', `${name} is not set.`, 'See the meta-auth skill references/setup.md.');
+    throw new PlatformError(
+      'META_ENV_MISSING',
+      `${name} is not set.`,
+      'See the socialkit-meta-auth skill references/setup.md.',
+    );
   }
   return value;
 }
@@ -144,7 +148,7 @@ export function loadFacebookTokens(env: NodeJS.ProcessEnv = process.env): Facebo
     throw new PlatformError(
       'META_NOT_AUTHORISED',
       'No Facebook/Instagram sign-in found.',
-      'Run the meta-auth skill: node scripts/auth.mjs --platform facebook --start, then --finish.',
+      'Run the socialkit-meta-auth skill: node scripts/auth.mjs --platform facebook --start, then --finish.',
     );
   }
   return tokens;

@@ -6,7 +6,7 @@ Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow
 
 Publishes post.json to a Facebook Page through the official Graph API. Pages only:
 the API cannot post to personal profiles. --publish requires the user's approval
-(social-core post.mjs --approve) and refuses to post the same folder twice.
+(socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds:
   text     message only                       link    message + "link"
@@ -16,7 +16,7 @@ post.json kinds:
 scheduledAt: 10 minutes to 30 days ahead (videos up to 6 months).
 options.pageId: required when the sign-in covers several Pages.
 
-Environment: META_APP_SECRET (adds appsecret_proof). Sign in with the meta-auth skill first.
+Environment: META_APP_SECRET (adds appsecret_proof). Sign in with the socialkit-meta-auth skill first.
 `;
 
 runPublishScript({ help: HELP, platform: 'facebook' });

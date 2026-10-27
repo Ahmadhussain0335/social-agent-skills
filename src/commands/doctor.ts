@@ -26,7 +26,7 @@ export function runDoctor(ctx: CliContext): Check[] {
       : {
           name: 'FFmpeg',
           status: 'fail',
-          detail: `no working ffmpeg found (needed for youtube-assemble). ${FFMPEG_MISSING_HINT}`,
+          detail: `no working ffmpeg found (needed for socialkit-youtube-assemble). ${FFMPEG_MISSING_HINT}`,
         },
   );
 

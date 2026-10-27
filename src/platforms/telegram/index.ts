@@ -29,7 +29,7 @@ export function checkTelegramPost(draft: PostDraft): CheckResult {
     errors.push(`${draft.kind} posts need exactly one file`);
   if (draft.kind === 'album' && (media.length < TG_LIMITS.albumMin || media.length > TG_LIMITS.albumMax))
     errors.push('albums need 2-10 photos or videos');
-  if (draft.scheduledAt) errors.push('the Telegram Bot API has no scheduling; use content-calendar');
+  if (draft.scheduledAt) errors.push('the Telegram Bot API has no scheduling; use socialkit-content-calendar');
   const mode = draft.options?.parseMode;
   if (mode !== undefined && mode !== 'HTML')
     errors.push('options.parseMode may only be "HTML" (plain text is the default)');

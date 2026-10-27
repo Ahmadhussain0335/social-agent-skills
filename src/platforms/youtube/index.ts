@@ -7,13 +7,13 @@ export const youtubePlatform: Platform = {
   id: 'youtube',
   label: 'YouTube',
   skills: [
-    'youtube-pipeline',
-    'youtube-research',
-    'youtube-script',
-    'youtube-visuals',
-    'youtube-assemble',
-    'youtube-metadata',
-    'youtube-upload',
+    'socialkit-youtube-pipeline',
+    'socialkit-youtube-research',
+    'socialkit-youtube-script',
+    'socialkit-youtube-visuals',
+    'socialkit-youtube-assemble',
+    'socialkit-youtube-metadata',
+    'socialkit-youtube-upload',
   ],
   env: [
     {
@@ -32,7 +32,7 @@ export const youtubePlatform: Platform = {
       name: YT_ENV.apiKey,
       required: false,
       kind: 'secret',
-      description: 'API key for youtube-research (search, statistics)',
+      description: 'API key for socialkit-youtube-research (search, statistics)',
     },
   ],
   knownLimits: [
@@ -48,7 +48,7 @@ export const youtubePlatform: Platform = {
       checks.push({
         name: YT_ENV.clientSecretPath,
         status: 'warn',
-        detail: 'not set (needed for youtube-upload only)',
+        detail: 'not set (needed for socialkit-youtube-upload only)',
       });
     } else if (!existsSync(secret)) {
       checks.push({ name: YT_ENV.clientSecretPath, status: 'fail', detail: `file not found: ${secret}` });
@@ -75,7 +75,7 @@ export const youtubePlatform: Platform = {
       checks.push({
         name: 'YouTube OAuth token',
         status: 'warn',
-        detail: `not found at ${token}; run the youtube-upload auth script`,
+        detail: `not found at ${token}; run the socialkit-youtube-upload auth script`,
       });
     } else {
       checks.push({
@@ -90,7 +90,7 @@ export const youtubePlatform: Platform = {
     checks.push({
       name: YT_ENV.apiKey,
       status: env[YT_ENV.apiKey] ? 'ok' : 'warn',
-      detail: env[YT_ENV.apiKey] ? 'set' : 'not set (needed for youtube-research only)',
+      detail: env[YT_ENV.apiKey] ? 'set' : 'not set (needed for socialkit-youtube-research only)',
     });
     return checks;
   },

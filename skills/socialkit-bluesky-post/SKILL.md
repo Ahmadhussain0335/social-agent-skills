@@ -1,16 +1,16 @@
 ---
-name: bluesky-post
+name: socialkit-bluesky-post
 description: Publishes a Bluesky post with optional images or a link card through the AT Protocol, using the user's app password, after the user approves it. Use when the user wants to post on Bluesky.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: bluesky
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # Bluesky post
 
-Apply social-core. Official API only. Setup: [setup](references/setup.md).
+Apply socialkit-social-core. Official API only. Setup: [setup](references/setup.md).
 
 ## Rules
 
@@ -21,12 +21,12 @@ Apply social-core. Official API only. Setup: [setup](references/setup.md).
 ## Steps
 
 1. Check the credentials in [setup](references/setup.md) are set (environment variables only).
-2. Create the post folder with the social-core post script:
-   `node <social-core>/scripts/post.mjs --init --dir bsky-<slug> --platform bluesky --kind <text|images|link>`
+2. Create the post folder with the socialkit-social-core post script:
+   `node <socialkit-social-core>/scripts/post.mjs --init --dir bsky-<slug> --platform bluesky --kind <text|images|link>`
 3. Write `post.json` (text, media with alt text, options). See `node scripts/publish.mjs --help`.
 4. Validate: `node scripts/publish.mjs --check --dir bsky-<slug>`
 5. Stop. Show the post. Ask the user to approve in their own terminal:
-   `node <social-core>/scripts/post.mjs --approve --dir bsky-<slug>`
+   `node <socialkit-social-core>/scripts/post.mjs --approve --dir bsky-<slug>`
 6. Publish: `node scripts/publish.mjs --publish --dir bsky-<slug>` and report the result.
 
 ## Failure handling

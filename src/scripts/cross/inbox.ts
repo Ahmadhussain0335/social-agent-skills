@@ -27,7 +27,7 @@ Actions:
   --approve                 user approves replies.json; interactive terminal only
   --send                    send the approved replies
 
-Replying needs meta-auth --with-engagement for Facebook, Instagram and Threads.
+Replying needs socialkit-meta-auth --with-engagement for Facebook, Instagram and Threads.
 YouTube comments are read with YT_API_KEY; replying on YouTube is not supported.
 `;
 

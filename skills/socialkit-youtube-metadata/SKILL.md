@@ -1,16 +1,16 @@
 ---
-name: youtube-metadata
+name: socialkit-youtube-metadata
 description: Writes YouTube packaging for a video - title options, description with chapters and links, tags, category, made-for-kids declaration and a thumbnail brief - into metadata.json and validates it against YouTube limits. Use when the user needs a YouTube title, description, tags, chapters or thumbnail idea.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: youtube
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # YouTube metadata
 
-Apply social-core. Titles and thumbnails must describe what the video delivers.
+Apply socialkit-social-core. Titles and thumbnails must describe what the video delivers.
 
 ## Steps
 

@@ -40,7 +40,7 @@ export function authorisedClient(env: NodeJS.ProcessEnv = process.env): youtube_
     throw new PlatformError(
       'YT_NOT_AUTHORISED',
       'No YouTube OAuth token found.',
-      'Ask the user to run the youtube-upload auth script in their own terminal: node scripts/auth.mjs',
+      'Ask the user to run the socialkit-youtube-upload auth script in their own terminal: node scripts/auth.mjs',
     );
   }
   if (isTooOpen(path)) log.warn(`${path} is readable by other users. Run: chmod 600 "${path}"`);

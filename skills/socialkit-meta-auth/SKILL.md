@@ -1,11 +1,11 @@
 ---
-name: meta-auth
+name: socialkit-meta-auth
 description: Connects the user's own Meta app to their Facebook Pages, linked Instagram professional accounts and Threads profile, and stores the tokens securely. Use before the first Facebook, Instagram or Threads post, when a Meta token expired or was revoked, or to check which Pages and accounts are connected.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: meta
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # Meta auth

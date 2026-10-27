@@ -1,17 +1,17 @@
 ---
-name: content-calendar
+name: socialkit-content-calendar
 description: Plans and publishes social posts across platforms from one calendar file, reporting which posts are scheduled, due, waiting for approval or already published, and publishing approved posts when they are due. Use when the user wants a posting schedule, content calendar, or to publish queued posts at set times.
 license: MIT
 metadata:
   author: Ahmad Hussain
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # Content calendar
 
 Each calendar entry points at a post folder (made by a platform posting skill or by
-content-repurpose) and a publish time. The calendar never approves anything: every post
-still needs the user's own approval through the social-core post script.
+socialkit-content-repurpose) and a publish time. The calendar never approves anything: every post
+still needs the user's own approval through the socialkit-social-core post script.
 
 ## Steps
 

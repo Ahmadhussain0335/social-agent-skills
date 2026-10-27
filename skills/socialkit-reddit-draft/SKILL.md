@@ -1,11 +1,11 @@
 ---
-name: reddit-draft
+name: socialkit-reddit-draft
 description: Drafts a Reddit post for a specific subreddit that follows its rules, then gives the user a prefilled reddit.com link to review and post it themselves. Never posts automatically. Use when the user wants to share something on Reddit or a subreddit.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: reddit
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # Reddit draft
@@ -18,7 +18,7 @@ See [setup](references/setup.md).
 
 1. Ask which subreddit. Ask the user to paste the subreddit's rules (sidebar and posting
    guidelines), or read them with the user; do not scrape Reddit.
-2. Create the folder: `node <social-core>/scripts/post.mjs --init --dir rd-<slug> --platform reddit --kind <self|link>`
+2. Create the folder: `node <socialkit-social-core>/scripts/post.mjs --init --dir rd-<slug> --platform reddit --kind <self|link>`
 3. Write `post.json`: options.subreddit (no r/), options.title (300 characters), text or
    link, options.flair if the subreddit requires it, and options.rulesChecked: true once
    the rules were checked. Write for that community: no marketing tone, disclose

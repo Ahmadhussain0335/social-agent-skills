@@ -65,7 +65,7 @@ export async function requirePublishApproval(dir: string, draft: PostDraft): Pro
     throw new PlatformError(
       'APPROVAL_REQUIRED',
       `Publishing is not approved: ${result.problems.join('; ')}`,
-      'Show the user the final post, then ask them to run the social-core approve command in their own terminal.',
+      'Show the user the final post, then ask them to run the socialkit-social-core approve command in their own terminal.',
     );
   }
 }

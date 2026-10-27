@@ -25,7 +25,7 @@ Tokens are stored in the user config directory with mode 0600. Facebook Page tok
 expire; Threads tokens last 60 days and are refreshed automatically when publishing.
 
 --with-engagement also requests reading comments and replying, and insights (needed by
-social-inbox and social-analytics). Without it only posting permissions are requested.
+socialkit-social-inbox and socialkit-social-analytics). Without it only posting permissions are requested.
 
 Environment:
   facebook: META_APP_ID, META_APP_SECRET, META_REDIRECT_URI, optional META_LOGIN_CONFIG_ID

@@ -60,7 +60,7 @@ export function checkXPost(draft: PostDraft): CheckResult {
   if (!['text', 'media', 'poll'].includes(draft.kind)) errors.push('kind must be text, media or poll');
   if (!text.trim() && media.length === 0) errors.push('text or media is required');
   if (xLength(text) > 280) errors.push(`text is ${xLength(text)} weighted characters; the limit is 280`);
-  if (draft.scheduledAt) errors.push('the X API has no scheduling; use content-calendar to publish later');
+  if (draft.scheduledAt) errors.push('the X API has no scheduling; use socialkit-content-calendar to publish later');
   const images = media.filter((m) => m.type === 'image');
   const videos = media.filter((m) => m.type === 'video');
   if (images.length > 4) errors.push('at most 4 images');
@@ -89,7 +89,11 @@ export function checkXPost(draft: PostDraft): CheckResult {
 function clientId(env: NodeJS.ProcessEnv): string {
   const id = env[X_ENV.clientId];
   if (!id)
-    throw new PlatformError('X_ENV_MISSING', 'X_CLIENT_ID is not set.', 'See the x-post skill references/setup.md.');
+    throw new PlatformError(
+      'X_ENV_MISSING',
+      'X_CLIENT_ID is not set.',
+      'See the socialkit-x-post skill references/setup.md.',
+    );
   return id;
 }
 

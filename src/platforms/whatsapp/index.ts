@@ -4,7 +4,7 @@ import { WA_ENV } from './config';
 export const whatsappPlatform: Platform = {
   id: 'whatsapp',
   label: 'WhatsApp Business Platform (Cloud API)',
-  skills: ['whatsapp-templates', 'whatsapp-broadcast', 'whatsapp-support-bot'],
+  skills: ['socialkit-whatsapp-templates', 'socialkit-whatsapp-broadcast', 'socialkit-whatsapp-support-bot'],
   env: [
     { name: WA_ENV.accessToken, required: true, kind: 'secret', description: 'System User access token' },
     { name: WA_ENV.phoneNumberId, required: true, kind: 'value', description: 'Business phone number ID' },
@@ -33,7 +33,7 @@ export const whatsappPlatform: Platform = {
         detail:
           missing.length === 0
             ? 'credentials set'
-            : `not configured (${missing.join(', ')} unset); only needed for whatsapp-* skills`,
+            : `not configured (${missing.join(', ')} unset); only needed for socialkit-whatsapp-* skills`,
       },
     ];
     if (missing.length === 0 && (!env[WA_ENV.appSecret] || !env[WA_ENV.verifyToken])) {

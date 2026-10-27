@@ -41,7 +41,7 @@ function need(env: NodeJS.ProcessEnv, name: string): string {
     throw new PlatformError(
       'PINTEREST_ENV_MISSING',
       `${name} is not set.`,
-      'See the pinterest-post skill references/setup.md.',
+      'See the socialkit-pinterest-post skill references/setup.md.',
     );
   return v;
 }
@@ -137,7 +137,7 @@ export function checkPinterestPost(draft: PostDraft): CheckResult {
   if ((draft.text ?? '').length > PIN_LIMITS.description)
     errors.push(`text (description) exceeds ${PIN_LIMITS.description} characters`);
   if (draft.link && draft.link.length > PIN_LIMITS.link) errors.push('link exceeds 2048 characters');
-  if (draft.scheduledAt) errors.push('scheduling is not supported by this skill; use content-calendar');
+  if (draft.scheduledAt) errors.push('scheduling is not supported by this skill; use socialkit-content-calendar');
   if (draft.kind === 'image' && (media.length !== 1 || media[0]?.type !== 'image'))
     errors.push('image pins need exactly one image');
   if (draft.kind === 'carousel' && (media.length < 2 || media.length > 5 || media.some((m) => m.type !== 'image')))

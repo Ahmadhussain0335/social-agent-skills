@@ -1,15 +1,15 @@
 ---
-name: content-repurpose
+name: socialkit-content-repurpose
 description: Turns one source (a video script, blog post, transcript, talk or notes) into separate, platform-appropriate drafts for Facebook, Instagram, Threads and other connected platforms, each in its own post folder ready for approval and publishing. Use when the user wants to repurpose, cross-post or adapt one piece of content for several social platforms.
 license: MIT
 metadata:
   author: Ahmad Hussain
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # Content repurpose
 
-Apply social-core voice rules to every draft. Each platform gets its own text written
+Apply socialkit-social-core voice rules to every draft. Each platform gets its own text written
 for that platform, not the same text pasted everywhere. See
 [adapting guide](references/adapting.md).
 
@@ -22,8 +22,8 @@ for that platform, not the same text pasted everywhere. See
    platform's limit, add media and alt text, keep claims identical to the source.
 5. Validate all: `node scripts/repurpose.mjs --check --out <folder>`
 6. Show every draft side by side. For each one the user wants, they approve it with the
-   social-core post script in their own terminal. Publish with the platform's posting
-   skill, or add the folders to a content-calendar.
+   socialkit-social-core post script in their own terminal. Publish with the platform's posting
+   skill, or add the folders to a socialkit-content-calendar.
 
 ## Output contract
 

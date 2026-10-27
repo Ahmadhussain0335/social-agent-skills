@@ -29,7 +29,7 @@ ships shared keys. Generated from `docs/platforms/youtube-setup.md`; edit it the
    `chmod 600 ~/.config/social-skills/youtube/client_secret.json`
 3. Export the path (add to your shell profile, not to a committed file):
    `export YT_CLIENT_SECRET_PATH="$HOME/.config/social-skills/youtube/client_secret.json"`
-4. Authorise your channel from the youtube-upload skill folder:
+4. Authorise your channel from the socialkit-youtube-upload skill folder:
    `node scripts/auth.mjs`
    The token is stored at `~/.config/social-skills/youtube/token.json` (mode 0600), or
    at `YT_TOKEN_PATH` if set. The script refuses to store it inside a git repository.

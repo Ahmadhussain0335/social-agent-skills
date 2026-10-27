@@ -12,7 +12,7 @@
 ## Adding a platform
 
 Single-post platforms implement one contract, `PostPlatform` in
-`src/platforms/posting.ts`, which gives them content-calendar, repurpose, analytics and
+`src/platforms/posting.ts`, which gives them socialkit-content-calendar, repurpose, analytics and
 inbox support for free.
 
 1. Create `src/platforms/<id>/index.ts`: a `check()` that enforces the documented limits
@@ -25,7 +25,7 @@ inbox support for free.
 4. Add a doctor entry in `src/platforms/env-platforms.ts`.
 5. Add `src/scripts/platforms/<id>-publish.ts` (and an auth script if needed) and list
    them in `tsup.config.ts`.
-6. Add `skills/<id>-post/SKILL.md` with `metadata.platform` and `metadata.requires: social-core`.
+6. Add `skills/socialkit-<id>-post/SKILL.md` with `metadata.platform` and `metadata.requires: socialkit-social-core`.
 7. Write `docs/platforms/<id>-setup.md` once and register it in `tools/sync-refs.mjs`.
 8. Add tests in `test/` for the limits and the request shape, then
    `npm run build && npm run check`, and commit the generated scripts.

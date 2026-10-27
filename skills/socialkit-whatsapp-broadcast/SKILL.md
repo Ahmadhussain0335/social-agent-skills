@@ -1,11 +1,11 @@
 ---
-name: whatsapp-broadcast
+name: socialkit-whatsapp-broadcast
 description: Sends an approved WhatsApp template to opted-in contacts only through the official WhatsApp Cloud API, after showing recipients, exclusions and an estimated cost and getting the user's approval. Use when the user wants to message a list of customers on WhatsApp, send a WhatsApp campaign, announcement or bulk update.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: whatsapp
-  requires: social-core whatsapp-templates
+  requires: socialkit-social-core socialkit-whatsapp-templates
 ---
 
 # WhatsApp broadcast

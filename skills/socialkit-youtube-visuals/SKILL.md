@@ -1,11 +1,11 @@
 ---
-name: youtube-visuals
+name: socialkit-youtube-visuals
 description: Turns an approved YouTube script into a shot list (shot-list.json) that maps each script section to a visual asset - user footage, screen recordings, slides, images or licensed stock - with durations, plus an asset checklist. Use when planning B-roll, visuals, scenes or slides for a YouTube video.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: youtube
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # YouTube visuals
@@ -34,6 +34,6 @@ or from a source the user has rights to use.
 
 ## Failure handling
 
-- No script: ask for it or follow youtube-script first.
+- No script: ask for it or follow socialkit-youtube-script first.
 - User has no rights to an asset: replace it; never suggest pulling clips from other
   creators' videos.

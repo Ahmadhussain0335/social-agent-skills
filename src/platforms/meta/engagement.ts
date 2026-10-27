@@ -5,8 +5,8 @@ import { GRAPH_FACEBOOK, graphVersion } from './config';
 import { waitForContainer } from './containers';
 import { GraphClient } from './graph';
 
-// Read-side calls for social-analytics and social-inbox. Comments and insights need the
-// permissions requested by meta-auth --with-engagement.
+// Read-side calls for socialkit-social-analytics and socialkit-social-inbox. Comments and insights need the
+// permissions requested by socialkit-meta-auth --with-engagement.
 
 function pageClient(env: NodeJS.ProcessEnv, page: PageAccount): GraphClient {
   return new GraphClient({
@@ -102,7 +102,7 @@ export async function instagramMetrics(mediaId: string, env: NodeJS.ProcessEnv):
     };
     for (const m of insights.data ?? []) metrics[m.name] = count(m.total_value?.value ?? m.values?.[0]?.value);
   } catch {
-    // Insights need instagram_manage_insights (meta-auth --with-engagement); counts still work.
+    // Insights need instagram_manage_insights (socialkit-meta-auth --with-engagement); counts still work.
   }
   return metrics;
 }

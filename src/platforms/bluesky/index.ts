@@ -72,7 +72,7 @@ export function checkBlueskyPost(draft: PostDraft): CheckResult {
   if (graphemes(draft.text ?? '') > 300)
     errors.push(`text is ${graphemes(draft.text ?? '')} characters; the limit is 300`);
   if (Buffer.byteLength(draft.text ?? '') > 3000) errors.push('text exceeds 3,000 bytes');
-  if (draft.scheduledAt) errors.push('Bluesky has no scheduling; use content-calendar');
+  if (draft.scheduledAt) errors.push('Bluesky has no scheduling; use socialkit-content-calendar');
   if (draft.kind === 'images' && (media.length < 1 || media.length > 4 || media.some((m) => m.type !== 'image')))
     errors.push('1 to 4 images');
   if (draft.kind === 'link' && (!draft.link || !draft.options?.title))

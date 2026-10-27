@@ -16,9 +16,9 @@ describe('bundled skills', () => {
     expect(validateSkillDir(join(skillsRoot, name))).toEqual([]);
   });
 
-  it('every skill except social-core requires social-core', () => {
+  it('every skill except socialkit-social-core requires socialkit-social-core', () => {
     for (const skill of bundledSkills(skillsRoot)) {
-      if (skill.name !== 'social-core') expect(skill.requires).toContain('social-core');
+      if (skill.name !== 'socialkit-social-core') expect(skill.requires).toContain('socialkit-social-core');
     }
   });
 

@@ -24,7 +24,7 @@ export function checkDiscordPost(draft: PostDraft): CheckResult {
   if (media.length > 10) errors.push('at most 10 attachments');
   if (media.some((m) => isRemote(m.source)))
     errors.push('attachments must be local files (remote URLs can go in the text)');
-  if (draft.scheduledAt) errors.push('webhooks have no scheduling; use content-calendar');
+  if (draft.scheduledAt) errors.push('webhooks have no scheduling; use socialkit-content-calendar');
   if (/@(everyone|here)|<@&\d+>/.test(text) && !draft.options?.allowMentions) {
     warnings.push('@everyone, @here and role mentions will not ping unless options.allowMentions is true');
   }

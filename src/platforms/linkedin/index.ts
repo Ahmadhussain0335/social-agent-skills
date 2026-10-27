@@ -37,7 +37,7 @@ function need(env: NodeJS.ProcessEnv, name: string): string {
     throw new PlatformError(
       'LINKEDIN_ENV_MISSING',
       `${name} is not set.`,
-      'See the linkedin-post skill references/setup.md.',
+      'See the socialkit-linkedin-post skill references/setup.md.',
     );
   return v;
 }
@@ -98,7 +98,8 @@ export function checkLinkedInPost(draft: PostDraft): CheckResult {
   if (!['text', 'link', 'image', 'video'].includes(draft.kind)) errors.push('kind must be text, link, image or video');
   if (!draft.text?.trim()) errors.push('text is required');
   if ([...(draft.text ?? '')].length > 3000) errors.push('text exceeds 3,000 characters');
-  if (draft.scheduledAt) errors.push('the LinkedIn API has no scheduling; use content-calendar to publish later');
+  if (draft.scheduledAt)
+    errors.push('the LinkedIn API has no scheduling; use socialkit-content-calendar to publish later');
   if (draft.kind === 'link' && !draft.link) errors.push('link posts need "link"');
   if (draft.kind === 'link' && !draft.options?.title)
     warnings.push('LinkedIn does not fetch link previews via the API; set options.title for the card');

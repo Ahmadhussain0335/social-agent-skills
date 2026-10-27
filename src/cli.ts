@@ -27,7 +27,7 @@ targetFlags(
   program
     .command('install')
     .description("copy skills into each selected agent's skills directory")
-    .option('--skill <name...>', 'only these skills (dependencies such as social-core are added)')
+    .option('--skill <name...>', 'only these skills (dependencies such as socialkit-social-core are added)')
     .option('--force', 'replace skills you modified locally (your copy is backed up first)'),
 ).action(async (opts) => {
   await runInstall(opts, ctx);

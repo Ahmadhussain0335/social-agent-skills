@@ -1,11 +1,11 @@
 ---
-name: whatsapp-support-bot
+name: socialkit-whatsapp-support-bot
 description: Sets up and runs a business-specific WhatsApp support bot on the official Cloud API that answers customers only from an approved knowledge base (FAQs, order status, opening hours, bookings), handles opt-outs, and hands everything else to a person. Use when the user wants automatic WhatsApp replies for their business. Not for general-purpose chatbots or AI assistants.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: whatsapp
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # WhatsApp support bot
@@ -24,7 +24,7 @@ it into open-ended conversation, and do not generate replies on the fly.
 1. `node scripts/bot.mjs --init --dir wa-bot`
 2. With the user, write `support-kb.json` from [the example](assets/support-kb.example.json):
    business name, hand-off message, FAQs (keywords and exact answers), optional order
-   lookup from an exported CSV. Apply social-core voice.
+   lookup from an exported CSV. Apply socialkit-social-core voice.
 3. `node scripts/bot.mjs --check --dir wa-bot`, then try messages:
    `node scripts/bot.mjs --test "what time do you open?" --dir wa-bot`
 4. Stop. Ask the user to approve the replies in their own terminal:

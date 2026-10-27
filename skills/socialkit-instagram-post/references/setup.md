@@ -59,7 +59,7 @@ export THREADS_REDIRECT_URI="https://<your-domain>/oauth/"
 
 ## 5. Sign in
 
-From the meta-auth skill folder:
+From the socialkit-meta-auth skill folder:
 
 ```sh
 node scripts/auth.mjs --platform facebook --start     # prints a sign-in URL

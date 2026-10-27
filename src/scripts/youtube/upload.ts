@@ -66,7 +66,7 @@ runScript(
         throw new PlatformError(
           'FILE_MISSING',
           `Video not found: ${plan.file}`,
-          'Run the youtube-assemble script first or pass --file.',
+          'Run the socialkit-youtube-assemble script first or pass --file.',
         );
       }
       writeUploadPlan(dir, plan);
@@ -74,7 +74,7 @@ runScript(
         ok: true,
         wrote: FILES.uploadPlan,
         plan,
-        next: 'Show the user the final video and this plan, then ask them to run: node <youtube-pipeline>/scripts/state.mjs --dir <dir> --approve upload',
+        next: 'Show the user the final video and this plan, then ask them to run: node <socialkit-youtube-pipeline>/scripts/state.mjs --dir <dir> --approve upload',
       });
       return;
     }

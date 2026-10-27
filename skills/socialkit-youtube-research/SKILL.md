@@ -1,11 +1,11 @@
 ---
-name: youtube-research
+name: socialkit-youtube-research
 description: Researches a YouTube topic with the official YouTube Data API v3 - top videos, view and engagement statistics, titles, tags and gaps - and writes research.md for a video project. Use when the user wants topic ideas, competitor or trend research, or evidence for a YouTube video.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: youtube
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # YouTube research

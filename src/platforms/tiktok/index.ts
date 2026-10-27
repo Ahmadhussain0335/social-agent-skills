@@ -38,7 +38,7 @@ function need(env: NodeJS.ProcessEnv, name: string): string {
     throw new PlatformError(
       'TIKTOK_ENV_MISSING',
       `${name} is not set.`,
-      'See the tiktok-post skill references/setup.md.',
+      'See the socialkit-tiktok-post skill references/setup.md.',
     );
   return v;
 }
@@ -151,7 +151,7 @@ export function checkTikTokPost(draft: PostDraft): CheckResult {
     errors.push('upload a local video file; pulling from a URL needs a verified domain');
   if (media[0] && !['.mp4', '.mov', '.webm'].includes(extname(media[0].source).toLowerCase()))
     errors.push('video must be MP4, MOV or WebM');
-  if (draft.scheduledAt) errors.push('TikTok has no API scheduling; use content-calendar');
+  if (draft.scheduledAt) errors.push('TikTok has no API scheduling; use socialkit-content-calendar');
   if (!['draft', 'direct'].includes(mode)) errors.push('options.mode must be "draft" or "direct"');
   if (mode === 'direct') {
     // Content Sharing Guidelines: privacy must be chosen by the user, interactions off unless chosen.

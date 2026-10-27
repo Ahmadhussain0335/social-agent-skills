@@ -58,7 +58,7 @@ New business portfolios can register 2 numbers (20 after business verification).
 - From 2026-10-01: utility templates inside the service window are no longer free, and
   service (free-form) replies are charged after 1,000 free per month per number.
 - There is no pricing API. Copy the rates you need from the rate card into `rates.json`;
-  see the whatsapp-broadcast skill's references/pricing.md.
+  see the socialkit-whatsapp-broadcast skill's references/pricing.md.
 - Rate card: https://business.whatsapp.com/products/platform-pricing
 
 ## 6. Webhooks (support bot only)

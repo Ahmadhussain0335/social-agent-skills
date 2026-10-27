@@ -1,16 +1,16 @@
 ---
-name: instagram-post
+name: socialkit-instagram-post
 description: Publishes an Instagram image, carousel, Reel or Story to a Business or Creator account through the official Instagram Graph API, after validating caption limits and getting the user's approval. Use when the user wants to post to Instagram. Personal Instagram accounts are not supported by the API.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: meta
-  requires: social-core meta-auth
+  requires: socialkit-social-core socialkit-meta-auth
 ---
 
 # Instagram post
 
-Apply social-core. Setup: [setup](references/setup.md). Sign in with meta-auth
+Apply socialkit-social-core. Setup: [setup](references/setup.md). Sign in with socialkit-meta-auth
 (`--platform facebook`); the Instagram account must be linked to a connected Page.
 
 ## Media rules
@@ -23,12 +23,12 @@ Apply social-core. Setup: [setup](references/setup.md). Sign in with meta-auth
 
 ## Steps
 
-1. `node <social-core>/scripts/post.mjs --init --dir ig-<slug> --platform instagram --kind <image|carousel|reel|story>`
+1. `node <socialkit-social-core>/scripts/post.mjs --init --dir ig-<slug> --platform instagram --kind <image|carousel|reel|story>`
 2. Write `post.json` caption (`text`) within 2,200 characters, 30 hashtags, 20 mentions;
    add `altText` to images.
 3. `node scripts/publish.mjs --check --dir ig-<slug>`
 4. Stop. Ask the user to approve in their own terminal:
-   `node <social-core>/scripts/post.mjs --approve --dir ig-<slug>`
+   `node <socialkit-social-core>/scripts/post.mjs --approve --dir ig-<slug>`
 5. `node scripts/publish.mjs --publish --dir ig-<slug>`. Report the permalink and the
    remaining daily quota.
 
@@ -36,5 +36,5 @@ Apply social-core. Setup: [setup](references/setup.md). Sign in with meta-auth
 
 - Subcode 2207052: the media URL is not publicly reachable.
 - `IG_DAILY_LIMIT` or subcode 2207042: daily publishing limit reached; try tomorrow.
-- `IG_ACCOUNT_UNKNOWN`: link a Business/Creator account to the Page, then run meta-auth again.
+- `IG_ACCOUNT_UNKNOWN`: link a Business/Creator account to the Page, then run socialkit-meta-auth again.
 - `META_MEDIA_TIMEOUT`: the video is still processing; nothing was published.

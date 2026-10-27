@@ -1,12 +1,12 @@
 ---
-name: youtube-upload
+name: socialkit-youtube-upload
 description: Uploads an approved video to YouTube with the official Data API v3 - private by default, optional scheduled publish time, AI or synthetic content disclosure, and custom thumbnail - after the user approves the exact file and settings. Use when the user wants to upload, publish or schedule a YouTube video, or to connect their YouTube channel.
 license: MIT
 compatibility: Requires Node.js 22.12+, network access, and the user's own Google Cloud OAuth client.
 metadata:
   author: Ahmad Hussain
   platform: youtube
-  requires: social-core youtube-pipeline
+  requires: socialkit-social-core socialkit-youtube-pipeline
 ---
 
 # YouTube upload
@@ -26,7 +26,7 @@ Uses the user's own Google Cloud project. First-time setup: [setup](references/s
 
    Then run:
    `node scripts/upload.mjs --dir <project-folder> --plan [--privacy private] [--schedule 2026-11-01T15:00:00Z] [--synthetic-media] [--notify-subscribers]`
-3. **Approval.** Stop. Ask the user to watch the video and run the youtube-pipeline
+3. **Approval.** Stop. Ask the user to watch the video and run the socialkit-youtube-pipeline
    approve command for the `upload` checkpoint in their own terminal. Do not continue
    until the upload checkpoint verifies.
 4. **Upload.** `node scripts/upload.mjs --dir <project-folder>`

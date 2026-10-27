@@ -1,16 +1,16 @@
 ---
-name: google-business-post
+name: socialkit-google-business-post
 description: Publishes an update, event or offer to the user's Google Business Profile through the official Business Profile APIs after the user approves it. Use when the user wants to post to their Google Business Profile or Google Maps listing.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: google-business
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # Google Business Profile post
 
-Apply social-core. Official API only. Setup: [setup](references/setup.md).
+Apply socialkit-social-core. Official API only. Setup: [setup](references/setup.md).
 
 ## Rules
 
@@ -21,12 +21,12 @@ Apply social-core. Official API only. Setup: [setup](references/setup.md).
 ## Steps
 
 1. Sign in once (browser, local redirect): `node scripts/auth.mjs --platform google-business`
-2. Create the post folder with the social-core post script:
-   `node <social-core>/scripts/post.mjs --init --dir gbp-<slug> --platform google-business --kind <standard|event|offer>`
+2. Create the post folder with the socialkit-social-core post script:
+   `node <socialkit-social-core>/scripts/post.mjs --init --dir gbp-<slug> --platform google-business --kind <standard|event|offer>`
 3. Write `post.json` (text, media with alt text, options). See `node scripts/publish.mjs --help`.
 4. Validate: `node scripts/publish.mjs --check --dir gbp-<slug>`
 5. Stop. Show the post. Ask the user to approve in their own terminal:
-   `node <social-core>/scripts/post.mjs --approve --dir gbp-<slug>`
+   `node <socialkit-social-core>/scripts/post.mjs --approve --dir gbp-<slug>`
 6. Publish: `node scripts/publish.mjs --publish --dir gbp-<slug>` and report the result.
 
 ## Failure handling

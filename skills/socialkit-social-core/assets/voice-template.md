@@ -1,7 +1,7 @@
 # Brand voice
 
 Copy this file to `social-voice.md` in your project root and edit it. Rules here
-override the social-core defaults.
+override the socialkit-social-core defaults.
 
 ## Who we are
 One or two sentences on the brand or creator.

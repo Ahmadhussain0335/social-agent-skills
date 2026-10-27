@@ -18,7 +18,7 @@ reactions, ...). Platforms count differently, so the report does not combine the
 one engagement score.
 
 Requirements: YouTube needs YT_API_KEY. Instagram insights and Threads metrics need the
-meta-auth sign-in with --with-engagement. Platforms without a metrics API are listed as such.
+socialkit-meta-auth sign-in with --with-engagement. Platforms without a metrics API are listed as such.
 `;
 
 runScript(HELP, { root: { type: 'string' }, out: { type: 'string' } }, async (flags) => {

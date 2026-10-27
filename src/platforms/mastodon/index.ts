@@ -55,7 +55,7 @@ export function mastodonClient(env: NodeJS.ProcessEnv = process.env, fetchImpl?:
     throw new PlatformError(
       'MASTODON_ENV_MISSING',
       'MASTODON_INSTANCE and MASTODON_ACCESS_TOKEN must be set.',
-      'See the mastodon-post skill references/setup.md.',
+      'See the socialkit-mastodon-post skill references/setup.md.',
     );
   }
   return new ApiClient({

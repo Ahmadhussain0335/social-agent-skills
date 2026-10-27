@@ -1,11 +1,11 @@
 ---
-name: whatsapp-templates
+name: socialkit-whatsapp-templates
 description: Drafts WhatsApp Business message templates (marketing, utility, authentication), validates them, and submits them to Meta for review through the official WhatsApp Cloud API after the user approves. Use when the user needs a WhatsApp template, wants to check template status or quality, or a broadcast needs a template that does not exist yet.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: whatsapp
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # WhatsApp templates
@@ -20,7 +20,7 @@ Official Cloud API only. Setup: [setup](references/setup.md).
    - AUTHENTICATION: one-time passcodes only
 2. Create a folder and skeleton: `node scripts/templates.mjs --init --dir wa-tpl-<name> --name <name>`
 3. Edit `template.json`: body text with `{{1}}`, `{{2}}` variables in order, an example
-   value for every variable, optional header, footer and buttons. Apply social-core voice.
+   value for every variable, optional header, footer and buttons. Apply socialkit-social-core voice.
 4. Validate: `node scripts/templates.mjs --check --dir wa-tpl-<name>` and fix every error.
 5. Stop. Show the template and ask the user to run, in their own terminal:
    `node scripts/templates.mjs --approve --dir wa-tpl-<name>`

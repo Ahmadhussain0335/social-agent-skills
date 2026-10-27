@@ -17,7 +17,7 @@ export const THREADS_ENV = {
 export const THREADS_GRAPH = 'https://graph.threads.net';
 export const THREADS_VERSION = 'v1.0';
 export const THREADS_SCOPES = ['threads_basic', 'threads_content_publish'];
-// Requested only with --with-engagement, for social-inbox and social-analytics.
+// Requested only with --with-engagement, for socialkit-social-inbox and socialkit-social-analytics.
 export const THREADS_ENGAGEMENT_SCOPES = ['threads_read_replies', 'threads_manage_replies', 'threads_manage_insights'];
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -35,7 +35,7 @@ function need(env: NodeJS.ProcessEnv, name: string): string {
     throw new PlatformError(
       'THREADS_ENV_MISSING',
       `${name} is not set.`,
-      'See the meta-auth skill references/setup.md.',
+      'See the socialkit-meta-auth skill references/setup.md.',
     );
   return value;
 }
@@ -118,14 +118,14 @@ export function loadThreadsTokens(env: NodeJS.ProcessEnv = process.env, now = Da
     throw new PlatformError(
       'THREADS_NOT_AUTHORISED',
       'No Threads sign-in found.',
-      'Run the meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish.',
+      'Run the socialkit-meta-auth skill: node scripts/auth.mjs --platform threads --start, then --finish.',
     );
   }
   if (Date.parse(tokens.expiresAt) <= now) {
     throw new PlatformError(
       'THREADS_TOKEN_EXPIRED',
       'The Threads token has expired and cannot be refreshed.',
-      'Sign in again with the meta-auth skill (--platform threads --start).',
+      'Sign in again with the socialkit-meta-auth skill (--platform threads --start).',
     );
   }
   return tokens;

@@ -7,22 +7,22 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 export const SHARED_REFS = [
-  { source: 'docs/platforms/youtube-setup.md', prefix: 'youtube-', target: 'references/setup.md' },
-  { source: 'docs/platforms/whatsapp-setup.md', prefix: 'whatsapp-', target: 'references/setup.md' },
-  { source: 'docs/platforms/meta-setup.md', prefix: 'meta-', target: 'references/setup.md' },
-  { source: 'docs/platforms/meta-setup.md', prefix: 'facebook-', target: 'references/setup.md' },
-  { source: 'docs/platforms/meta-setup.md', prefix: 'instagram-', target: 'references/setup.md' },
-  { source: 'docs/platforms/meta-setup.md', prefix: 'threads-', target: 'references/setup.md' },
-  { source: 'docs/platforms/x-setup.md', prefix: 'x-post', target: 'references/setup.md' },
-  { source: 'docs/platforms/linkedin-setup.md', prefix: 'linkedin-', target: 'references/setup.md' },
-  { source: 'docs/platforms/pinterest-setup.md', prefix: 'pinterest-', target: 'references/setup.md' },
-  { source: 'docs/platforms/tiktok-setup.md', prefix: 'tiktok-', target: 'references/setup.md' },
-  { source: 'docs/platforms/telegram-setup.md', prefix: 'telegram-', target: 'references/setup.md' },
-  { source: 'docs/platforms/discord-setup.md', prefix: 'discord-', target: 'references/setup.md' },
-  { source: 'docs/platforms/bluesky-setup.md', prefix: 'bluesky-', target: 'references/setup.md' },
-  { source: 'docs/platforms/mastodon-setup.md', prefix: 'mastodon-', target: 'references/setup.md' },
-  { source: 'docs/platforms/google-business-setup.md', prefix: 'google-business-', target: 'references/setup.md' },
-  { source: 'docs/platforms/reddit-setup.md', prefix: 'reddit-', target: 'references/setup.md' },
+  { source: 'docs/platforms/youtube-setup.md', prefix: 'socialkit-youtube-', target: 'references/setup.md' },
+  { source: 'docs/platforms/whatsapp-setup.md', prefix: 'socialkit-whatsapp-', target: 'references/setup.md' },
+  { source: 'docs/platforms/meta-setup.md', prefix: 'socialkit-meta-', target: 'references/setup.md' },
+  { source: 'docs/platforms/meta-setup.md', prefix: 'socialkit-facebook-', target: 'references/setup.md' },
+  { source: 'docs/platforms/meta-setup.md', prefix: 'socialkit-instagram-', target: 'references/setup.md' },
+  { source: 'docs/platforms/meta-setup.md', prefix: 'socialkit-threads-', target: 'references/setup.md' },
+  { source: 'docs/platforms/x-setup.md', prefix: 'socialkit-x-post', target: 'references/setup.md' },
+  { source: 'docs/platforms/linkedin-setup.md', prefix: 'socialkit-linkedin-', target: 'references/setup.md' },
+  { source: 'docs/platforms/pinterest-setup.md', prefix: 'socialkit-pinterest-', target: 'references/setup.md' },
+  { source: 'docs/platforms/tiktok-setup.md', prefix: 'socialkit-tiktok-', target: 'references/setup.md' },
+  { source: 'docs/platforms/telegram-setup.md', prefix: 'socialkit-telegram-', target: 'references/setup.md' },
+  { source: 'docs/platforms/discord-setup.md', prefix: 'socialkit-discord-', target: 'references/setup.md' },
+  { source: 'docs/platforms/bluesky-setup.md', prefix: 'socialkit-bluesky-', target: 'references/setup.md' },
+  { source: 'docs/platforms/mastodon-setup.md', prefix: 'socialkit-mastodon-', target: 'references/setup.md' },
+  { source: 'docs/platforms/google-business-setup.md', prefix: 'socialkit-google-business-', target: 'references/setup.md' },
+  { source: 'docs/platforms/reddit-setup.md', prefix: 'socialkit-reddit-', target: 'references/setup.md' },
 ];
 
 export function syncTargets() {

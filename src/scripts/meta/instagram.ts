@@ -6,7 +6,7 @@ Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow
 
 Publishes post.json to an Instagram Business or Creator account linked to a Facebook
 Page, through the official Instagram Graph API. --publish requires the user's approval
-(social-core post.mjs --approve) and refuses to post the same folder twice.
+(socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds:
   image     one JPEG at a public https URL

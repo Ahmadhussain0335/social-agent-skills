@@ -28,7 +28,7 @@ function clientSecret(env: NodeJS.ProcessEnv): { clientId: string; clientSecret:
     throw new PlatformError(
       'GBP_CLIENT_SECRET_MISSING',
       'Set GBP_CLIENT_SECRET_PATH (or YT_CLIENT_SECRET_PATH) to a Desktop app OAuth client JSON.',
-      'See the google-business-post skill references/setup.md.',
+      'See the socialkit-google-business-post skill references/setup.md.',
     );
   }
   const installed = (
@@ -95,7 +95,7 @@ export function gbpClient(base: string, env: NodeJS.ProcessEnv = process.env, fe
     throw new PlatformError(
       'GBP_NOT_AUTHORISED',
       'Not signed in to Google Business Profile.',
-      'Run the google-business-post auth script.',
+      'Run the socialkit-google-business-post auth script.',
     );
   const { clientId, clientSecret: secret } = clientSecret(env);
   const auth = new OAuth2Client({ clientId, clientSecret: secret });
@@ -142,7 +142,7 @@ export function checkGbpPost(draft: PostDraft): CheckResult {
     errors.push(`${draft.kind} posts need options.event { title, schedule }`);
   if ((draft.media ?? []).some((m) => !isRemote(m.source) || m.type !== 'image'))
     errors.push('media must be photos at public https URLs');
-  if (draft.scheduledAt) errors.push('local posts cannot be scheduled via the API; use content-calendar');
+  if (draft.scheduledAt) errors.push('local posts cannot be scheduled via the API; use socialkit-content-calendar');
   return { ok: errors.length === 0, errors, warnings };
 }
 

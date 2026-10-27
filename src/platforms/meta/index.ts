@@ -7,7 +7,7 @@ import { facebookTokenPath, META_ENV } from './accounts';
 function tokenCheck(name: string, path: string, configured: boolean): Check {
   if (!configured) return { name, status: 'warn', detail: 'not configured; only needed for its posting skills' };
   if (!existsSync(path))
-    return { name, status: 'warn', detail: 'app configured but not signed in; run the meta-auth skill' };
+    return { name, status: 'warn', detail: 'app configured but not signed in; run the socialkit-meta-auth skill' };
   if (isTooOpen(path))
     return { name, status: 'fail', detail: `${path} is readable by other users; run chmod 600 "${path}"` };
   return { name, status: 'ok', detail: `signed in (${path})` };
@@ -16,7 +16,7 @@ function tokenCheck(name: string, path: string, configured: boolean): Check {
 export const metaPlatform: Platform = {
   id: 'meta',
   label: 'Meta (Facebook Pages, Instagram, Threads)',
-  skills: ['meta-auth', 'facebook-post', 'instagram-post', 'threads-post'],
+  skills: ['socialkit-meta-auth', 'socialkit-facebook-post', 'socialkit-instagram-post', 'socialkit-threads-post'],
   env: [
     { name: META_ENV.appId, required: true, kind: 'value', description: 'Facebook/Instagram app ID' },
     { name: META_ENV.appSecret, required: true, kind: 'secret', description: 'Facebook/Instagram app secret' },

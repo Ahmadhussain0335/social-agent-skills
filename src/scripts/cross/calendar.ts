@@ -13,7 +13,7 @@ Usage: node scripts/calendar.mjs <--status|--publish-due> --file <calendar.json>
 
 Plans and publishes posts across platforms from one calendar file. Each entry points at a
 post folder (post.json + media) and a publish time. Nothing is published unless that
-folder's post was approved by the user (social-core post.mjs --approve) and is unchanged.
+folder's post was approved by the user (socialkit-social-core post.mjs --approve) and is unchanged.
 
 calendar.json:
   {

@@ -1,16 +1,16 @@
 ---
-name: youtube-script
+name: socialkit-youtube-script
 description: Writes or revises a YouTube video script (long-form or Shorts) with a hook, structured sections, on-screen cues and a call to action, saved as script.md in the project folder. Use when the user asks for a YouTube script, outline, voiceover text or rewrite of a video draft.
 license: MIT
 metadata:
   author: Ahmad Hussain
   platform: youtube
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # YouTube script
 
-Apply social-core voice rules. Use [the template](assets/script-template.md) and the
+Apply socialkit-social-core voice rules. Use [the template](assets/script-template.md) and the
 [structure guide](references/structure.md).
 
 ## Steps
@@ -22,11 +22,11 @@ Apply social-core voice rules. Use [the template](assets/script-template.md) and
 3. Mark every factual claim that needs a source with `[source: ...]`. Use only sources
    the user provided or that appear in `research.md`. If a claim has no source, flag it
    instead of inventing one.
-4. Mark visual cues in the script with `[VISUAL: ...]` so youtube-visuals can build the
+4. Mark visual cues in the script with `[VISUAL: ...]` so socialkit-youtube-visuals can build the
    shot list.
 5. Present the draft and list open questions. Revise on feedback.
 
-This skill ends at a draft. The script approval checkpoint belongs to youtube-pipeline.
+This skill ends at a draft. The script approval checkpoint belongs to socialkit-youtube-pipeline.
 
 ## Output contract
 

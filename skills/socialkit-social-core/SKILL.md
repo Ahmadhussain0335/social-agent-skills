@@ -1,5 +1,5 @@
 ---
-name: social-core
+name: socialkit-social-core
 description: Shared voice, tone, formatting and publishing-safety rules for all social media skills in this package. Use whenever drafting, editing or reviewing any social media content (YouTube scripts, titles, descriptions, posts, captions, replies), and before any publish step, to apply the user's brand voice and the human-approval rule.
 license: MIT
 metadata:

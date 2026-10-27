@@ -1,10 +1,10 @@
 ---
-name: social-analytics
+name: socialkit-social-analytics
 description: Collects engagement metrics (views, likes, comments, shares, reactions) for everything the user published with these skills on YouTube, Facebook, Instagram, Threads and other connected platforms, and writes one report. Use when the user asks how their posts or videos are performing, wants a social media report, or compares platforms.
 license: MIT
 metadata:
   author: Ahmad Hussain
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # Social analytics
@@ -23,7 +23,7 @@ it covers what was published with this package.
 
 - Report numbers exactly as returned. Do not compute a cross-platform engagement score;
   platforms count differently.
-- Missing permissions (Instagram insights, Threads metrics) need meta-auth with
+- Missing permissions (Instagram insights, Threads metrics) need socialkit-meta-auth with
   `--with-engagement`; say so instead of guessing numbers.
 
 ## Failure handling

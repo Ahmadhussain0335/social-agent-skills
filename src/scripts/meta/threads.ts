@@ -5,7 +5,7 @@ const HELP = `
 Usage: node scripts/publish.mjs <--check|--publish> --dir <post-folder> [--allow-repost]
 
 Publishes post.json to Threads through the official Threads API. --publish requires the
-user's approval (social-core post.mjs --approve) and refuses to post the same folder twice.
+user's approval (socialkit-social-core post.mjs --approve) and refuses to post the same folder twice.
 
 post.json kinds:
   text      up to 500 characters, optional "link" attachment

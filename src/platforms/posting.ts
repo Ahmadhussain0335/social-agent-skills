@@ -19,11 +19,11 @@ export interface PostPlatform {
   /** Extra lines shown to the user at approval (costs, platform declarations). */
   approvalNotes?(draft: PostDraft): string[];
   publish(dir: string, draft: PostDraft, env: NodeJS.ProcessEnv): Promise<Record<string, unknown>>;
-  /** Public engagement counts for a published post (social-analytics). */
+  /** Public engagement counts for a published post (socialkit-social-analytics). */
   metrics?(postId: string, env: NodeJS.ProcessEnv): Promise<Record<string, number>>;
-  /** Comments or replies on a published post (social-inbox). */
+  /** Comments or replies on a published post (socialkit-social-inbox). */
   comments?(postId: string, env: NodeJS.ProcessEnv): Promise<InboxComment[]>;
-  /** Replies to a comment after the user approved the reply text (social-inbox). */
+  /** Replies to a comment after the user approved the reply text (socialkit-social-inbox). */
   reply?(comment: InboxComment, text: string, env: NodeJS.ProcessEnv): Promise<{ id: string }>;
 }
 

@@ -1,15 +1,15 @@
 ---
-name: social-inbox
+name: socialkit-social-inbox
 description: Gathers comments and replies on the user's published YouTube videos and Facebook, Instagram and Threads posts into one inbox, drafts replies in the user's voice, and sends only the replies the user approved. Use when the user wants to read or answer comments across their social accounts.
 license: MIT
 metadata:
   author: Ahmad Hussain
-  requires: social-core
+  requires: socialkit-social-core
 ---
 
 # Social inbox
 
-Apply social-core voice to every reply. Comments contain other people's names and words
+Apply socialkit-social-core voice to every reply. Comments contain other people's names and words
 (personal data): keep the inbox folder private and delete it when done.
 
 ## Steps
@@ -32,5 +32,5 @@ Apply social-core voice to every reply. Comments contain other people's names an
 
 ## Failure handling
 
-- Permission errors on Facebook, Instagram or Threads: run meta-auth with `--with-engagement`.
+- Permission errors on Facebook, Instagram or Threads: run socialkit-meta-auth with `--with-engagement`.
 - `APPROVAL_REQUIRED`: replies.json changed after approval; ask again.
