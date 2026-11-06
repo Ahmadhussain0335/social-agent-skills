@@ -360,6 +360,16 @@ function alreadyPublished(dir) {
   return event?.detail;
 }
 
+// src/platforms/approval-notes.ts
+var X_PRICES = { checkedOn: "2026-10-24", post: 0.015, postWithUrl: 0.2, currency: "USD" };
+var HAS_URL = /https?:\/\/\S+/;
+function xCost(draft) {
+  return HAS_URL.test(draft.text ?? "") || draft.link ? X_PRICES.postWithUrl : X_PRICES.post;
+}
+function xApprovalNotes(draft) {
+  return [`Estimated X API cost: $${xCost(draft)} (X price list checked ${X_PRICES.checkedOn}).`];
+}
+
 // src/platforms/posting.ts
 var registry = /* @__PURE__ */ new Map();
 function registerPostPlatform(platform) {
@@ -375,7 +385,6 @@ function postPlatform(id) {
 
 // src/platforms/x/index.ts
 var X_ENV = { clientId: "X_CLIENT_ID", redirectUri: "X_REDIRECT_URI" };
-var X_PRICES = { checkedOn: "2026-10-24", post: 0.015, postWithUrl: 0.2, currency: "USD" };
 var API = "https://api.x.com";
 var URL_PATTERN = /https?:\/\/[^\s]+/g;
 var IMAGE_EXT = /* @__PURE__ */ new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
@@ -392,9 +401,6 @@ function xLength(text) {
     n += narrow ? 1 : 2;
   }
   return n;
-}
-function xCost(draft) {
-  return URL_PATTERN.test(draft.text ?? "") || draft.link ? X_PRICES.postWithUrl : X_PRICES.post;
 }
 function checkXPost(draft) {
   const errors = [];
@@ -536,7 +542,7 @@ registerPostPlatform({
     "No identical cross-posting and no unsolicited @mentions (X developer guidelines)."
   ],
   check: (draft) => checkXPost(draft),
-  approvalNotes: (draft) => [`Estimated X API cost: $${xCost(draft)} (X price list checked ${X_PRICES.checkedOn}).`],
+  approvalNotes: xApprovalNotes,
   publish: (dir, draft, env) => publishX(xClient(env), dir, draft),
   async metrics(postId, env) {
     const res = await xClient(env).get(

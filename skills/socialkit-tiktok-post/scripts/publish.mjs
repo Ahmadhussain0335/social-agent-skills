@@ -360,6 +360,17 @@ function alreadyPublished(dir) {
   return event?.detail;
 }
 
+// src/platforms/approval-notes.ts
+function tiktokApprovalNotes(draft) {
+  if (draft.options?.mode !== "direct") {
+    return ["Draft mode: the video goes to your TikTok inbox; nothing is public until you post it in the app."];
+  }
+  return [
+    `Posting as ${draft.options?.creatorNickname} with privacy ${draft.options?.privacyLevel}.`,
+    draft.options?.brandedContent ? "By posting, you agree to TikTok's Branded Content Policy and Music Usage Confirmation." : "By posting, you agree to TikTok's Music Usage Confirmation."
+  ];
+}
+
 // src/platforms/posting.ts
 var registry = /* @__PURE__ */ new Map();
 function registerPostPlatform(platform) {
@@ -555,10 +566,7 @@ registerPostPlatform({
     "TikTok allows about 15 posts per day per account across all apps."
   ],
   check: (draft) => checkTikTokPost(draft),
-  approvalNotes: (draft) => draft.options?.mode === "direct" ? [
-    `Posting as ${draft.options?.creatorNickname} with privacy ${draft.options?.privacyLevel}.`,
-    draft.options?.brandedContent ? "By posting, you agree to TikTok's Branded Content Policy and Music Usage Confirmation." : "By posting, you agree to TikTok's Music Usage Confirmation."
-  ] : ["Draft mode: the video goes to your TikTok inbox; nothing is public until you post it in the app."],
+  approvalNotes: tiktokApprovalNotes,
   publish: (dir, draft, env) => publishTikTok(tiktokClient(env), dir, draft)
 });
 

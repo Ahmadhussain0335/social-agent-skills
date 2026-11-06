@@ -269,7 +269,8 @@ function finishPasteback(platform, pastedUrl, env = process.env) {
   writeSecretJson(pendingPath(platform, env), {});
   return { code, redirectUri: pending.redirectUri, verifier: pending.verifier };
 }
-async function loopbackAuthorize(req) {
+async function loopbackAuthorize(input) {
+  let req = input;
   const redirect = new URL(req.redirectUri);
   if (!["127.0.0.1", "localhost", "[::1]"].includes(redirect.hostname) || redirect.protocol !== "http:") {
     throw new PlatformError(
@@ -286,6 +287,10 @@ async function loopbackAuthorize(req) {
     );
     server.listen(Number(redirect.port || 80), redirect.hostname.replace(/^\[|\]$/g, ""), resolve2);
   });
+  if (redirect.port === "0") {
+    redirect.port = String(server.address().port);
+    req = { ...req, redirectUri: redirect.toString() };
+  }
   const url = buildUrl(req, state);
   (req.onUrl ?? ((u) => log.info(`Open this URL in your browser to sign in:
 
@@ -795,6 +800,27 @@ registerPostPlatform({
 // src/platforms/tiktok/index.ts
 import { openAsBlob as openAsBlob3, statSync as statSync3 } from "fs";
 import { extname as extname3, join as join8 } from "path";
+
+// src/platforms/approval-notes.ts
+var X_PRICES = { checkedOn: "2026-10-24", post: 0.015, postWithUrl: 0.2, currency: "USD" };
+var HAS_URL = /https?:\/\/\S+/;
+function xCost(draft) {
+  return HAS_URL.test(draft.text ?? "") || draft.link ? X_PRICES.postWithUrl : X_PRICES.post;
+}
+function xApprovalNotes(draft) {
+  return [`Estimated X API cost: $${xCost(draft)} (X price list checked ${X_PRICES.checkedOn}).`];
+}
+function tiktokApprovalNotes(draft) {
+  if (draft.options?.mode !== "direct") {
+    return ["Draft mode: the video goes to your TikTok inbox; nothing is public until you post it in the app."];
+  }
+  return [
+    `Posting as ${draft.options?.creatorNickname} with privacy ${draft.options?.privacyLevel}.`,
+    draft.options?.brandedContent ? "By posting, you agree to TikTok's Branded Content Policy and Music Usage Confirmation." : "By posting, you agree to TikTok's Music Usage Confirmation."
+  ];
+}
+
+// src/platforms/tiktok/index.ts
 var TT_ENV = {
   clientKey: "TIKTOK_CLIENT_KEY",
   clientSecret: "TIKTOK_CLIENT_SECRET",
@@ -1002,10 +1028,7 @@ registerPostPlatform({
     "TikTok allows about 15 posts per day per account across all apps."
   ],
   check: (draft) => checkTikTokPost(draft),
-  approvalNotes: (draft) => draft.options?.mode === "direct" ? [
-    `Posting as ${draft.options?.creatorNickname} with privacy ${draft.options?.privacyLevel}.`,
-    draft.options?.brandedContent ? "By posting, you agree to TikTok's Branded Content Policy and Music Usage Confirmation." : "By posting, you agree to TikTok's Music Usage Confirmation."
-  ] : ["Draft mode: the video goes to your TikTok inbox; nothing is public until you post it in the app."],
+  approvalNotes: tiktokApprovalNotes,
   publish: (dir, draft, env) => publishTikTok(tiktokClient(env), dir, draft)
 });
 
@@ -1015,7 +1038,6 @@ import { extname as extname4, join as join9 } from "path";
 var X_ENV = { clientId: "X_CLIENT_ID", redirectUri: "X_REDIRECT_URI" };
 var X_DEFAULT_REDIRECT = "http://127.0.0.1:8765/callback";
 var X_SCOPES = ["tweet.read", "tweet.write", "users.read", "media.write", "offline.access"];
-var X_PRICES = { checkedOn: "2026-10-24", post: 0.015, postWithUrl: 0.2, currency: "USD" };
 var API3 = "https://api.x.com";
 var URL_PATTERN = /https?:\/\/[^\s]+/g;
 var IMAGE_EXT = /* @__PURE__ */ new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
@@ -1032,9 +1054,6 @@ function xLength(text) {
     n += narrow ? 1 : 2;
   }
   return n;
-}
-function xCost(draft) {
-  return URL_PATTERN.test(draft.text ?? "") || draft.link ? X_PRICES.postWithUrl : X_PRICES.post;
 }
 function checkXPost(draft) {
   const errors = [];
@@ -1199,7 +1218,7 @@ registerPostPlatform({
     "No identical cross-posting and no unsolicited @mentions (X developer guidelines)."
   ],
   check: (draft) => checkXPost(draft),
-  approvalNotes: (draft) => [`Estimated X API cost: $${xCost(draft)} (X price list checked ${X_PRICES.checkedOn}).`],
+  approvalNotes: xApprovalNotes,
   publish: (dir, draft, env) => publishX(xClient(env), dir, draft),
   async metrics(postId, env) {
     const res = await xClient(env).get(

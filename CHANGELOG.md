@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.3.0 (2026-11-06)
+
+### Changed
+
+- YouTube and Google Business Profile now call Google's REST APIs directly instead of
+  bundling Google's client libraries. Skill scripts shrink from up to 1 MB to at most
+  about 130 KB (all skills: 9.9 MB to 1.6 MB), and no longer contain the cloud-metadata
+  and environment-scanning code from those libraries, which security scanners flagged.
+  Existing YouTube token files keep working.
+- The YouTube API key is sent in the `x-goog-api-key` header instead of the URL.
+- The social-core approval script no longer imports every platform (858 KB to 13 KB).
+
+### Fixed
+
+- The X cost estimate used a global regular expression with `.test()`, which keeps state
+  between calls, so the same post could alternate between the $0.015 and $0.20 estimate.
+
 ## 0.2.0 (2026-10-27)
 
 ### Changed
