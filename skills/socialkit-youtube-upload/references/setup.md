@@ -24,11 +24,11 @@ ships shared keys. Generated from `docs/platforms/youtube-setup.md`; edit it the
 ## 3. OAuth client (uploads)
 
 1. Google Auth Platform > Clients > Create client, application type **Desktop app**.
-2. Download the JSON. Store it outside any git repository, for example
-   `~/.config/social-skills/youtube/client_secret.json`, and restrict it:
-   `chmod 600 ~/.config/social-skills/youtube/client_secret.json`
+2. Download the client JSON. Store it outside any git repository, for example
+   `~/.config/social-skills/youtube/oauth-client.json`, and restrict it:
+   `chmod 600 ~/.config/social-skills/youtube/oauth-client.json`
 3. Export the path (add to your shell profile, not to a committed file):
-   `export YT_CLIENT_SECRET_PATH="$HOME/.config/social-skills/youtube/client_secret.json"`
+   `export YT_CLIENT_SECRET_PATH="$HOME/.config/social-skills/youtube/oauth-client.json"`
 4. Authorise your channel from the socialkit-youtube-upload skill folder:
    `node scripts/auth.mjs`
    The token is stored at `~/.config/social-skills/youtube/token.json` (mode 0600), or

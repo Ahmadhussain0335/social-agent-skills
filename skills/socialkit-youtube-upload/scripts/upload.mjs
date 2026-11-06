@@ -389,9 +389,9 @@ function youtubeRest(auth, fetchImpl = fetch) {
           }
         );
         if (!start.ok) throw await apiError(start);
-        const session = start.headers.get("location");
-        if (!session) throw new Error("YouTube did not return an upload session URL.");
-        const res = await fetchImpl(session, {
+        const uploadUrl = start.headers.get("location");
+        if (!uploadUrl) throw new Error("YouTube did not return a resumable upload URL.");
+        const res = await fetchImpl(uploadUrl, {
           method: "PUT",
           headers: await headers({ "content-type": p.media.mimeType ?? "video/*" }),
           body: await openAsBlob(p.media.path)
