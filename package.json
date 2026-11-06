@@ -1,6 +1,6 @@
 {
   "name": "social-agent-skills",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Agent Skills for social media automation with human approval checkpoints. Works with Claude Code, Codex, Gemini CLI, GitHub Copilot, Cursor and other Agent Skills compatible agents.",
   "keywords": [
     "agent-skills",

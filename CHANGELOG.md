@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.1 (2026-11-06)
+
+### Changed
+
+- The YouTube setup guide and `.env.example` suggest `oauth-client.json` as the file name
+  for the downloaded Google OAuth client. Existing setups are unaffected:
+  `YT_CLIENT_SECRET_PATH` still points to wherever the file is saved.
+- Clearer wording in the YouTube resumable upload code and its error message.
+
 ## 0.3.0 (2026-11-06)
 
 ### Changed
