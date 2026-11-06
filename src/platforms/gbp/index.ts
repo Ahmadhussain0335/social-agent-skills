@@ -1,15 +1,9 @@
-import { spawn } from 'node:child_process';
-import { randomBytes } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
-import { createServer } from 'node:http';
 import { join } from 'node:path';
-import { CodeChallengeMethod, type Credentials, OAuth2Client } from 'google-auth-library';
 import { ApiClient } from '../../shared/api';
 import { platformDir } from '../../shared/config-paths';
 import { PlatformError } from '../../shared/errors';
-import { log } from '../../shared/log';
 import { isRemote, type PostDraft } from '../../shared/post-project';
-import { readSecretJson, writeSecretJson } from '../../shared/token-store';
+import { googleAccessToken, readDesktopClient, signInGoogle } from '../google/oauth';
 import type { CheckResult } from '../meta/facebook';
 import { type InboxComment, registerPostPlatform } from '../posting';
 
@@ -22,20 +16,9 @@ export const GBP_SCOPE = 'https://www.googleapis.com/auth/business.manage';
 const V4 = 'https://mybusiness.googleapis.com/v4';
 const CTA_TYPES = ['BOOK', 'ORDER', 'SHOP', 'LEARN_MORE', 'SIGN_UP', 'CALL'];
 
-function clientSecret(env: NodeJS.ProcessEnv): { clientId: string; clientSecret: string } {
-  const path = env[GBP_ENV.clientSecretPath] || env.YT_CLIENT_SECRET_PATH;
-  if (!path || !existsSync(path)) {
-    throw new PlatformError(
-      'GBP_CLIENT_SECRET_MISSING',
-      'Set GBP_CLIENT_SECRET_PATH (or YT_CLIENT_SECRET_PATH) to a Desktop app OAuth client JSON.',
-      'See the socialkit-google-business-post skill references/setup.md.',
-    );
-  }
-  const installed = (
-    JSON.parse(readFileSync(path, 'utf8')) as { installed?: { client_id: string; client_secret: string } }
-  ).installed;
-  if (!installed) throw new PlatformError('GBP_CLIENT_TYPE', 'The OAuth client must be of type "Desktop app".');
-  return { clientId: installed.client_id, clientSecret: installed.client_secret };
+function desktopClient(env: NodeJS.ProcessEnv) {
+  const name = env[GBP_ENV.clientSecretPath] ? GBP_ENV.clientSecretPath : 'YT_CLIENT_SECRET_PATH';
+  return readDesktopClient(env[GBP_ENV.clientSecretPath] || env.YT_CLIENT_SECRET_PATH, name);
 }
 
 function tokenFile(env: NodeJS.ProcessEnv): string {
@@ -43,74 +26,21 @@ function tokenFile(env: NodeJS.ProcessEnv): string {
 }
 
 /** Loopback sign-in with PKCE, as Google requires for installed apps. */
-export async function signInGbp(env: NodeJS.ProcessEnv = process.env, openBrowser = true): Promise<string> {
-  const { clientId, clientSecret: secret } = clientSecret(env);
-  const server = createServer();
-  await new Promise<void>((r) => server.listen(0, '127.0.0.1', r));
-  const port = (server.address() as { port: number }).port;
-  const redirectUri = `http://127.0.0.1:${port}`;
-  const auth = new OAuth2Client({ clientId, clientSecret: secret, redirectUri });
-  const { codeVerifier, codeChallenge } = await auth.generateCodeVerifierAsync();
-  const state = randomBytes(16).toString('hex');
-  const url = auth.generateAuthUrl({
-    access_type: 'offline',
-    prompt: 'consent',
-    scope: [GBP_SCOPE],
-    state,
-    code_challenge_method: CodeChallengeMethod.S256,
-    code_challenge: codeChallenge,
-  });
-  log.info(`Open this URL and sign in with the Google account that manages the Business Profile:\n\n${url}\n`);
-  if (openBrowser)
-    spawn(process.platform === 'darwin' ? 'open' : 'xdg-open', [url], { stdio: 'ignore', detached: true })
-      .on('error', () => {})
-      .unref();
-  try {
-    const code = await new Promise<string>((resolve, reject) => {
-      const timer = setTimeout(
-        () => reject(new PlatformError('GBP_AUTH_TIMEOUT', 'Timed out waiting for sign-in.')),
-        5 * 60_000,
-      );
-      server.on('request', (req, res) => {
-        const p = new URL(req.url ?? '/', redirectUri).searchParams;
-        if (!p.has('code') && !p.has('error')) return void res.writeHead(404).end();
-        clearTimeout(timer);
-        res.writeHead(200, { 'content-type': 'text/plain' }).end('Signed in. You can close this tab.');
-        if (p.get('state') !== state) reject(new PlatformError('GBP_AUTH_STATE', 'OAuth state mismatch.'));
-        else if (!p.has('code')) reject(new PlatformError('GBP_AUTH_DENIED', String(p.get('error'))));
-        else resolve(p.get('code') as string);
-      });
-    });
-    const { tokens } = await auth.getToken({ code, codeVerifier, redirect_uri: redirectUri });
-    writeSecretJson(tokenFile(env), tokens);
-    return tokenFile(env);
-  } finally {
-    server.close();
-  }
+export function signInGbp(env: NodeJS.ProcessEnv = process.env, openBrowser = true): Promise<string> {
+  return signInGoogle({ client: desktopClient(env), scopes: [GBP_SCOPE], tokenFile: tokenFile(env), openBrowser });
 }
 
 export function gbpClient(base: string, env: NodeJS.ProcessEnv = process.env, fetchImpl?: typeof fetch): ApiClient {
-  const tokens = readSecretJson<Credentials>(tokenFile(env));
-  if (!tokens?.refresh_token)
-    throw new PlatformError(
-      'GBP_NOT_AUTHORISED',
-      'Not signed in to Google Business Profile.',
-      'Run the socialkit-google-business-post auth script.',
-    );
-  const { clientId, clientSecret: secret } = clientSecret(env);
-  const auth = new OAuth2Client({ clientId, clientSecret: secret });
-  auth.setCredentials(tokens);
-  auth.on('tokens', (fresh) =>
-    writeSecretJson(tokenFile(env), {
-      ...tokens,
-      ...fresh,
-      refresh_token: fresh.refresh_token ?? tokens.refresh_token,
-    }),
-  );
+  const client = desktopClient(env);
   return new ApiClient({
     base,
     fetchImpl,
-    token: async () => String((await auth.getAccessToken()).token),
+    token: () =>
+      googleAccessToken({
+        client,
+        tokenFile: tokenFile(env),
+        notSignedInHint: 'Run the socialkit-google-business-post auth script.',
+      }),
     onError: (status, body) => {
       const message = (body as { error?: { message?: string; status?: string } }).error?.message ?? `HTTP ${status}`;
       const hint =

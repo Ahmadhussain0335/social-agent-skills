@@ -1,12 +1,12 @@
-import { createReadStream, existsSync, statSync } from 'node:fs';
+import { existsSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
-import type { youtube_v3 } from '@googleapis/youtube';
 import { hashFile, loadState, saveState, verifyCheckpoint } from '../../shared/approval';
 import { PlatformError } from '../../shared/errors';
 import { spendQuota } from './config';
 import { toYouTubeError } from './errors';
 import { checkMetadata } from './metadata';
 import { checkpointFiles, readMetadata, readUploadPlan } from './pipeline';
+import type { VideoResource, YouTubeApi } from './rest';
 
 export interface UploadResult {
   videoId: string;
@@ -23,7 +23,7 @@ export interface UploadResult {
 export interface UploadOptions {
   dir: string;
   /** Called only after approval and inputs are verified, so credentials are not touched before that. */
-  getApi: () => Pick<youtube_v3.Youtube, 'videos' | 'thumbnails'>;
+  getApi: () => Pick<YouTubeApi, 'videos' | 'thumbnails'>;
   env?: NodeJS.ProcessEnv;
   allowReupload?: boolean;
   onProgress?: (sentBytes: number, totalBytes: number) => void;
@@ -66,34 +66,30 @@ export async function uploadApproved(opts: UploadOptions): Promise<UploadResult>
   const api = opts.getApi();
   spendQuota('videos.insert', env);
   const totalBytes = statSync(videoPath).size;
-  let response: youtube_v3.Schema$Video;
+  let response: VideoResource;
   try {
-    const res = await api.videos.insert(
-      {
-        part: ['snippet', 'status'],
-        notifySubscribers: plan.notifySubscribers,
-        requestBody: {
-          snippet: {
-            title: meta.title,
-            description: meta.description,
-            tags: meta.tags,
-            categoryId: meta.categoryId ?? '22',
-            defaultLanguage: meta.defaultLanguage,
-          },
-          status: {
-            privacyStatus: plan.privacyStatus,
-            publishAt: plan.publishAt,
-            selfDeclaredMadeForKids: meta.madeForKids,
-            containsSyntheticMedia: plan.containsSyntheticMedia,
-          },
+    const res = await api.videos.insert({
+      part: ['snippet', 'status'],
+      notifySubscribers: plan.notifySubscribers,
+      requestBody: {
+        snippet: {
+          title: meta.title,
+          description: meta.description,
+          tags: meta.tags,
+          categoryId: meta.categoryId ?? '22',
+          defaultLanguage: meta.defaultLanguage,
         },
-        media: { body: createReadStream(videoPath) },
+        status: {
+          privacyStatus: plan.privacyStatus,
+          publishAt: plan.publishAt,
+          selfDeclaredMadeForKids: meta.madeForKids,
+          containsSyntheticMedia: plan.containsSyntheticMedia,
+        },
       },
-      {
-        onUploadProgress: (event: { bytesRead: number }) => opts.onProgress?.(event.bytesRead, totalBytes),
-      },
-    );
+      media: { path: videoPath, mimeType: 'video/*' },
+    });
     response = res.data;
+    opts.onProgress?.(totalBytes, totalBytes);
   } catch (error) {
     throw toYouTubeError(error);
   }
@@ -117,7 +113,7 @@ export async function uploadApproved(opts: UploadOptions): Promise<UploadResult>
         videoId,
         media: {
           mimeType: extname(meta.thumbnail).toLowerCase() === '.png' ? 'image/png' : 'image/jpeg',
-          body: createReadStream(join(dir, meta.thumbnail)),
+          path: join(dir, meta.thumbnail),
         },
       });
       thumbnail = 'set';

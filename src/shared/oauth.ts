@@ -106,10 +106,14 @@ export function finishPasteback(
   return { code, redirectUri: pending.redirectUri, verifier: pending.verifier };
 }
 
-/** Listens on the loopback redirect URI and resolves with the authorization code. */
+/**
+ * Listens on the loopback redirect URI and resolves with the authorization code. A redirect
+ * with port 0 listens on a free port; the returned redirectUri carries the real one.
+ */
 export async function loopbackAuthorize(
-  req: AuthorizeRequest & { timeoutMs?: number; onUrl?: (url: string) => void },
+  input: AuthorizeRequest & { timeoutMs?: number; onUrl?: (url: string) => void },
 ): Promise<{ code: string; redirectUri: string }> {
+  let req = input;
   const redirect = new URL(req.redirectUri);
   if (!['127.0.0.1', 'localhost', '[::1]'].includes(redirect.hostname) || redirect.protocol !== 'http:') {
     throw new PlatformError(
@@ -125,6 +129,11 @@ export async function loopbackAuthorize(
     );
     server.listen(Number(redirect.port || 80), redirect.hostname.replace(/^\[|\]$/g, ''), resolve);
   });
+  // Port 0 picks a free port; providers that accept any loopback port (Google) use this.
+  if (redirect.port === '0') {
+    redirect.port = String((server.address() as { port: number }).port);
+    req = { ...req, redirectUri: redirect.toString() };
+  }
   const url = buildUrl(req, state);
   (req.onUrl ?? ((u) => log.info(`Open this URL in your browser to sign in:\n\n${u}\n`)))(url);
   try {

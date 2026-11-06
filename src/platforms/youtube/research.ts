@@ -1,6 +1,6 @@
-import type { youtube_v3 } from '@googleapis/youtube';
 import { spendQuota } from './config';
 import { toYouTubeError } from './errors';
+import type { YouTubeApi } from './rest';
 
 export interface ResearchQuery {
   query: string;
@@ -26,7 +26,7 @@ export interface ResearchVideo {
 
 /** One search.list call (search bucket) plus one videos.list call for statistics. */
 export async function researchVideos(
-  api: Pick<youtube_v3.Youtube, 'search' | 'videos'>,
+  api: Pick<YouTubeApi, 'search' | 'videos'>,
   q: ResearchQuery,
   env: NodeJS.ProcessEnv = process.env,
 ): Promise<ResearchVideo[]> {
