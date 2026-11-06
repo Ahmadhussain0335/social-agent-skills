@@ -12,6 +12,7 @@ import {
   saveToken,
 } from '../../shared/oauth';
 import { isRemote, type PostDraft } from '../../shared/post-project';
+import { tiktokApprovalNotes } from '../approval-notes';
 import type { CheckResult } from '../meta/facebook';
 import { registerPostPlatform } from '../posting';
 
@@ -278,14 +279,6 @@ registerPostPlatform({
     'TikTok allows about 15 posts per day per account across all apps.',
   ],
   check: (draft) => checkTikTokPost(draft),
-  approvalNotes: (draft) =>
-    draft.options?.mode === 'direct'
-      ? [
-          `Posting as ${draft.options?.creatorNickname} with privacy ${draft.options?.privacyLevel}.`,
-          draft.options?.brandedContent
-            ? "By posting, you agree to TikTok's Branded Content Policy and Music Usage Confirmation."
-            : "By posting, you agree to TikTok's Music Usage Confirmation.",
-        ]
-      : ['Draft mode: the video goes to your TikTok inbox; nothing is public until you post it in the app.'],
+  approvalNotes: tiktokApprovalNotes,
   publish: (dir, draft, env) => publishTikTok(tiktokClient(env), dir, draft),
 });

@@ -12,8 +12,11 @@ import {
   saveToken,
 } from '../../shared/oauth';
 import { isRemote, type PostDraft } from '../../shared/post-project';
+import { X_PRICES, xApprovalNotes, xCost } from '../approval-notes';
 import type { CheckResult } from '../meta/facebook';
 import { registerPostPlatform } from '../posting';
+
+export { X_PRICES, xCost };
 
 // X API v2 with OAuth 2.0 PKCE (Native App, public client: no secret).
 // https://docs.x.com/resources/fundamentals/authentication/oauth-2-0/authorization-code
@@ -22,7 +25,6 @@ import { registerPostPlatform } from '../posting';
 export const X_ENV = { clientId: 'X_CLIENT_ID', redirectUri: 'X_REDIRECT_URI' } as const;
 export const X_DEFAULT_REDIRECT = 'http://127.0.0.1:8765/callback';
 export const X_SCOPES = ['tweet.read', 'tweet.write', 'users.read', 'media.write', 'offline.access'];
-export const X_PRICES = { checkedOn: '2026-10-24', post: 0.015, postWithUrl: 0.2, currency: 'USD' } as const;
 const API = 'https://api.x.com';
 const URL_PATTERN = /https?:\/\/[^\s]+/g;
 const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
@@ -45,10 +47,6 @@ export function xLength(text: string): number {
     n += narrow ? 1 : 2;
   }
   return n;
-}
-
-export function xCost(draft: PostDraft): number {
-  return URL_PATTERN.test(draft.text ?? '') || draft.link ? X_PRICES.postWithUrl : X_PRICES.post;
 }
 
 export function checkXPost(draft: PostDraft): CheckResult {
@@ -259,7 +257,7 @@ registerPostPlatform({
     'No identical cross-posting and no unsolicited @mentions (X developer guidelines).',
   ],
   check: (draft) => checkXPost(draft),
-  approvalNotes: (draft) => [`Estimated X API cost: $${xCost(draft)} (X price list checked ${X_PRICES.checkedOn}).`],
+  approvalNotes: xApprovalNotes,
   publish: (dir, draft, env) => publishX(xClient(env), dir, draft),
   async metrics(postId, env) {
     const res = await xClient(env).get<{ data?: { public_metrics?: Record<string, number> } }>(

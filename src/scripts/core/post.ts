@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { postPlatforms } from '../../platforms/all-posting';
+import { approvalNotes } from '../../platforms/approval-notes';
 import { approveCheckpoint, loadState, newState, STATE_FILE, saveState, verifyCheckpoint } from '../../shared/approval';
 import { PlatformError } from '../../shared/errors';
 import { printJson } from '../../shared/log';
@@ -107,10 +107,7 @@ function summarise(dir: string, draft: PostDraft): string {
   }
   if (draft.options && Object.keys(draft.options).length > 0)
     lines.push('', `Options: ${JSON.stringify(draft.options)}`);
-  const notes =
-    postPlatforms()
-      .find((p) => p.id === draft.platform)
-      ?.approvalNotes?.(draft) ?? [];
+  const notes = approvalNotes(draft);
   if (notes.length > 0) lines.push('', ...notes);
   return lines.join('\n');
 }
